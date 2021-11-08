@@ -1,20 +1,32 @@
 library(tidyverse)
 library(readr)
-library("rgbif")
+library(rgbif)
 
 # Enter your GBIF user info here before proceeding
 # user=user 
 # pwd=pwd 
 # email=email
+# I will delete this before pushing this file to protect my account privacy
+# must be rewritten every time running this script
+user="jensj27" 
+pwd="Ceratina_1802" 
+email="jensj27@gmail.com"
 
-# load separate lists of species names. GBIF has a limit 100 000 observations that it's able to
+# load separate lists of taxon names. GBIF has a limit 100 000 observations that it's able to
 #download at once, which is well under the number for the species combined
-csvlist = c("part1.csv","part2.csv","part3.csv","part4.csv","part5.csv", "part6.csv")
+# I partitioned into groups of 100 taxon names
+csvlist = c("part1.csv","part2.csv","part3.csv","part4.csv","part5.csv", 
+            "part6.csv", "part7.csv", "part8.csv", "part9.csv")
+# note, had to re-enter these without the "x" character in hybrid taxa, because GBIF cannot
+# match the name for these and moves the speciesKey to the genus,
+# e.g. Fragaria "x"ananassa becomes Fragaria sp.
+# note, some taxa returned as synonyms. Not sure if it is going to return all of the
+# occurrence ID points for the GBIF standardized name OR no occurrences at all.
+
 
 # Download data from GBIF looping through csvlist
-user = #"GBIF username"
-pwd= #"GBIF password"
-email= #"email used for GBIF"
+# need to point to the working directory with the csv files
+setwd("GBIF_download_inputs/")
 for (i in csvlist){
   print(i)
   df = read.csv(i) 
