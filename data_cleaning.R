@@ -1,5 +1,13 @@
 library(tidyverse)
-library(stringr)
+
+########################################################
+# DATA TIDYING FILE FOR MULTIPLE DATA MANAGEMENT TASKS #
+########################################################
+# setwd() <- Navigate to a subfolder if needed
+
+##################################################
+# COMBINE TAXON LISTS FOR THE INVENTORY BACKBONE #
+##################################################
 
 # To combine Davidson and GRIN taxon lists
 # needed to clean the Davidson data
@@ -11,8 +19,11 @@ df2 <- df %>%
         sep = " ", remove = FALSE) %>%
   select(-Wild_Relative_Genus, -Wild_Relative_species) %>%
   rename(PRIMARY_ASSOCIATED_CROP_COMMON_NAME = Crop)
+# write.csv(df2, "Davidson_Canada_cleaned_data.csv")
 
-write.csv(df2, "Davidson_Canada_cleaned_data.csv")
+###########################################################
+# SEPERATE TAXON NAMES INTO GENUS, SPECIES, INFRASPECIFIC #
+###########################################################
 
 # To break names of taxa in inventory so that each species has 
 # one column with just the species name "SPECIES",
@@ -29,4 +40,4 @@ df2 <- df %>%
            sep = "\\ ") %>%
   unite("SPECIES", "SPECIES1", "SPECIES2", sep = " ")
 
-write.csv(df2, "inventory.csv")  
+# write.csv(df2, "inventory.csv")  
