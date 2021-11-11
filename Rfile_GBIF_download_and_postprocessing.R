@@ -8,9 +8,9 @@ library(rgbif)
 # email=email
 # I will delete this before pushing this file to protect my account privacy
 # must be rewritten every time running this script
-user="jensj27" 
-pwd="Ceratina_1802" 
-email="jensj27@gmail.com"
+user="" 
+pwd="" 
+email=""
 
 # load separate lists of taxon names. GBIF has a limit 100 000 observations that it's able to
 #download at once, which is well under the number for the species combined
