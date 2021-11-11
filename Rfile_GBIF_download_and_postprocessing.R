@@ -44,3 +44,14 @@ for (i in csvlist){
   occ_download_get(down_code[1], overwrite = TRUE)
 }  
 
+##########################
+# POST PROCESSING        #
+##########################
+# First unzip the output files
+# I renamed them all afterwards to part1, part2, etc.
+# Text to columns by tab delimiter for each (did manually)
+# Want to know bind them all together,
+# then conduct a geo join by province
+# reduce to one unique row per taxon per province
+# write an output csv
+# repeat by ecoregion
