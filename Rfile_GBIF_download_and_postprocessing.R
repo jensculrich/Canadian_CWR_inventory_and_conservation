@@ -51,7 +51,57 @@ for (i in csvlist){
 # I renamed them all afterwards to part1, part2, etc.
 # Text to columns by tab delimiter for each (did manually)
 # Want to know bind them all together,
-# then conduct a geo join by province
-# reduce to one unique row per taxon per province
-# write an output csv
-# repeat by ecoregion
+# then spatially project the df
+# then conduct a geo join by province (don't need to do this because province is there)
+# then conduct a geo join by ecoregion to add ecoregion data
+library(geojsonsf)
+library(jsonlite)
+library(sf)
+
+setwd("~/R/Canadian_CWR_inventory_and_conservation/GBIF_download_outputs/")
+# Bind the 9 seperate csv's into one
+df1 <- read.csv("part1.csv") 
+df2 <- read.csv("part2.csv")
+df3 <- read.csv("part3.csv")
+df4 <- read.csv("part4.csv")
+df5 <- read.csv("part5.csv")
+df6 <- read.csv("part6.csv")
+df7 <- read.csv("part7.csv")
+df8 <- read.csv("part8.csv")
+df9 <- read.csv("part9.csv")
+
+df <- rbind(df1, df2, df3, df4, df5, df6, df7, df8, df9)
+df <- df %>%
+  select(genus, species, infraspecificEpithet, taxonRank, scientificName, 
+         verbatimScientificName, stateProvince, decimalLatitude, decimalLongitude
+         )
+
+# Convert to geoJSON for spatial projection
+spatial_df <- df_geojson(df = df, lon = "decimalLongitude", lat = "decimalLatitude")
+sf <- geojson_sf(spatial_df)
+
+# Now join with ecoregion boundaries
+setwd("~/R/Canadian_CWR_inventory_and_conservation/Geo_Data/")
+ecoregions <- st_read("canada_ecoregions_clipped.geojson")
+str(ecoregions)
+
+shape_df <- st_join(ecoregions, sf)
+output_df <- shape_df %>%
+  select(genus, species, infraspecificEpithet, taxonRank, scientificName, 
+         verbatimScientificName, stateProvince, geometry,
+         ECO_NAME
+  )
+# replace "QuÃ©bec" with "Quebec"
+output_df <- output_df %>% 
+  mutate(stateProvince = str_replace(stateProvince, "QuÃ©bec", "Quebec"))
+
+GBIF_province <- output_df %>%
+  group_by(scientificName) %>%
+  distinct(stateProvince, .keep_all = TRUE) 
+
+%>%
+  dplyr::select(sci_nam, PRENAME) %>%
+  # distinct(sci_nam) # this line just to see how many species (remove for actual processing)
+  # has a bunch of extra species?
+  # join with cwr_list to pair it down?
+  left_join(cwr_list, .)
