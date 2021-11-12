@@ -52,11 +52,14 @@ for (i in csvlist){
 # Text to columns by tab delimiter for each (did manually)
 # Want to know bind them all together,
 # then spatially project the df
-# then conduct a geo join by province (don't need to do this because province is there)
+# then conduct a geo join by province
 # then conduct a geo join by ecoregion to add ecoregion data
 library(geojsonsf)
 library(jsonlite)
 library(sf)
+
+setwd("~/R/Canadian_CWR_inventory_and_conservation/Input_Data_and_Files/")
+inventory <- read.csv("inventory.csv")
 
 setwd("~/R/Canadian_CWR_inventory_and_conservation/GBIF_download_outputs/")
 # Bind the 9 seperate csv's into one
@@ -72,7 +75,7 @@ df9 <- read.csv("part9.csv")
 
 df <- rbind(df1, df2, df3, df4, df5, df6, df7, df8, df9)
 df <- df %>%
-  select(genus, species, infraspecificEpithet, taxonRank, scientificName, 
+  select(taxonKey, genus, species, infraspecificEpithet, taxonRank, scientificName, 
          verbatimScientificName, stateProvince, decimalLatitude, decimalLongitude
          )
 
@@ -80,28 +83,82 @@ df <- df %>%
 spatial_df <- df_geojson(df = df, lon = "decimalLongitude", lat = "decimalLatitude")
 sf <- geojson_sf(spatial_df)
 
+# Now join with province boundaries
+setwd("~/R/Canadian_CWR_inventory_and_conservation/Geo_Data/")
+provinces <- st_read("canada_provinces.geojson")
+str(provinces)
+
+shape_joined_1 <- st_join(provinces, sf)
+output_sf_provinces <- shape_joined_1 %>%
+  select(taxonKey, genus, species, infraspecificEpithet, taxonRank, scientificName, 
+         verbatimScientificName, name
+  )
+
+# Now filter it down so there's one row per province per species
+# need to change it back into a df first? 
+output_df_provinces <- as.data.frame(output_sf_provinces) %>%
+  select(-geometry)
+str(output_df_provinces)
+
+GBIF_province <- output_df_provinces %>%
+  mutate(taxonRank = str_replace(taxonRank, "VARIETY", "var.")) %>%
+  mutate(taxonRank = str_replace(taxonRank, "SUBSPECIES", "subsp.")) %>%
+  mutate(taxonRank = str_replace(taxonRank, "FORM", "var.")) %>%
+  mutate(taxonRank = str_replace(taxonRank, "SPECIES", "")) %>%
+  mutate(TAXON = paste(species, taxonRank, infraspecificEpithet, sep=' ')) %>%
+  distinct(TAXON, name, .keep_all = TRUE) %>%
+  select(TAXON, genus, species, taxonRank, infraspecificEpithet, name) %>%
+  rename("GENUS" = "genus",
+         "SPECIES" = "species",
+         "RANK" = "taxonRank",
+         "INFRASPECIFIC" = "infraspecificEpithet",
+         "PROVINCE" = "name") %>%
+  filter(!str_detect(TAXON, 'GENUS'))
+
+
+GBIF_province$TAXON <- trimws(GBIF_province$TAXON, which = c("right"))
+GBIF_province_filtered <- semi_join(GBIF_province, inventory, by="TAXON")
+
+# need to figure out a way to add all infraspecific range information that might be missing at the species level
+# for the species themselves
+
+
+
 # Now join with ecoregion boundaries
 setwd("~/R/Canadian_CWR_inventory_and_conservation/Geo_Data/")
 ecoregions <- st_read("canada_ecoregions_clipped.geojson")
 str(ecoregions)
 
-shape_df <- st_join(ecoregions, sf)
-output_df <- shape_df %>%
-  select(genus, species, infraspecificEpithet, taxonRank, scientificName, 
-         verbatimScientificName, stateProvince, geometry,
-         ECO_NAME
+shape_joined_2 <- st_join(ecoregions, sf)
+output_sf_ecoregion <- shape_joined_2 %>%
+  select(taxonKey, genus, species, infraspecificEpithet, taxonRank, scientificName, 
+         verbatimScientificName, ECO_NAME
   )
-# replace "QuÃ©bec" with "Quebec"
-output_df <- output_df %>% 
-  mutate(stateProvince = str_replace(stateProvince, "QuÃ©bec", "Quebec"))
 
-GBIF_province <- output_df %>%
-  group_by(scientificName) %>%
-  distinct(stateProvince, .keep_all = TRUE) 
+# Now filter it down so there's one row per province per species
+# need to change it back into a df first? 
+output_df_ecoregion <- as.data.frame(output_sf_ecoregion) %>%
+  select(-geometry)
+str(output_df_ecoregion)
 
-%>%
-  dplyr::select(sci_nam, PRENAME) %>%
-  # distinct(sci_nam) # this line just to see how many species (remove for actual processing)
-  # has a bunch of extra species?
-  # join with cwr_list to pair it down?
-  left_join(cwr_list, .)
+GBIF_ecoregion <- output_df_ecoregion %>%
+  mutate(taxonRank = str_replace(taxonRank, "VARIETY", "var.")) %>%
+  mutate(taxonRank = str_replace(taxonRank, "SUBSPECIES", "subsp.")) %>%
+  mutate(taxonRank = str_replace(taxonRank, "FORM", "var.")) %>%
+  mutate(taxonRank = str_replace(taxonRank, "SPECIES", "")) %>%
+  mutate(TAXON = paste(species, taxonRank, infraspecificEpithet, sep=' ')) %>%
+  distinct(TAXON, ECO_NAME, .keep_all = TRUE) %>%
+  select(TAXON, genus, species, taxonRank, infraspecificEpithet, ECO_NAME) %>%
+  rename("GENUS" = "genus",
+         "SPECIES" = "species",
+         "RANK" = "taxonRank",
+         "INFRASPECIFIC" = "infraspecificEpithet") %>%
+  filter(!str_detect(TAXON, 'GENUS'))
+
+
+GBIF_ecoregion$TAXON <- trimws(GBIF_ecoregion$TAXON, which = c("right"))
+GBIF_ecoregion_filtered <- semi_join(GBIF_ecoregion, inventory, by="TAXON")
+
+setwd("~/R/Canadian_CWR_inventory_and_conservation/GBIF_download_outputs/")
+write.csv(GBIF_province_filtered, "species_distributions_province.csv")
+write.csv(GBIF_ecoregion_filtered, "species_distributions_ecoregion.csv")
