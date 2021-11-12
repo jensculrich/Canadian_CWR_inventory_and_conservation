@@ -162,3 +162,12 @@ GBIF_ecoregion_filtered <- semi_join(GBIF_ecoregion, inventory, by="TAXON")
 setwd("~/R/Canadian_CWR_inventory_and_conservation/GBIF_download_outputs/")
 write.csv(GBIF_province_filtered, "species_distributions_province.csv")
 write.csv(GBIF_ecoregion_filtered, "species_distributions_ecoregion.csv")
+
+# test to see length (should be 845)
+test <- GBIF_province_filtered %>%
+  distinct(TAXON)
+# so which taxa are missing?
+test2 <- anti_join(inventory, GBIF_province_filtered, by="TAXON")
+
+# make separate files that take all missing range areas that were found
+# from the subsp and varietals, but drop the subsp. info
