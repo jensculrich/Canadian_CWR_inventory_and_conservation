@@ -168,6 +168,7 @@ test <- GBIF_province_filtered %>%
   distinct(TAXON)
 # so which taxa are missing?
 test2 <- anti_join(inventory, GBIF_province_filtered, by="TAXON")
+write.csv(test2, "species_distributions_taxa_w_issues.csv")
 
 # make separate files that take all missing range areas that were found
 # from the subsp and varietals, but drop the subsp. info
