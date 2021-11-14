@@ -8,15 +8,16 @@ library(rgbif)
 # email=email
 # I will delete this before pushing this file to protect my account privacy
 # must be rewritten every time running this script
-user="" 
-pwd="" 
-email=""
+user="jensj27" 
+pwd="Ceratina_1802" 
+email="jensj27@gmail.com"
 
 # load separate lists of taxon names. GBIF has a limit 100 000 observations that it's able to
 #download at once, which is well under the number for the species combined
 # I partitioned into groups of 100 taxon names
 csvlist = c("part1.csv","part2.csv","part3.csv","part4.csv","part5.csv", 
             "part6.csv", "part7.csv", "part8.csv", "part9.csv")
+# csvlist = "speciesKeys_extra_taxa.csv"
 # note, had to re-enter these without the "x" character in hybrid taxa, because GBIF cannot
 # match the name for these and moves the speciesKey to the genus,
 # e.g. Fragaria "x"ananassa becomes Fragaria sp.
@@ -72,8 +73,10 @@ df6 <- read.csv("part6.csv")
 df7 <- read.csv("part7.csv")
 df8 <- read.csv("part8.csv")
 df9 <- read.csv("part9.csv")
+df10 <- read.csv("problemTaxa.csv")
+df11 <- read.csv("problemTaxa_manual.csv")
 
-df <- rbind(df1, df2, df3, df4, df5, df6, df7, df8, df9)
+df <- rbind(df1, df2, df3, df4, df5, df6, df7, df8, df9, df10, df11)
 df <- df %>%
   select(taxonKey, genus, species, infraspecificEpithet, taxonRank, scientificName, 
          verbatimScientificName, stateProvince, decimalLatitude, decimalLongitude

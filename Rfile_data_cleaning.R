@@ -4,6 +4,11 @@ library(tidyverse)
 # DATA TIDYING FILE FOR MULTIPLE DATA MANAGEMENT TASKS #
 ########################################################
 # setwd() <- Navigate to a subfolder if needed
+# CONTENTS
+# COMBINE TAXON LISTS
+# PARSE TAXON NAMES
+# CONVERT TO DECIMAL DEGREES
+# FILTER GARDEN ACCESSIONS
 
 ##################################################
 # COMBINE TAXON LISTS FOR THE INVENTORY BACKBONE #
@@ -41,6 +46,19 @@ df2 <- df %>%
   unite("SPECIES", "SPECIES1", "SPECIES2", sep = " ")
 
 # write.csv(df2, "inventory.csv")  
+
+####################################################
+# CONVERT MANUAL GBIF DOWNLOADS TO DECIMAL DEGREES #
+####################################################
+df <- read.csv("problemTaxa_manual_table_downloads.csv")
+
+df <- separate(df, 'DMS', into =c("latitude", "longitude"), sep = ",")
+df <- df %>%
+  mutate(decimalLatitude = as.numeric(substring(latitude, 1, nchar(latitude)-1))) %>%
+  mutate(decimalLongitude = as.numeric(substring(longitude, 1, nchar(longitude)-1))) %>%
+  mutate(decimalLongitude = decimalLongitude * -1)
+
+# write.csv(df, "problemTaxa_manual.csv")
 
 ############################
 # FILTER GARDEN ACCESSIONS #
