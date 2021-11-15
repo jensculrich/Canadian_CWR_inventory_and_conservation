@@ -86,6 +86,10 @@ df <- df %>%
 df <- within(df, infraspecificEpithet[species == 'Amelanchier pumila'] <- '')
 df <- within(df, taxonRank[species == 'Amelanchier pumila'] <- 'species')
 
+# R is having difficulty matching the odd hybrid x symbols
+df <- df %>% 
+  mutate(species = str_replace(species, "×", ""))
+
 # Convert to geoJSON for spatial projection
 spatial_df <- df_geojson(df = df, lon = "decimalLongitude", lat = "decimalLatitude")
 points <- geojson_sf(spatial_df)
@@ -129,6 +133,11 @@ GBIF_province <- output_df_provinces %>%
 
 
 GBIF_province$TAXON <- trimws(GBIF_province$TAXON, which = c("right"))
+
+# R is having difficulty matching the odd hybrid x symbols
+inventory <- inventory %>% 
+  mutate(TAXON = str_replace(TAXON, "×", "")) %>% 
+  mutate(SPECIES = str_replace(SPECIES, "×", ""))
 GBIF_province_filtered <- semi_join(GBIF_province, inventory, by="TAXON")
 
 # need to figure out a way to add all infraspecific range information that might be missing at the species level
@@ -139,6 +148,7 @@ test <- GBIF_province_filtered %>%
   distinct(TAXON)
 # so which taxa are missing?
 test2 <- anti_join(inventory, GBIF_province_filtered, by="TAXON")
+# Rubus chloocladus and Leymus villosissimus are not matching for some reason?
 write.csv(test2, "species_distributions_taxa_w_issues_2.csv")
 
 
