@@ -60,6 +60,17 @@ df <- df %>%
 
 # write.csv(df, "problemTaxa_manual.csv")
 
+df <- read.csv("problemTaxa_manual.csv")
+df <- df %>% 
+  mutate(GENUS = word(scientificName, 1)) %>%
+  mutate(TAXON1 = scientificName) %>%
+  separate(TAXON1, c("SPECIES1", "SPECIES2", 
+                     "RANK", "INFRASPECIFC"), 
+           sep = "\\s+") %>%
+  unite("SPECIES", "SPECIES1", "SPECIES2", sep = " ")
+
+# write.csv(df, "problemTaxa_manual.csv")
+
 ############################
 # FILTER GARDEN ACCESSIONS #
 ############################

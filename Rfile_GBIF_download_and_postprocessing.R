@@ -82,16 +82,23 @@ df <- df %>%
          verbatimScientificName, stateProvince, decimalLatitude, decimalLongitude
          )
 
+# issues with problem species that need to be fixed to match the inventory
+df <- within(df, infraspecificEpithet[species == 'Amelanchier pumila'] <- '')
+df <- within(df, taxonRank[species == 'Amelanchier pumila'] <- 'species')
+
 # Convert to geoJSON for spatial projection
 spatial_df <- df_geojson(df = df, lon = "decimalLongitude", lat = "decimalLatitude")
-sf <- geojson_sf(spatial_df)
+points <- geojson_sf(spatial_df)
 
 # Now join with province boundaries
 setwd("~/R/Canadian_CWR_inventory_and_conservation/Geo_Data/")
 provinces <- st_read("canada_provinces.geojson")
 str(provinces)
 
-shape_joined_1 <- st_join(provinces, sf)
+shape_joined_1 <- st_join(points, provinces, join = st_nearest_feature, maxdist = 10000)
+# join = st_nearest_feature joins each point to nearest polygon (province).
+# REALLY important because many collections along coastlines, 
+# and the polygone edges can be quite wonky
 output_sf_provinces <- shape_joined_1 %>%
   select(taxonKey, genus, species, infraspecificEpithet, taxonRank, scientificName, 
          verbatimScientificName, name
@@ -104,10 +111,12 @@ output_df_provinces <- as.data.frame(output_sf_provinces) %>%
 str(output_df_provinces)
 
 GBIF_province <- output_df_provinces %>%
+  mutate(infraspecificEpithet = replace_na(infraspecificEpithet, "")) %>%
   mutate(taxonRank = str_replace(taxonRank, "VARIETY", "var.")) %>%
   mutate(taxonRank = str_replace(taxonRank, "SUBSPECIES", "subsp.")) %>%
   mutate(taxonRank = str_replace(taxonRank, "FORM", "var.")) %>%
   mutate(taxonRank = str_replace(taxonRank, "SPECIES", "")) %>%
+  mutate(taxonRank = str_replace(taxonRank, "species", "")) %>%
   mutate(TAXON = paste(species, taxonRank, infraspecificEpithet, sep=' ')) %>%
   distinct(TAXON, name, .keep_all = TRUE) %>%
   select(TAXON, genus, species, taxonRank, infraspecificEpithet, name) %>%
@@ -124,6 +133,13 @@ GBIF_province_filtered <- semi_join(GBIF_province, inventory, by="TAXON")
 
 # need to figure out a way to add all infraspecific range information that might be missing at the species level
 # for the species themselves
+
+# test to see length (should be 791)
+test <- GBIF_province_filtered %>%
+  distinct(TAXON)
+# so which taxa are missing?
+test2 <- anti_join(inventory, GBIF_province_filtered, by="TAXON")
+write.csv(test2, "species_distributions_taxa_w_issues_2.csv")
 
 
 
@@ -166,12 +182,6 @@ setwd("~/R/Canadian_CWR_inventory_and_conservation/GBIF_download_outputs/")
 write.csv(GBIF_province_filtered, "species_distributions_province.csv")
 write.csv(GBIF_ecoregion_filtered, "species_distributions_ecoregion.csv")
 
-# test to see length (should be 845)
-test <- GBIF_province_filtered %>%
-  distinct(TAXON)
-# so which taxa are missing?
-test2 <- anti_join(inventory, GBIF_province_filtered, by="TAXON")
-write.csv(test2, "species_distributions_taxa_w_issues.csv")
 
 # make separate files that take all missing range areas that were found
 # from the subsp and varietals, but drop the subsp. info

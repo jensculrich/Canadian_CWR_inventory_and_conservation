@@ -80,8 +80,7 @@ Arbutus menziesii,Arbutus,Arbutus menziesii,NA,NA,Arbutus,NA,Y,N,Y,medicinal pro
 Arctopoa eminens,Arctopoa,Arctopoa eminens,NA,NA,Bluegrass,NA,Y,Y,N,,Y,Food,,NA,Forage and Feed,,,NA,2,2,NA,,,,,,,,,,,Davidson 1995,,
 Arctostaphylos columbiana,Arctostaphylos,Arctostaphylos columbiana,NA,NA,Bearberry,NA,Y,N,Y,berries edible,Y,Food,,NA,Fruits,,,NA,NA,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
 Arctostaphylos uva-ursi,Arctostaphylos,Arctostaphylos uva-ursi,NA,NA,Bearberry,NA,Y,N,Y,fruit,Y,Food,,NA,Fruits,,,NA,NA,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
-Arctostaphylos alpina,Arctous,Arctous alpina,NA,NA,Bearberry,NA,Y,N,Y,fruit,Y,Food,,NA,Fruits,,,NA,NA,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
-Arctostaphylos rubra,Arctous,Arctous rubra,NA,NA,Bearberry,NA,Y,N,Y,fruit,Y,Food,,NA,Fruits,,,NA,NA,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
+Arctostaphylos rubra,Arctostaphylos,Arctostaphylos rubra,NA,NA,Bearberry,NA,Y,N,Y,fruit,Y,Food,,NA,Fruits,,,NA,NA,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
 Arnica cordifolia,Arnica,Arnica cordifolia,NA,NA,Arnica,NA,Y,N,Y,medicinal properties,Y,Cultural,,NA,Medicinals,,,NA,NA,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
 Aruncus dioicus,Aruncus,Aruncus dioicus,NA,NA,Goatsbeard,NA,Y,N,Y,medicinal properties,Y,Cultural,,NA,Medicinals,,,NA,NA,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
 Aruncus dioicus var. acuminatus,Aruncus,Aruncus dioicus,var.,acuminatus,Goatsbeard,NA,Y,N,Y,,Y,Cultural,,NA,Medicinals,,,NA,NA,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
@@ -210,7 +209,7 @@ Claytonia perfoliata subsp. perfoliata,Claytonia,Claytonia perfoliata,subsp.,per
 Claytonia sibirica,Claytonia,Claytonia sibirica,NA,NA,Spring-beauty,NA,Y,N,Y,,Y,Food,,NA,Vegetables,,,NA,NA,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
 Claytonia virginica,Claytonia,Claytonia virginica,NA,NA,Spring-beauty,NA,Y,N,Y,,Y,Food,,NA,Vegetables,,,NA,NA,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
 Coleataenia longifolia,Coleataenia,Coleataenia longifolia,NA,NA,Proso millet,NA,N,Y,N,,Y,Food,,NA,Cereals and pseudocereals,,,NA,1C,1,Assume distant,,,,,,,,,,,Davidson 1995,,
-Coleataenia longifolia var. longifolia,Coleataenia,Coleataenia longifolia,subsp.,longifolia,Proso millet,NA,Y,Y,N,,Y,Food,,NA,Cereals and pseudocereals,,,NA,1C,1,Assume distant,,,,,,,,,,,Davidson 1995,,
+Coleataenia longifolia subsp. longifolia,Coleataenia,Coleataenia longifolia,subsp.,longifolia,Proso millet,NA,Y,Y,N,,Y,Food,,NA,Cereals and pseudocereals,,,NA,1C,1,Assume distant,,,,,,,,,,,Davidson 1995,,
 Comarum palustre,Comarum,Comarum palustre,NA,NA,Strawberry,NA,Y,Y,Y,wild strawberry',Y,Food,,NA,Fruits,,,NA,1C,1,Tertiary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,Khoury et al. 2020
 Conioselinum gmelinii,Conioselinum,Conioselinum gmelinii,NA,NA,Hemlock-parsley,NA,Y,N,Y,wild carrot,Y,Food,,NA,Vegetables,,,NA,NA,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
 Cornus canadensis,Cornus,Cornus canadensis,NA,NA,Dogwood,NA,Y,N,Y,fruit,Y,Food,,NA,Fruits,,,NA,NA,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
@@ -258,7 +257,7 @@ Elymus elymoides subsp. californicus,Elymus,Elymus elymoides,subsp.,californicus
 Elymus elymoides subsp. elymoides,Elymus,Elymus elymoides,subsp.,elymoides,Wheat,Wild-rye,Y,Y,N,,Y,Food,,NA,Cereals and pseudocereals,Forage and Feed,,NA,1C,1,Tertiary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,
 Elymus glaucus,Elymus,Elymus glaucus,NA,NA,Wheat,Wild-rye,N,Y,N,,Y,Food,,NA,Cereals and pseudocereals,Forage and Feed,,NA,1C,1,Tertiary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,
 Elymus glaucus subsp. glaucus,Elymus,Elymus glaucus,subsp.,glaucus,Wheat,Wild-rye,Y,Y,N,,Y,Food,,NA,Cereals and pseudocereals,Forage and Feed,,NA,1C,1,Tertiary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,
-Elymus glaucus subsp. virescens ,Elymus,Elymus glaucus,subsp.,virescens,Wheat,Wild-rye,Y,Y,N,,Y,Food,,NA,Cereals and pseudocereals,Forage and Feed,,NA,1C,1,Tertiary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,
+Elymus glaucus subsp. virescens,Elymus,Elymus glaucus,subsp.,virescens,Wheat,Wild-rye,Y,Y,N,,Y,Food,,NA,Cereals and pseudocereals,Forage and Feed,,NA,1C,1,Tertiary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,
 Elymus hirsutus,Elymus,Elymus hirsutus,NA,NA,Wheat,Wild-rye,Y,Y,N,,Y,Food,,NA,Cereals and pseudocereals,Forage and Feed,,NA,1C,1,Tertiary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,
 Elymus hystrix,Elymus,Elymus hystrix,NA,NA,Wheat,Wild-rye,Y,Y,N,,Y,Food,,NA,Cereals and pseudocereals,Forage and Feed,,NA,1C,1,Tertiary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,
 Elymus lanceolatus,Elymus,Elymus lanceolatus,NA,NA,Wheat,Wild-rye,N,Y,N,,Y,Food,,NA,Cereals and pseudocereals,Forage and Feed,,NA,1C,1,Tertiary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,
@@ -401,7 +400,7 @@ Leymus innovatus subsp. innovatus,Leymus,Leymus innovatus,subsp.,innovatus,Wheat
 Leymus innovatus subsp. velutinus,Leymus,Leymus innovatus,subsp.,velutinus,Wheat,NA,Y,Y,N,,Y,Food,,NA,Cereals and pseudocereals,,,NA,1C,1,Tertiary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,
 Leymus mollis,Leymus,Leymus mollis,NA,NA,Barley,Wheat,N,Y,Y,wild rye grass; grains,Y,Food,,Food,Cereals and pseudocereals,,,Cereals and pseudocereals,1C,1,Tertiary,,Heat Tolerance (AB),Salt Tolerance (AB),Disease Resistance (B),,,,,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
 Leymus mollis subsp. mollis,Leymus,Leymus mollis,subsp.,mollis,Barley,Wheat,Y,Y,Y,wild rye grass; grains,Y,Food,,Food,Cereals and pseudocereals,,,Cereals and pseudocereals,1C,1,Tertiary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
-Leymus mollis subsp. villosissimus,Leymus,Leymus mollis,subsp.,villosissimus,Barley,Wheat,Y,Y,Y,wild rye grass; grains,Y,Food,,Food,Cereals and pseudocereals,,,Cereals and pseudocereals,1C,1,Tertiary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
+Leymus villosissimus,Leymus,Leymus villosissimus,NA,NA,Barley,Wheat,Y,Y,Y,wild rye grass; grains,Y,Food,,Food,Cereals and pseudocereals,,,Cereals and pseudocereals,1C,1,Tertiary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
 Leymus triticoides,Leymus,Leymus triticoides,NA,NA,Wheat,NA,Y,Y,N,,Y,Food,,NA,Cereals and pseudocereals,,,NA,1C,1,Tertiary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,
 Lilium columbianum,Lilium,Lilium columbianum,NA,NA,Lily,NA,Y,N,Y,,Y,Food,,NA,Vegetables,,,NA,NA,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
 Linum lewisii,Linum,Linum lewisii,NA,NA,Flax,NA,N,Y,N,,Y,Materials,,NA,Materials,,,NA,1C,1,Tertiary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,
@@ -541,7 +540,7 @@ Poa palustris,Poa,Poa palustris,NA,NA,Bluegrass,NA,Y,Y,N,,Y,Food,,NA,Forage and 
 Poa pattersonii,Poa,Poa pattersonii,NA,NA,Bluegrass,NA,Y,Y,N,,Y,Food,,NA,Forage and Feed,,,NA,2,2,NA,,,,,,,,,,,Davidson 1995,,
 Poa pratensis,Poa,Poa pratensis,NA,NA,Bluegrass,NA,N,Y,N,,Y,Food,,NA,Forage and Feed,,,NA,2,2,NA,,,,,,,,,,,Davidson 1995,,
 Poa pratensis subsp. agassizensis,Poa,Poa pratensis,subsp.,agassizensis,Bluegrass,NA,Y,Y,N,,Y,Food,,NA,Forage and Feed,,,NA,2,2,NA,,,,,,,,,,,Davidson 1995,,
-Poa pratensis subsp. irrigata,Poa,Poa pratensis,subsp.,irrigata,Bluegrass,NA,Y,Y,N,,Y,Food,,NA,Forage and Feed,,,NA,2,2,NA,,,,,,,,,,,Davidson 1995,,
+Poa humilis,Poa,Poa humilis,NA,NA,Bluegrass,NA,Y,Y,N,,Y,Food,,NA,Forage and Feed,,,NA,2,2,NA,,,,,,,,,,,Davidson 1995,,
 Poa pratensis subsp. pratensis,Poa,Poa pratensis,subsp.,pratensis,Bluegrass,NA,Y,Y,N,,N,Food,,NA,Forage and Feed,,,NA,2,2,NA,,,,,,,,,,,Davidson 1995,,
 Poa saltuensis,Poa,Poa saltuensis,NA,NA,Bluegrass,NA,Y,Y,N,,Y,Food,,NA,Forage and Feed,,,NA,2,2,NA,,,,,,,,,,,Davidson 1995,,
 Poa secunda,Poa,Poa secunda,NA,NA,Bluegrass,NA,N,Y,N,,Y,Food,,NA,Forage and Feed,,,NA,2,2,NA,,,,,,,,,,,Davidson 1995,,
