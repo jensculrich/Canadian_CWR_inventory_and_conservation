@@ -12,21 +12,20 @@ library(geojsonio) # geo json input and output
 #library(rmapshaper) # the package that allows geo shape transformation
 #library(magrittr) # data wrangling
 #library(dplyr)
-
-library(tigris)
+#library(tigris)
 
 ######################################################################################
 
 ######################################################################################
 
 # Load required data and shapefiles for plotting occurrence maps and data tables
-cwr <- read.csv("./Input_Data_and_Files/inventory.csv")
+inventory <- read.csv("./Input_Data_and_Files/inventory.csv")
 
 canada_ecoregions_geojson <- st_read("./Geo_Data/canada_ecoregions_clipped.geojson", quiet = TRUE)
 canada_provinces_geojson <- st_read("./Geo_Data/canada_provinces.geojson", quiet = TRUE)
 
-ecoregion_gap_table <- as_tibble(read.csv("./GBIF_download_outputs/species_distributions_ecoregion_trimmed.csv"))
-province_gap_table <- as_tibble(read.csv("./GBIF_download_outputs/species_distributions_province_trimmed.csv"))
+sp_distr_ecoregion <- as_tibble(read.csv("./GBIF_download_outputs/species_distributions_ecoregion_trimmed.csv"))
+sp_distr_province <- as_tibble(read.csv("./GBIF_download_outputs/species_distributions_province_trimmed.csv"))
 
 # CRS 
 crs_string = "+proj=lcc +lat_1=49 +lat_2=77 +lon_0=-91.52 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs" # 2
@@ -58,13 +57,13 @@ canada_provinces_geojson <- canada_provinces_geojson %>%
   rename("PROVINCE" = "name")
 
 # add geometry to the species distribution table
-province_gap_table_sf <- merge(x = province_gap_table, 
+sp_distr_province_sf <- merge(x = sp_distr_province, 
                                y = canada_provinces_geojson[ , c("PROVINCE", "geometry")], 
                                by = "PROVINCE", all.x=TRUE)
-str(cwr)
+
 # join with inventory to add taxon information (category, crop relative, IUCN, etc.)
-province_gap_table_sf <- merge(x = province_gap_table_sf,
-                               y = cwr[ , c("TAXON",
+sp_distr_province_sf <- merge(x = sp_distr_province_sf,
+                               y = inventory[ , c("TAXON",
                                             "PRIMARY_ASSOCIATED_CROP_COMMON_NAME",
                                             "SECONDARY_ASSOCIATED_CROP_COMMON_NAME",
                                             "CWR", "WUS", "NATIVE",
@@ -78,6 +77,9 @@ province_gap_table_sf <- merge(x = province_gap_table_sf,
                                by = c("TAXON"),
                                all.x=TRUE)
 
+
+
+# This is for the garden data >
 # province_gap_table <- province_gap_table %>%
 #  dplyr::select(-geometry, -X, -ECO_CODE, -ECO_NAME)
 
@@ -101,18 +103,22 @@ ecoregion_gap_table_sf <- st_as_sf(ecoregion_gap_table,
 
 ##############################
 # CWRs in each category
-cwr_list_summary <- cwr_list %>%
-  group_by(Group) %>% 
+CWR_inventory_summary <- inventory %>%
+  filter(CWR == "Y") %>%
+  filter(TIER == 1) %>%
+  group_by(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1) %>%
   add_tally() %>%
-  distinct(Group, .keep_all = TRUE ) %>%
+  distinct(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, .keep_all = TRUE ) %>%
   arrange(desc(n)) %>%
-  dplyr::select(Group, n) %>%
-  # change level name to fit on the figure page
-  transform(Group=plyr::revalue(Group,c("Herbs/Medicinals/Ornamentals"="H/M/O")))
+  dplyr::select(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, n) %>%
+  # change level name to fit on the figure page better
+  transform(
+    PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1=plyr::revalue(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, 
+    c("Cereals and pseudocereals"="Cereals, Pseudocereals")))
  
-par(mar=c(4,11,4,4))
-barplot(cwr_list_summary$n, #main = "Native CWR Taxa in Broad Crop Categories",
-        names.arg = cwr_list_summary$Group, xlab = "", ylab = "",
+par(mar=c(4,15,4,4))
+barplot(CWR_inventory_summary$n, #main = "Native CWR Taxa in Broad Crop Categories",
+        names.arg = CWR_inventory_summary$PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, xlab = "", ylab = "",
         cex.names=1.5, cex.axis=1.5, horiz=T, las=1, xlim = c(0,140))
 # revert level name
 # cwr_list_summary <- cwr_list_summary %>%

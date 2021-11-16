@@ -23,9 +23,9 @@ Acmispon americanus,Acmispon,Acmispon americanus,NA,NA,Trefoil,NA,N,Y,N,,Y,Food,
 Acmispon americanus var. americanus,Acmispon,Acmispon americanus,var.,americanus,Trefoil,NA,Y,Y,N,,Y,Food,,NA,Forage and Feed,,,NA,2,2,NA,,,,,,,,,,,Davidson 1995,,
 Acmispon denticulatus,Acmispon,Acmispon denticulatus,NA,NA,Trefoil,NA,Y,Y,N,,Y,Food,,NA,Forage and Feed,,,NA,2,2,NA,,,,,,,,,,,Davidson 1995,,
 Acmispon parviflorus,Acmispon,Acmispon parviflorus,NA,NA,Trefoil,NA,Y,Y,N,,Y,Food,,NA,Forage and Feed,,,NA,2,2,NA,,,,,,,,,,,Davidson 1995,,
-Agastache foeniculum,Agastache,Agastache foeniculum,NA,NA,Hyssop,NA,Y,N,Y,,Y,Cultural,,NA,Medicinals,,,NA,2,2,NA,,,,,,,,,,,Davidson 1995,,Kuhnlein and Turner 2020
-Agastache nepetoides,Agastache,Agastache nepetoides,NA,NA,Hyssop,NA,Y,N,Y,,Y,Cultural,,NA,Medicinals,,,NA,2,2,NA,,,,,,,,,,,Davidson 1995,,Kuhnlein and Turner 2020
-Agastache urticifolia,Agastache,Agastache urticifolia,NA,NA,Hyssop,NA,Y,N,Y,,Y,Cultural,,NA,Medicinals,,,NA,2,2,NA,,,,,,,,,,,Davidson 1995,,Kuhnlein and Turner 2020
+Agastache foeniculum,Agastache,Agastache foeniculum,NA,NA,Hyssop,NA,Y,N,Y,,Y,Cultural,,NA,Medicinals,,,NA,NA,NA,NA,,,,,,,,,,,Davidson 1995,,Kuhnlein and Turner 2020
+Agastache nepetoides,Agastache,Agastache nepetoides,NA,NA,Hyssop,NA,Y,N,Y,,Y,Cultural,,NA,Medicinals,,,NA,NA,NA,NA,,,,,,,,,,,Davidson 1995,,Kuhnlein and Turner 2020
+Agastache urticifolia,Agastache,Agastache urticifolia,NA,NA,Hyssop,NA,Y,N,Y,,Y,Cultural,,NA,Medicinals,,,NA,NA,NA,NA,,,,,,,,,,,Davidson 1995,,Kuhnlein and Turner 2020
 Agrostis exarata,Agrostis,Agrostis exarata,NA,NA,Bentgrass,NA,Y,Y,N,,Y,Food,,NA,Forage and Feed,,,NA,2,2,NA,,,,,,,,,,,Davidson 1995,,
 Agrostis hyemalis,Agrostis,Agrostis hyemalis,NA,NA,Bentgrass,NA,Y,Y,N,,Y,Food,,NA,Forage and Feed,,,NA,2,2,NA,,,,,,,,,,,Davidson 1995,,
 Agrostis mertensii,Agrostis,Agrostis mertensii,NA,NA,Bentgrass,NA,Y,Y,N,,Y,Food,,NA,Forage and Feed,,,NA,2,2,NA,,,,,,,,,,,Davidson 1995,,
@@ -385,13 +385,13 @@ Lactuca pulchella,Lactuca,Lactuca pulchella,NA,NA,Lettuce,NA,Y,Y,Y,wilde lettuce
 Larix laricina,Larix,Larix laricina,NA,NA,Larch,NA,Y,N,N,,Y,Forest Resources,,NA,Forest Resources,,,NA,NA,NA,NA,,,,,,,,,,,Davidson 1995,,
 Larix lyallii,Larix,Larix lyallii,NA,NA,Larch,NA,Y,N,N,,Y,Forest Resources,,NA,Forest Resources,,,NA,NA,NA,NA,,,,,,,,,,,Davidson 1995,,
 Larix occidentalis,Larix,Larix occidentalis,NA,NA,Larch,NA,Y,N,Y,"western larch; gum, inner bark, sap",Y,Forest Resources,,NA,Forest Resources,,,NA,NA,NA,NA,,,,,,,,,,,Davidson 1995,,Kuhnlein and Turner 2020
-Lathyrus japonicus,Lathyrus,Lathyrus japonicus,NA,NA,Lathyrus,NA,Y,Y,Y,beach pea; seeds,Y,Food,,NA,Forage and Feed,,,NA,1,1,NA,,,,,,,,,,,Davidson 1995,,Kuhnlein and Turner 2020
+Lathyrus japonicus,Lathyrus,Lathyrus japonicus,NA,NA,Lathyrus,NA,Y,Y,Y,beach pea; seeds,Y,Food,,NA,Forage and Feed,,,NA,2,2,NA,,,,,,,,,,,Davidson 1995,,Kuhnlein and Turner 2020
 Lathyrus lanszwertii,Lathyrus,Lathyrus lanszwertii,NA,NA,Lathyrus,NA,N,Y,N,,Y,Food,,NA,Forage and Feed,,,NA,2,2,NA,,,,,,,,,,,Davidson 1995,,
 Lathyrus lanszwertii var. bijugatus,Lathyrus,Lathyrus lanszwertii,var.,bijugatus,Lathyrus,NA,Y,Y,N,,Y,Food,,NA,Forage and Feed,,,NA,2,2,NA,,,,,,,,,,,Davidson 1995,,
 Lathyrus littoralis,Lathyrus,Lathyrus littoralis,NA,NA,Lathyrus,NA,Y,Y,N,,Y,Food,,NA,Forage and Feed,,,NA,2,2,NA,,,,,,,,,,,Davidson 1995,,
 Lathyrus nevadensis,Lathyrus,Lathyrus nevadensis,NA,NA,Lathyrus,NA,N,Y,N,,Y,Food,,NA,Forage and Feed,,,NA,2,2,NA,,,,,,,,,,,Davidson 1995,,
 Lathyrus nevadensis var. nevadensis,Lathyrus,Lathyrus nevadensis,var.,nevadensis,Lathyrus,NA,Y,Y,N,,Y,Food,,NA,Forage and Feed,,,NA,2,2,NA,,,,,,,,,,,Davidson 1995,,
-Lathyrus palustris,Lathyrus,Lathyrus palustris,NA,NA,Lathyrus,NA,Y,Y,Y,marsh vetchling; seeds,Y,Food,,NA,Forage and Feed,,,NA,1,1,NA,,,,,,,,,,,Davidson 1995,,Kuhnlein and Turner 2020
+Lathyrus palustris,Lathyrus,Lathyrus palustris,NA,NA,Lathyrus,NA,Y,Y,Y,marsh vetchling; seeds,Y,Food,,NA,Forage and Feed,,,NA,2,2,NA,,,,,,,,,,,Davidson 1995,,Kuhnlein and Turner 2020
 Lathyrus venosus,Lathyrus,Lathyrus venosus,NA,NA,Lathyrus,NA,N,Y,N,,Y,Food,,NA,Forage and Feed,,,NA,2,2,NA,,,,,,,,,,,Davidson 1995,,
 Lathyrus venosus var. intonsus,Lathyrus,Lathyrus venosus,var.,intonsus,Lathyrus,NA,Y,Y,N,,Y,Food,,NA,Forage and Feed,,,NA,2,2,NA,,,,,,,,,,,Davidson 1995,,
 Leymus cinereus,Leymus,Leymus cinereus,NA,NA,Wheat,NA,Y,Y,Y,wild rye grass; grains,Y,Food,,NA,Cereals and pseudocereals,,,NA,1C,1,Tertiary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
@@ -445,7 +445,7 @@ Malus coronaria,Malus,Malus coronaria,NA,NA,Apple,NA,Y,Y,Y,fruit,Y,Food,,NA,Frui
 Sinomalus fusca,Sinomalus,Sinomalus fusca,NA,NA,Apple,NA,Y,Y,Y,fruit,Y,Food,,NA,Fruits,,,NA,1A,1,Tertiary,Graftstock,,,Disease Resistance (B),,Gene Transfer (F),,,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
 Melica bulbosa,Melica,Melica bulbosa,NA,NA,Onion grass,NA,Y,N,Y,bulbs,Y,Food,,NA,Vegetables,,,NA,NA,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
 Melica subulata,Melica,Melica subulata,NA,NA,Onion grass,NA,Y,N,Y,bulbs,Y,Food,,NA,Vegetables,,,NA,NA,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
-Mentha canadensis,Mentha,Mentha canadensis,NA,NA,Mint,NA,Y,Y,Y,"leaves, tea, essential oil",Y,Cultural,Food,NA,Medicinals,Herbs and Spices,,NA,2,2,Secondary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
+Mentha canadensis,Mentha,Mentha canadensis,NA,NA,Mint,NA,Y,Y,Y,"leaves, tea, essential oil",Y,Food,Cultural,NA,Herbs and Spices,Medicinals,,NA,1B,1,Secondary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
 Micromeria douglasii,Micromeria,Micromeria douglasii,NA,NA,Yerba buena,NA,Y,N,Y,leaves for tea,Y,Cultural,,NA,Medicinals,,,NA,NA,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
 Mitchella repens,Mitchella,Mitchella repens,NA,NA,Partidge berry,NA,Y,N,Y,fruit,Y,Food,,NA,Fruits,,,NA,NA,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
 Monarda fistulosa,Monarda,Monarda fistulosa,NA,NA,Monarda,NA,N,N,Y,"leaves, tea",Y,Cultural,,NA,Medicinals,Ornamentals,,NA,NA,NA,NA,,,,,,,,,,,Davidson 1995,,Kuhnlein and Turner 2020
@@ -456,7 +456,7 @@ Monotropa uniflora,Monotropa,Monotropa uniflora,NA,NA,Ghost-pipe,NA,Y,N,Y,,Y,Cul
 Morella pensylvanica,Morella,Morella pensylvanica,NA,NA,Bayberry,NA,Y,N,Y,fruit,Y,Food,,NA,Fruits,,,NA,NA,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
 Morus rubra,Morus,Morus rubra,NA,NA,Mulberry,NA,Y,N,Y,mulberry; fruit,Y,Food,,NA,Fruits,,,NA,NA,NA,NA,,,,,,,,,,,Davidson 1995,,Kuhnlein and Turner 2020
 Myrica gale,Myrica,Myrica gale,NA,NA,Bayberry,NA,Y,N,Y,"fruit, leaves",Y,Food,,NA,Fruits,,,NA,NA,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
-Nicotiana attenuata,Nicotiana,Nicotiana attenuata,NA,NA,Tobacco,NA,Y,Y,N,,Y,Cultural,,NA,Medicinals,,,NA,1C,1,Tertiary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,
+Nicotiana attenuata,Nicotiana,Nicotiana attenuata,NA,NA,Tobacco,NA,Y,Y,N,,Y,Food,Cultural,NA,Herbs and Spices,Medicinals,,NA,1C,1,Tertiary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,
 Nuphar polysepalum,Nuphar,Nuphar polysepalum,NA,NA,Water-lily,NA,Y,N,Y,,Y,Food,Cultural,NA,Vegetables,Medicinals,,NA,NA,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
 Nymphaea tetragona,Nymphaea,Nymphaea tetragona,NA,NA,Water-lily,NA,Y,N,N,,Y,Cultural,,NA,Ornamentals,,,NA,NA,NA,NA,,,,,,,Ornamental Features (AG),,,,GRIN-Global 2021,GRIN-Global 2021,
 Oemleria cerasiformis,Oemleria,Oemleria cerasiformis,NA,NA,Oso,NA,Y,N,Y,fruit,Y,Food,,NA,Fruits,,,NA,NA,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
@@ -582,7 +582,7 @@ Elymus spicatus,Elymus,Elymus spicatus,NA,NA,Wheat,NA,Y,Y,N,,Y,Food,,NA,Cereals 
 Pseudotsuga menziesii,Pseudotsuga,Pseudotsuga menziesii,NA,NA,Douglas fir,NA,N,N,Y,"needles, sugar, tea",Y,Forest Resources,,NA,Forest Resources,,,NA,NA,NA,NA,,,,,,,,,,,Davidson 1995,,Kuhnlein and Turner 2020
 Pseudotsuga menziesii var. glauca,Pseudotsuga,Pseudotsuga menziesii,var.,glauca,Douglas fir,NA,Y,N,Y,"needles, sugar, tea",Y,Forest Resources,,NA,Forest Resources,,,NA,NA,NA,NA,,,,,,,,,,,Davidson 1995,,Kuhnlein and Turner 2020
 Pseudotsuga menziesii var. menziesii,Pseudotsuga,Pseudotsuga menziesii,var.,menziesii,Douglas fir,NA,Y,N,Y,"needles, sugar, tea",Y,Forest Resources,,NA,Forest Resources,,,NA,NA,NA,NA,,,,,,,,,,,Davidson 1995,,Kuhnlein and Turner 2020
-Pycnanthemum virginianum,Pycnanthemum,Pycnanthemum virginianum,NA,NA,Mountain-mint,NA,Y,Y,Y,condiment,Y,Cultural,,NA,Medicinals,,,NA,2,2,NA,,,,,,,,,,,GRIN-Global 2021,,Kuhnlein and Turner 2020
+Pycnanthemum virginianum,Pycnanthemum,Pycnanthemum virginianum,NA,NA,Mountain-mint,NA,Y,Y,Y,condiment,Y,Cultural,,NA,Medicinals,,,NA,NA,NA,NA,,,,,,,,,,,GRIN-Global 2021,,Kuhnlein and Turner 2020
 Quercus alba,Quercus,Quercus alba,NA,NA,Oak,NA,Y,N,Y,acorns,Y,Forest Resources,,NA,Forest Resources,,,NA,NA,NA,NA,,,,,,,,,,,Davidson 1995,,Kuhnlein and Turner 2020
 Quercus bicolor,Quercus,Quercus bicolor,NA,NA,Oak,NA,Y,N,Y,acorns,Y,Forest Resources,Cultural,NA,Forest Resources,Ornamentals,,NA,NA,NA,NA,,,,,,,,,,,Davidson 1995,,Kuhnlein and Turner 2020
 Quercus garryana,Quercus,Quercus garryana,NA,NA,Oak,NA,N,N,Y,acorns,Y,Forest Resources,,NA,Forest Resources,,,NA,NA,NA,NA,,,,,,,,,,,Davidson 1995,,Kuhnlein and Turner 2020
@@ -699,10 +699,10 @@ Sedum spathulifolium,Sedum,Sedum spathulifolium,NA,NA,Sedum,NA,N,N,Y,,Y,Cultural
 Sedum spathulifolium var. pruinosum,Sedum,Sedum spathulifolium,var.,pruinosum,Sedum,NA,Y,N,Y,,Y,Cultural,,NA,Medicinals,,,NA,NA,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
 Shepherdia argentea,Shepherdia,Shepherdia argentea,NA,NA,Buffaloberry,NA,Y,N,Y,fruit,Y,Food,,NA,Fruits,,,NA,NA,NA,NA,,,,,,,,,,,Davidson 1995,,Kuhnlein and Turner 2020
 Shepherdia canadensis,Shepherdia,Shepherdia canadensis,NA,NA,Buffaloberry,NA,Y,N,Y,fruit,Y,Food,,NA,Fruits,,,NA,NA,NA,NA,,,,,,,,,,,Davidson 1995,,Kuhnlein and Turner 2020
-Silphium integrifolium,Silphium,Silphium integrifolium,NA,NA,Rosinweed,NA,N,Y,N,,N,Cultural,Food,NA,Medicinals,Oils,,NA,2,2,Primary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,
-Silphium integrifolium var. laeve,Silphium,Silphium integrifolium,var.,laeve,Rosinweed,NA,Y,Y,N,,N,Cultural,Food,NA,Medicinals,Oils,,NA,2,2,Primary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,
-Silphium perfoliatum,Silphium,Silphium perfoliatum,NA,NA,Rosinweed,NA,N,Y,N,,Y,Cultural,Food,NA,Medicinals,Oils,,NA,2,2,Secondary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,
-Silphium perfoliatum var. perfoliatum,Silphium,Silphium perfoliatum,var.,perfoliatum,Rosinweed,NA,Y,Y,N,,Y,Cultural,Food,NA,Medicinals,Oils,,NA,2,2,Secondary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,
+Silphium integrifolium,Silphium,Silphium integrifolium,NA,NA,Rosinweed,NA,N,N,Y,,N,Cultural,,NA,Medicinals,,,NA,NA,NA,Primary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,
+Silphium integrifolium var. laeve,Silphium,Silphium integrifolium,var.,laeve,Rosinweed,NA,Y,N,Y,,N,Cultural,,NA,Medicinals,,,NA,NA,NA,Primary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,
+Silphium perfoliatum,Silphium,Silphium perfoliatum,NA,NA,Rosinweed,NA,N,N,Y,,Y,Cultural,,NA,Medicinals,,,NA,NA,NA,Secondary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,
+Silphium perfoliatum var. perfoliatum,Silphium,Silphium perfoliatum,var.,perfoliatum,Rosinweed,NA,Y,N,Y,,Y,Cultural,,NA,Medicinals,,,NA,NA,NA,Secondary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,
 Sium suave,Sium,Sium suave,NA,NA,Water-parsnip,NA,Y,N,Y,,Y,Food,,NA,Vegetables,,,NA,NA,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
 Sorbus americana,Sorbus,Sorbus americana,NA,NA,Rowan,NA,Y,N,Y,fruit,Y,Food,Forest Resources,NA,Fruits,Forest Resources,,NA,NA,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
 Sorbus decora,Sorbus,Sorbus decora,NA,NA,Rowan,NA,Y,N,Y,fruit,Y,Food,Forest Resources,NA,Fruits,Forest Resources,,NA,NA,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
@@ -730,7 +730,7 @@ Trifolium microdon,Trifolium,Trifolium microdon,NA,NA,Clover,NA,Y,Y,N,,Y,Food,,N
 Trifolium oliganthum,Trifolium,Trifolium oliganthum,NA,NA,Clover,NA,Y,Y,N,,Y,Food,,NA,Forage and Feed,,,NA,2,2,NA,,,,,,,,,,,Davidson 1995,,
 Trifolium variegatum,Trifolium,Trifolium variegatum,NA,NA,Clover,NA,Y,Y,N,,Y,Food,,NA,Forage and Feed,,,NA,2,2,NA,,,,,,,,,,,Davidson 1995,,
 Trifolium willdenovii,Trifolium,Trifolium willdenovii,NA,NA,Clover,NA,Y,Y,N,,Y,Food,,NA,Forage and Feed,,,NA,2,2,NA,,,,,,,,,,,Davidson 1995,,
-Trifolium wormskioldii,Trifolium,Trifolium wormskioldii,NA,NA,Clover,NA,Y,Y,Y,rhizomes,Y,Food,,NA,Forage and Feed,,,NA,1,1,NA,,,,,,,,,,,Davidson 1995,,Kuhnlein and Turner 2020
+Trifolium wormskioldii,Trifolium,Trifolium wormskioldii,NA,NA,Clover,NA,Y,Y,Y,rhizomes,Y,Food,,NA,Forage and Feed,,,NA,2,2,NA,,,,,,,,,,,Davidson 1995,,Kuhnlein and Turner 2020
 Triglochin maritima,Triglochin,Triglochin maritima,NA,NA,Arrowgrass,NA,Y,N,Y,,Y,Food,,NA,Vegetables,,,NA,NA,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
 Tsuga canadensis,Tsuga,Tsuga canadensis,NA,NA,Hemlock,NA,Y,N,Y,"leaves, tea, inner bark",Y,Forest Resources,,NA,Forest Resources,,,NA,NA,NA,NA,,,,,,,,,,,Davidson 1995,,Kuhnlein and Turner 2020
 Tsuga heterophylla,Tsuga,Tsuga heterophylla,NA,NA,Hemlock,NA,Y,N,Y,inner bark,Y,Forest Resources,,NA,Forest Resources,,,NA,NA,NA,NA,,,,,,,,,,,Davidson 1995,,Kuhnlein and Turner 2020

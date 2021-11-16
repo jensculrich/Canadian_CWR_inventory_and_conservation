@@ -111,7 +111,7 @@ spatial_df <- df_geojson(df = df, lon = "decimalLongitude", lat = "decimalLatitu
 points <- geojson_sf(spatial_df)
 
 # Now join with province boundaries
-setwd("~/R/Canadian_CWR_inventory_and_conservation/Geo_Data/")
+setwd("./Geo_Data/")
 provinces <- st_read("canada_provinces.geojson")
 str(provinces)
 
@@ -169,9 +169,14 @@ anti_join_prepped <- anti_join %>%
 GBIF_province_filtered_3 <- rbind(GBIF_province_filtered_2, anti_join_prepped)
 GBIF_province_filtered_4 <- semi_join(GBIF_province_filtered_3, inventory, by="TAXON", all.x = TRUE)
 
+# those taxa with incorrect names that were reverted back to species level
+# may now have multiple rows for unique TAXON x region, use distinct again 
+# to get just one per unique combination
+GBIF_province_filtered_4 <- GBIF_province_filtered_4 %>%
+  distinct(TAXON, PROVINCE, .keep_all = TRUE)
 
 # need to figure out a way to add all infraspecific range information that might be missing at the species level
-# for the species themselves
+# for the species themselves (in case any are missing)
 
 # test to see length (should be 790)
 test <- GBIF_province_filtered_4 %>%
@@ -182,8 +187,7 @@ test2 <- anti_join(inventory, GBIF_province_filtered_4, by="TAXON")
 # write.csv(test2, "species_distributions_taxa_w_issues_2.csv")
 
 # Now join with ecoregion boundaries
-setwd("~/R/Canadian_CWR_inventory_and_conservation/Geo_Data/")
-ecoregions <- st_read("canada_ecoregions_clipped.geojson")
+ecoregions <- st_read("./Geo_Data/canada_ecoregions_clipped.geojson")
 str(ecoregions)
 
 shape_joined_2 <- st_join(points, ecoregions, join = st_nearest_feature, maxdist = 10000)
@@ -237,9 +241,13 @@ anti_join_prepped_ecoregion <- anti_join_ecoregion %>%
 GBIF_ecoregion_filtered_3 <- rbind(GBIF_ecoregion_filtered_2, anti_join_prepped_ecoregion)
 GBIF_ecoregion_filtered_4 <- semi_join(GBIF_ecoregion_filtered_3, inventory, by="TAXON", all.x = TRUE)
 
+# those taxa with incorrect names that were reverted back to species level
+# may now have multiple rows for unique TAXON x region, use distinct again 
+# to get just one per unique combination
+GBIF_ecoregion_filtered_4 <- GBIF_ecoregion_filtered_4 %>%
+  distinct(TAXON, ECO_NAME, .keep_all = TRUE)
 
-setwd("~/R/Canadian_CWR_inventory_and_conservation/GBIF_download_outputs/")
-# write.csv(GBIF_province_filtered_4, "species_distributions_province.csv")
-# write.csv(GBIF_ecoregion_filtered_4, "species_distributions_ecoregion.csv")
+write.csv(GBIF_province_filtered_4, "./GBIF_download_outputs/species_distributions_province.csv")
+write.csv(GBIF_ecoregion_filtered_4, "./GBIF_download_outputs/species_distributions_ecoregion.csv")
 
 
