@@ -1,0 +1,107 @@
+SPECIES,ECO_NAME,Source
+Fraxinus americana,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests,UT NPNA
+Fraxinus pennsylvanica,Okanagan,UT NPNA
+Fraxinus pennsylvanica,North Cascades,
+Fraxinus pennsylvanica,Canadian Rocky Mountains,
+Fagus grandifolia,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests,FNA
+Fagus grandifolia,Pacific Northwest Coast,
+Fagus grandifolia,Boreal Plains,
+Betula occidentalis,Eastern Taiga Shield,FNA
+Betula occidentalis,Arctic Cordillera,
+Betula populifolia,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests,FNA
+Thuja occidentalis,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests,FNA
+Thuja occidentalis,Northern Arctic,
+Thuja occidentalis,Canadian Rocky Mountains,
+Pseudotsuga menziesii,St. Lawrence - Champlain Valley,
+Pseudotsuga menziesii,Northern Appalachian / Acadian,FNA
+Ulmus americana ,Canadian Rocky Mountains,FNA
+Ulmus americana ,Okanagan,
+Ulmus americana ,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests,
+Ulmus rubra,Canadian Rocky Mountains,FNA
+Abies balsamea,Northern Arctic,FNA
+Abies balsamea,Boreal cordillera,
+Abies balsamea,Canadian Rocky Mountains,
+Tsuga canadensis,Canadian Rocky Mountains,FNA
+Larix occidentalis,Northern Tallgrass Prairie,FNA
+Tilia americana,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests,FNA
+Acer macrophyllum ,,VASCAN
+Acer nigrum ,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests,VASCAN
+Acer pennsylvanicum,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests,VASCAN
+Acer saccharinum,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests,VASCAN
+Acer saccharinum,Okanagan,
+Acer saccharinum,Pacific Northwest Coast,
+Acer saccharinum,Canadian Rocky Mountains,
+Acer saccharinum,Fescue-Mixed Grass Prairie,
+Acer saccharinum,Aspen Parkland,
+Acer saccharum ,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests,VASCAN
+Acer saccharum ,Okanagan,
+Acer spicatum ,Montane Cordillera,VASCAN
+Quercus bicolor,Northern Appalachian / Acadian ,FNA
+Quercus palustris,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests,FNA
+Quercus palustris,Northern Appalachian / Acadia,
+Quercus rubra,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests,FNA
+Quercus rubra,Canadian Rocky Mountains,
+Quercus rubra,Okanagan,
+Quercus rubra,North Cascades,
+Celtis occidentalis,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests,FNA
+Pinus albicaulis,Western Taiga Shield,FNA
+PInus contorta,Great Lakes,FNA
+Pinus strobus,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests,FNA
+Populus deltoides,Okanagan,FNA
+Populus grandidentata,Okanagan,FNA
+Taxus brevifolia,Great Lakes,FNA
+Taxus brevifolia,Northern Appalachian / Acadian,
+Panicum virgatum,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests,VASCAN
+Chenopodium leptophyllum,Superior Mixed Forest,FNA
+Leymus cinereus,St. Lawrence - Champlain Valley,FNA
+Malus coronaria,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests,FNA
+Vaccinium myrtillus ,Northern Appalachian / Acadian,FNA
+Vaccinium ovalifolium,Northern Arctic,FNA
+Vaccinium ovalifolium,Arctic Cordillera,
+Vaccinium ovatum,St. Lawrence - Champlain Valley,FNA
+Vaccinium parvifolium,Great Lakes,FNA
+Vaccinium membranaceum,Great Lakes,FNA
+Vaccinium membranaceum,Northern Appalachian / Acadian,
+Prunus emarginata,Great Lakes,FNA
+Ribes oxyacanthoides,,FNA
+Vitis riparia,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests,FNA
+Vitis riparia,Okanagan,
+Viburnum dentatum,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests,VASCAN
+Viburnum lantana,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests,VASCAN
+Viburnum lantana,Okanagan,
+Viburnum lentago,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests,VASCAN
+Rubus occidentalis,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests,FNA
+Rubus pensilvanicus,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests,FNA
+Amelanchier canadensis,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests,VASCAN
+Amelanchier humilis,,VASCAN
+Amelanchier laevis,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests,VASCAN
+Amelanchier sanguinea,Fescue-Mixed Grass Prairie,VASCAN
+Drymocallis glandulosa,,FNA
+Fragaria chiloensis,Great Lakes,FNA
+Poa arida,Mountain Cordillera,FNA
+Poa laxa,Arctic Cordillera,FNA
+Poa nervosa,Western Taiga Shield,FNA
+Poa occidentalis,Boreal Cordillera,FNA
+Poa stenantha,Western Taiga Shield,FNA
+Bromus carinatus,St. Lawrence - Champlain Valley,FNA
+Gaillardia aristata,St. Lawrence - Champlain Valley,FNA
+Gaillardia aristata,Northern Appalachian / Acadian,
+Gaillardia aristata,Great Lakes,
+Oenothera pilosella,Okanagan,FNA
+Erythronium oregonum,Northern Arctic,FNA
+Agastache urticifolia,,VASCAN
+Tradescantia virginiana,Canadian Rocky Mountains,FNA
+Tradescantia virginiana,Boreal Shield,
+Hamamelis virginiana,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests,FNA
+Castanea dentata,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests,FNA
+Castanea dentata,Okanagan,
+Corylus americana,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests,FNA
+Carya cordiformis,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests,VASCAN
+Carya ovata,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests,VASCAN
+Juglans cinerea,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests,FNA
+Juglans nigra,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests,FNA
+Juglans nigra,Okanagan,
+Juglans nigra,Northern Tallgrass Prarie,
+Juglans nigra,Superior Mixed Forest,
+Vicia gigantea,Great Lakes,"VASCAN, UT NPNA"
+Helianthus laetiflorus,,VASCAN

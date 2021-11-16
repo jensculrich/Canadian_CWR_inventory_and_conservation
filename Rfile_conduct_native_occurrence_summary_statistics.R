@@ -1,16 +1,18 @@
 # INTRO (EDIT THIS)
 
 # load required packages
-library(sf) # the base package manipulating shapes
-library(rgeos)
-library(rgdal) # geo data abstraction library
-library(geojsonio) # geo json input and output
-library(spdplyr) # the `dplyr` counterpart for shapes
-library(rmapshaper) # the package that allows geo shape transformation
-library(magrittr) # data wrangling
-library(dplyr)
 library(tidyverse)
 library(ggplot2)
+library(sf) # the base package manipulating shapes
+library(geojsonio) # geo json input and output
+
+#library(rgeos)
+#library(rgdal) # geo data abstraction library
+#library(spdplyr) # the `dplyr` counterpart for shapes
+#library(rmapshaper) # the package that allows geo shape transformation
+#library(magrittr) # data wrangling
+#library(dplyr)
+
 library(tigris)
 
 ######################################################################################
@@ -18,13 +20,13 @@ library(tigris)
 ######################################################################################
 
 # Load required data and shapefiles for plotting occurrence maps and data tables
-cwr_list <- read.csv("./Input_Data_and_Files/master_list_apr_3.csv")
+cwr <- read.csv("./Input_Data_and_Files/inventory.csv")
 
 canada_ecoregions_geojson <- st_read("./Geo_Data/canada_ecoregions_clipped.geojson", quiet = TRUE)
 canada_provinces_geojson <- st_read("./Geo_Data/canada_provinces.geojson", quiet = TRUE)
 
-province_gap_table <- as_tibble(read.csv("./Output_Data_and_Files/province_gap_table_post_manual_range_edits.csv"))
-ecoregion_gap_table <- as_tibble(read.csv("./Output_Data_and_Files/ecoregion_gap_table_post_manual_range_edits.csv"))
+ecoregion_gap_table <- as_tibble(read.csv("./GBIF_download_outputs/species_distributions_ecoregion_trimmed.csv"))
+province_gap_table <- as_tibble(read.csv("./GBIF_download_outputs/species_distributions_province_trimmed.csv"))
 
 # CRS 
 crs_string = "+proj=lcc +lat_1=49 +lat_2=77 +lon_0=-91.52 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs" # 2
@@ -47,17 +49,42 @@ theme_map <- function(base_size=9, base_family="") { # 3
     )
 }
 
-############################################################################
-# Reformat Gap Tables So That Garden Points Can Be Projected alternates
-############################################################################
+#########################################################################
+# Reformat Gap Tables So That Garden Points Can Be Projected alternates #
+#########################################################################
 
-province_gap_table <- province_gap_table %>%
-  dplyr::select(-geometry, -X, -ECO_CODE, -ECO_NAME)
+# read shapefile
+canada_provinces_geojson <- canada_provinces_geojson %>%
+  rename("PROVINCE" = "name")
 
-province_gap_table_sf <- st_as_sf(province_gap_table, 
-                                  coords = c("longitude", "latitude"), 
-                                  crs = 4326, 
-                                  na.fail = FALSE)
+# add geometry to the species distribution table
+province_gap_table_sf <- merge(x = province_gap_table, 
+                               y = canada_provinces_geojson[ , c("PROVINCE", "geometry")], 
+                               by = "PROVINCE", all.x=TRUE)
+str(cwr)
+# join with inventory to add taxon information (category, crop relative, IUCN, etc.)
+province_gap_table_sf <- merge(x = province_gap_table_sf,
+                               y = cwr[ , c("TAXON",
+                                            "PRIMARY_ASSOCIATED_CROP_COMMON_NAME",
+                                            "SECONDARY_ASSOCIATED_CROP_COMMON_NAME",
+                                            "CWR", "WUS", "NATIVE",
+                                            "PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_1",
+                                            "PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_2",
+                                            "PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1",
+                                            "PRIMARY_CROP_OR_WUS_USE_SPECIFIC_2",
+                                            "PRIMARY_CROP_OR_WUS_USE_SPECIFIC_3",
+                                            "SECONDARY_CROP_OR_WUS_USE_1",
+                                            "CATEGORY", "TIER", "GENEPOOL")],
+                               by = c("TAXON"),
+                               all.x=TRUE)
+
+# province_gap_table <- province_gap_table %>%
+#  dplyr::select(-geometry, -X, -ECO_CODE, -ECO_NAME)
+
+# province_gap_table_sf <- st_as_sf(province_gap_table, 
+#                                  coords = c("longitude", "latitude"), 
+#                                  crs = 4326, 
+#                                  na.fail = FALSE)
 
 ecoregion_gap_table <- ecoregion_gap_table %>%
   dplyr::select(-geometry, -X, -province)
@@ -88,8 +115,8 @@ barplot(cwr_list_summary$n, #main = "Native CWR Taxa in Broad Crop Categories",
         names.arg = cwr_list_summary$Group, xlab = "", ylab = "",
         cex.names=1.5, cex.axis=1.5, horiz=T, las=1, xlim = c(0,140))
 # revert level name
-cwr_list_summary <- cwr_list_summary %>%
-  transform(Group=plyr::revalue(Group,c("H/M/O"="Herbs/Medicinals/Ornamentals")))
+# cwr_list_summary <- cwr_list_summary %>%
+#  transform(Group=plyr::revalue(Group,c("H/M/O"="Herbs/Medicinals/Ornamentals")))
 
 
 ##############################
@@ -145,32 +172,32 @@ P
 total_and_endemic_CWRs_province <- province_gap_table_sf %>%
   # count total CWRs (unique sci_name in each province)
   # want the rows where garden is NA (just the range data)
-  filter(is.na(garden)) %>%
+  # filter(is.na(garden)) %>%
   # group by province
-  group_by(province) %>%
+  group_by(PROVINCE) %>%
   # tally the number of unique CWR species
-  distinct(species, .keep_all = TRUE) %>%
+  distinct(TAXON, .keep_all = TRUE) %>%
   add_tally() %>%
   rename(total_CWRs_in_province = "n") %>%
   mutate(total_CWRs_in_province = as.numeric(total_CWRs_in_province)) %>%
   ungroup() %>%
   
   # count endemic CWRs (species that occurs in only 1 province)
-  group_by(species) %>%
+  group_by(TAXON) %>%
   # if group is only one row, endemic = 1, else endemic = 0
   add_tally() %>%
   rename("native_provinces_for_species" = "n") %>%
   mutate(is_endemic = ifelse(
     native_provinces_for_species == 1, 1, 0)) %>%
   ungroup() %>%
-  group_by(province) %>%
+  group_by(PROVINCE) %>%
   mutate(endemic_CWRs_in_province = sum(is_endemic))
 
 # just want number of CWRS in each region
 # for a histogram and to easily see ranked list of top ecoregions
 # by total CWRs:
 total_CWRs_group_by_province <- total_and_endemic_CWRs_province %>% 
-  distinct(province, .keep_all = TRUE ) %>%
+  distinct(PROVINCE, .keep_all = TRUE ) %>%
   arrange(desc(total_CWRs_in_province))
 # and by endemic CWRs:
 total_CWRs_group_by_province <- total_CWRs_group_by_province %>% 
@@ -267,14 +294,14 @@ find_native_cwrs_by_group_province <- function(x) {
   temp <- province_gap_table %>%
     # one unique row per province for each species
     # this removes the duplicate rows when there are more than one accession per species
-    group_by(species) %>%
-    distinct(province, .keep_all=TRUE) %>%
+    group_by(TAXON) %>%
+    distinct(PROVINCE, .keep_all=TRUE) %>%
     ungroup() %>%
     
     filter(Group == x)  %>%
     
     # group by province
-    group_by(province) %>%
+    group_by(PROVINCE) %>%
     # tally the number of unique CWR species
     distinct(species, .keep_all = TRUE) %>%
     add_tally() %>%
@@ -283,14 +310,14 @@ find_native_cwrs_by_group_province <- function(x) {
     ungroup() %>%
     
     # count endemic CWRs (species that occurs in only 1 province)
-    group_by(species) %>%
+    group_by(TAXON) %>%
     # if group is only one row, endemic = 1, else endemic = 0
     add_tally() %>%
     rename("native_province_for_species" = "n") %>%
     mutate(is_endemic = ifelse(
       native_province_for_species == 1, 1, 0)) %>%
     ungroup() %>%
-    group_by(province) %>%
+    group_by(PROVINCE) %>%
     mutate(endemic_CWRs_in_province = sum(is_endemic)) %>%
     
     distinct(province, .keep_all = TRUE ) %>%

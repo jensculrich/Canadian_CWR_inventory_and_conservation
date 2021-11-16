@@ -76,6 +76,11 @@ df9 <- read.csv("part9.csv")
 df10 <- read.csv("problemTaxa.csv")
 df11 <- read.csv("problemTaxa_manual.csv")
 
+# replace NAs with "" in df11
+df11 <- df11 %>%
+  mutate(taxonRank = replace_na(taxonRank, "")) %>%
+  mutate(infraspecificEpithet = replace_na(infraspecificEpithet, ""))
+
 df <- rbind(df1, df2, df3, df4, df5, df6, df7, df8, df9, df10, df11)
 df <- df %>%
   select(taxonKey, genus, species, infraspecificEpithet, taxonRank, scientificName, 
@@ -85,10 +90,21 @@ df <- df %>%
 # issues with problem species that need to be fixed to match the inventory
 df <- within(df, infraspecificEpithet[species == 'Amelanchier pumila'] <- '')
 df <- within(df, taxonRank[species == 'Amelanchier pumila'] <- 'species')
+df <- within(df, infraspecificEpithet[species == 'Leymus villosissimus'] <- '')
+df <- within(df, taxonRank[species == 'Leymus villosissimus'] <- 'species')
+df[nrow(df) + 1,] = c("NA","Zizania", "Zizania aquatica", "interior", "var.",
+                            "Zizania aquatica var. interior", "Zizania aquatica var. interior", 
+                            "Manitoba", "49.6", "-95.3")
+df$decimalLatitude <- as.numeric(df$decimalLatitude)
+df$decimalLongitude <- as.numeric(df$decimalLongitude)
 
 # R is having difficulty matching the odd hybrid x symbols
 df <- df %>% 
   mutate(species = str_replace(species, "×", ""))
+# R is having difficulty matching the odd hybrid x symbols
+inventory <- inventory %>% 
+  mutate(TAXON = str_replace(TAXON, "×", "")) %>% 
+  mutate(SPECIES = str_replace(SPECIES, "×", ""))
 
 # Convert to geoJSON for spatial projection
 spatial_df <- df_geojson(df = df, lon = "decimalLongitude", lat = "decimalLatitude")
@@ -133,32 +149,44 @@ GBIF_province <- output_df_provinces %>%
 
 
 GBIF_province$TAXON <- trimws(GBIF_province$TAXON, which = c("right"))
+GBIF_province_2 <- GBIF_province[!is.na(GBIF_province$PROVINCE),] 
 
-# R is having difficulty matching the odd hybrid x symbols
-inventory <- inventory %>% 
-  mutate(TAXON = str_replace(TAXON, "×", "")) %>% 
-  mutate(SPECIES = str_replace(SPECIES, "×", ""))
-GBIF_province_filtered <- semi_join(GBIF_province, inventory, by="TAXON")
+# join with inventory to remove taxa with incorrect names 
+# This should be the one we want
+GBIF_province_filtered_2 <- semi_join(GBIF_province_2, inventory, by="TAXON", all.x = TRUE)
+
+# is it possible to match and update the taxon names that don't match those in the inventory?
+anti_join <- anti_join(GBIF_province_2, inventory, by="TAXON", all.x = TRUE)
+# these are names where the GBIF name at the time of submission was incorrect, mostly
+# where the subsp. or variety is synonymous. Just coerce them back to plain speces,
+# then rebind with the GBIF_province_filtered_2
+# then filter eagain to remove any more potential mismatches
+anti_join_prepped <- anti_join %>%
+  mutate(TAXON = SPECIES) %>%
+  mutate(RANK = "") %>%
+  mutate(INFRASPECIFIC = "")
+
+GBIF_province_filtered_3 <- rbind(GBIF_province_filtered_2, anti_join_prepped)
+GBIF_province_filtered_4 <- semi_join(GBIF_province_filtered_3, inventory, by="TAXON", all.x = TRUE)
+
 
 # need to figure out a way to add all infraspecific range information that might be missing at the species level
 # for the species themselves
 
-# test to see length (should be 791)
-test <- GBIF_province_filtered %>%
+# test to see length (should be 790)
+test <- GBIF_province_filtered_4 %>%
   distinct(TAXON)
 # so which taxa are missing?
-test2 <- anti_join(inventory, GBIF_province_filtered, by="TAXON")
-# Rubus chloocladus and Leymus villosissimus are not matching for some reason?
-write.csv(test2, "species_distributions_taxa_w_issues_2.csv")
-
-
+test2 <- anti_join(inventory, GBIF_province_filtered_4, by="TAXON")
+# no occurrence points on GBIF for these ones
+# write.csv(test2, "species_distributions_taxa_w_issues_2.csv")
 
 # Now join with ecoregion boundaries
 setwd("~/R/Canadian_CWR_inventory_and_conservation/Geo_Data/")
 ecoregions <- st_read("canada_ecoregions_clipped.geojson")
 str(ecoregions)
 
-shape_joined_2 <- st_join(ecoregions, sf)
+shape_joined_2 <- st_join(points, ecoregions, join = st_nearest_feature, maxdist = 10000)
 output_sf_ecoregion <- shape_joined_2 %>%
   select(taxonKey, genus, species, infraspecificEpithet, taxonRank, scientificName, 
          verbatimScientificName, ECO_NAME
@@ -171,10 +199,12 @@ output_df_ecoregion <- as.data.frame(output_sf_ecoregion) %>%
 str(output_df_ecoregion)
 
 GBIF_ecoregion <- output_df_ecoregion %>%
+  mutate(infraspecificEpithet = replace_na(infraspecificEpithet, "")) %>%
   mutate(taxonRank = str_replace(taxonRank, "VARIETY", "var.")) %>%
   mutate(taxonRank = str_replace(taxonRank, "SUBSPECIES", "subsp.")) %>%
   mutate(taxonRank = str_replace(taxonRank, "FORM", "var.")) %>%
   mutate(taxonRank = str_replace(taxonRank, "SPECIES", "")) %>%
+  mutate(taxonRank = str_replace(taxonRank, "species", "")) %>%
   mutate(TAXON = paste(species, taxonRank, infraspecificEpithet, sep=' ')) %>%
   distinct(TAXON, ECO_NAME, .keep_all = TRUE) %>%
   select(TAXON, genus, species, taxonRank, infraspecificEpithet, ECO_NAME) %>%
@@ -186,12 +216,30 @@ GBIF_ecoregion <- output_df_ecoregion %>%
 
 
 GBIF_ecoregion$TAXON <- trimws(GBIF_ecoregion$TAXON, which = c("right"))
-GBIF_ecoregion_filtered <- semi_join(GBIF_ecoregion, inventory, by="TAXON")
+GBIF_ecoregion_2 <- GBIF_ecoregion[!is.na(GBIF_ecoregion$ECO_NAME),] 
+
+
+# join with inventory to remove taxa with incorrect names 
+# This should be the one we want
+GBIF_ecoregion_filtered_2 <- semi_join(GBIF_ecoregion_2, inventory, by="TAXON", all.x = TRUE)
+
+# is it possible to match and update the taxon names that don't match those in the inventory?
+anti_join_ecoregion <- anti_join(GBIF_ecoregion_2, inventory, by="TAXON", all.x = TRUE)
+# these are names where the GBIF name at the time of submission was incorrect, mostly
+# where the subsp. or variety is synonymous. Just coerce them back to plain speces,
+# then rebind with the GBIF_ecoregion_filtered_2
+# then filter eagain to remove any more potential mismatches
+anti_join_prepped_ecoregion <- anti_join_ecoregion %>%
+  mutate(TAXON = SPECIES) %>%
+  mutate(RANK = "") %>%
+  mutate(INFRASPECIFIC = "")
+
+GBIF_ecoregion_filtered_3 <- rbind(GBIF_ecoregion_filtered_2, anti_join_prepped_ecoregion)
+GBIF_ecoregion_filtered_4 <- semi_join(GBIF_ecoregion_filtered_3, inventory, by="TAXON", all.x = TRUE)
+
 
 setwd("~/R/Canadian_CWR_inventory_and_conservation/GBIF_download_outputs/")
-write.csv(GBIF_province_filtered, "species_distributions_province.csv")
-write.csv(GBIF_ecoregion_filtered, "species_distributions_ecoregion.csv")
+# write.csv(GBIF_province_filtered_4, "species_distributions_province.csv")
+# write.csv(GBIF_ecoregion_filtered_4, "species_distributions_ecoregion.csv")
 
 
-# make separate files that take all missing range areas that were found
-# from the subsp and varietals, but drop the subsp. info

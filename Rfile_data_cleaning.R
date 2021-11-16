@@ -4,11 +4,13 @@ library(tidyverse)
 # DATA TIDYING FILE FOR MULTIPLE DATA MANAGEMENT TASKS #
 ########################################################
 # setwd() <- Navigate to a subfolder if needed
-# CONTENTS
-# COMBINE TAXON LISTS
-# PARSE TAXON NAMES
-# CONVERT TO DECIMAL DEGREES
-# FILTER GARDEN ACCESSIONS
+# CONTENTS:
+# 1 - COMBINE TAXON LISTS
+# 2 - PARSE TAXON NAMES
+# 3 - CONVERT TO DECIMAL DEGREES
+# 4 - FORMAT SHAPEFILES
+# 5 - TRIM OUT OF BOUNDS SPECIES DISTRIBUTIONS
+# 6 - FILTER GARDEN ACCESSIONS
 
 ##################################################
 # COMBINE TAXON LISTS FOR THE INVENTORY BACKBONE #
@@ -70,6 +72,52 @@ df <- df %>%
   unite("SPECIES", "SPECIES1", "SPECIES2", sep = " ")
 
 # write.csv(df, "problemTaxa_manual.csv")
+
+####################################################################################
+# Load and format shapefile data
+####################################################################################
+
+# CRS
+crs_string = "+proj=lcc +lat_1=49 +lat_2=77 +lon_0=-91.52 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs" # 2
+
+# add geojson map with province boundaries 
+canada_cd <- st_read("./Geo_Data/canada_provinces.geojson", quiet = TRUE) # 1
+canada_cd <- canada_cd %>%
+  rename("province" = "name")
+
+# add geojson map with all of canada (no inner boundaries)
+# we will use this as a boundary for trimming all the ecoregion maps
+canada <- st_read("./Geo_Data/canada.geojson", quiet = TRUE) # 1
+
+# add geojson map with ecoregion boundaries
+world_eco <- st_read("./Geo_Data/world_ecoregions.geojson", quiet = TRUE)
+# Trim geojson world map to canada ecoregions from native_occurrence_df
+canada_eco <- semi_join(world_eco, native_occurrence_df_ecoregion_formatted, by=("ECO_NAME")) 
+
+# clip ecoregions to canada national border
+canada_eco_subset <- st_intersection(canada_eco, canada)
+#geojsonio::geojson_write(canada_eco_subset, file = "canada_ecoregions_clipped.geojson")
+
+
+############################################
+# TRIM OUT OF BOUNDS SPECIES DISTRIBUTIONS #
+############################################
+# Feed in the ecoregion species distributions
+# read in the out of bounds provinces
+# if any species and ecoregion combo from out of bounds is found in 
+# ecoregion distribution, then remove that row
+out_of_bounds <- read.csv("out_of_bound_ranges_ecoregions.csv")
+sp_distr_eco <- read.csv("species_distributions_ecoregion.csv")
+
+sp_distr_eco <- anti_join(sp_distr_eco, out_of_bounds, by = c('SPECIES', 'ECO_NAME'))
+write.csv(sp_distr_eco, "species_distributions_ecoregion_trimmed.csv")
+
+# repeat by province
+out_of_bounds <- read.csv("out_of_bound_ranges_provincial.csv")
+sp_distr_province <- read.csv("species_distributions_province.csv")
+
+sp_distr_province <- anti_join(sp_distr_province, out_of_bounds, by = c('SPECIES', 'PROVINCE'))
+write.csv(sp_distr_province, "species_distributions_province_trimmed.csv")
 
 ############################
 # FILTER GARDEN ACCESSIONS #

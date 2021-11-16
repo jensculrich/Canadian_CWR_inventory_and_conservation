@@ -1,0 +1,134 @@
+SPECIES,PROVINCE,Source
+Fraxinus americana,British Columbia,UT NPNA
+Fraxinus pennsylvanica,British Columbia,UT NPNA
+Fraxinus pennsylvanica,Alberta,
+Fagus grandifolia,British Columbia ,FNA
+Fagus grandifolia,Saskatchewan,
+Betula occidentalis,Quebec,FNA
+Betula populifolia,British Columbia,FNA
+Thuja occidentalis,British Columbia,FNA
+Thuja occidentalis,Alberta,
+Thuja occidentalis,Saskatchewan,
+Pseudotsuga menziesii,Ontario,FNA
+Pseudotsuga menziesii,Quebec,
+Pseudotsuga menziesii,Nova Scotia,
+Ulmus americana ,British Columbia,FNA
+Ulmus americana ,Alberta,
+Ulmus rubra,British Columbia,FNA
+Ulmus rubra,Manitoba,
+Abies balsamea,British Columbia,FNA
+Abies lasiocarpa,Northwest Territories ,FNA
+Tsuga canadensis,British Columbia,FNA
+Larix occidentalis,Alberta,FNA
+Larix occidentalis,Manitoba,
+Tilia americana,British Columbia,FNA
+Tilia americana,Alberta,
+Acer glabrum,Newfoundland,VASCAN
+Acer macrophyllum ,Newfoundland,VASCAN
+Acer nigrum ,British Columbia,VASCAN
+Acer pennsylvanicum,British Columbia,VASCAN
+Acer saccharinum,British Coumbia,VASCAN
+Acer saccharinum,Alberta,
+Acer saccharinum,Manitoba,
+Acer saccharum ,British Columbia,VASCAN
+Acer spicatum ,British Columbia,VASCAN
+Quercus bicolor,British Columbia,FNA
+Quercus bicolor,Nova Scotia,
+Quercus palustris,British Columbia,FNA
+Quercus palustris,Quebec,
+Quercus palustris,Nova Scotia,
+Quercus rubra,British Columbia,FNA
+Celtis occidentalis,New Brunswick,FNA
+Celtis occidentalis,Nova Scotia,
+Celtis occidentalis,British Columbia,
+Pinus albicaulis,Nunavut,FNA
+Pinus banksiana,British Columbia,FNA
+PInus contorta,Ontario,FNA
+Pinus resinosa ,Saskatchewan,FNA
+Pinus rigida,New Brunswick,FNA
+Pinus rigida,Nova Scotia,
+Pinus strobus,British Columbia,FNA
+Populus deltoides,British Columbia,FNA
+Populus grandidentata,British Columbia,FNA
+Taxus brevifolia,Ontario,FNA
+Taxus brevifolia,New Brunswick,
+Panicum virgatum,British Columbia,VASCAN
+Chenopodium leptophyllum,Manitoba,FNA
+Chenopodium leptophyllum,Ontario,
+Elymus albicans,Yukon,FNA
+Elymus elymoides,Ontario,FNA
+Elymus macrourus ,British Columbia,FNA
+Elymus macrourus ,Ontario,
+Leymus cinereus,Quebec,FNA
+Elymus glaucus,Newfoundland ,FNA
+Malus coronaria,British Columbia,FNA
+Vaccinium myrtillus ,Quebec,FNA
+Vaccinium myrtillus ,Nova Scotia,
+Vaccinium ovalifolium,Nunnavut,FNA
+Vaccinium ovatum,Quebec,FNA
+Vaccinium parvifolium,Ontario,FNA
+Vaccinium membranaceum,Quebec,FNA
+Prunus emarginata,Ontario,FNA
+Prunus pensylvanica,Yukon,FNA
+Ribes inerme,Saskatchewan,FNA
+Ribes oxyacanthoides,Nova Scotia,FNA
+Vitis riparia,British Columbia,FNA
+Viburnum dentatum,British Columbia,VASCAN
+Viburnum lantana,British Columbia,VASCAN
+Viburnum lantana,Alberta,
+Viburnum lantana,Newfoundland,
+Viburnum lentago,British Columbia,VASCAN
+Rubus nutkanus,Quebec,FNA
+Rubus occidentalis,British Columbia,FNA
+Rubus pensilvanicus,British Columbia,FNA
+Amelanchier canadensis,British Columbia,VASCAN
+Amelanchier humilis,Alberta,VASCAN
+Amelanchier laevis,British Columbia,VASCAN
+Amelanchier sanguinea,Alberta,VASCAN
+Amelanchier sanguinea,Manitoba,
+Amelanchier sanguinea,Nova Scotia,
+Drymocallis glandulosa,Ontario,FNA
+Fragaria chiloensis,Ontario,FNA
+Poa arida,British Columbia,FNA
+Poa cusickii,Nunavut,FNA
+Poa laxa,Newfoundland,FNA
+Poa leptocoma,Nunavut,FNA
+Poa nemoralis,Nunavut,FNA
+Poa nervosa,Nunavut,FNA
+Poa nervosa,Manitoba,
+Poa occidentalis,Yukon,FNA
+Poa palustris ,Nunavut,FNA
+Poa stenantha,Yukon,FNA
+Poa stenantha,Northwest Territories,
+Poa stenantha,Nunavut,
+Poa trivialis,Northwest Territories,FNA
+Bromus carinatus,Quebec,FNA
+Gaillardia aristata,Ontario,FNA
+Gaillardia aristata,Quebec,
+Gaillardia aristata,Newfoundland,
+Oenothera pilosella,British Columbia,FNA
+Oenothera pilosella,New Brunswick,
+Oenothera pilosella,Nova Scotia,
+Erythronium oregonum,Northwest Territories,FNA
+Agastache urticifolia,Saskatchewan,VASCAN
+Tradescantia virginiana,British Columbia,FNA
+Tradescantia virginiana,Quebec,
+Hamamelis virginiana,British Columbia,FNA
+Castanea dentata,British Columbia,FNA
+Castanea dentata,Nova Scotia,
+Corylus americana,British Columbia,FNA
+Carya cordiformis,British Columbia,VASCAN
+Carya cordiformis,Nova Scotia,
+Carya laciniosa,Quebec,VASCAN
+Carya ovata,British Columbia,VASCAN
+Carya ovata,Nova Scotia,
+Juglans cinerea,British Columbia,FNA
+Juglans cinerea,Nova Scotia,
+Juglans cinerea,Prince Edward Island,
+Juglans nigra,British Columbia,FNA
+Juglans nigra,Manitoba,
+Juglans nigra,New Brunswick,
+Juglans nigra,Quebec,
+Vicia gigantea,Ontario,"VASCAN, UT NPNA"
+Helianthus laetiflorus,Saskatchewan ,VASCAN
+Helianthus laetiflorus,Manitoba,

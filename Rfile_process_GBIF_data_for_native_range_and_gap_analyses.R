@@ -12,6 +12,7 @@ library(jsonlite)
 ###################################################################
 # Section 1 Load and format GBIF native range data
 ###################################################################
+# Can likely remove all of this, just keep for now to make sure everything is ok
 
 # Load CWR master list. Length tells us how many taxa in our inventory
 cwr_list <- read.csv("./Input_Data_and_Files/master_list_apr_3.csv")
@@ -27,7 +28,7 @@ number_of_CWRs_in_our_checklist <- nrow(cwr_list)
 #df <- read.csv("./Input_Data_and_Files/GBIF_long.csv")
 
 # this file is too big to upload to github
-# IMPORTANT!!! You will need to store this file on a local directory and read
+# IMPORTANT! You will need to store this file on a local directory and read
 # it from the local directory here. Make sure to edit the directory in fromJSON()
 # to match your local directory
 df <- fromJSON("long_GBIF_2.json") %>% as.data.frame 
@@ -98,32 +99,6 @@ sf_garden_accessions <- garden_accessions %>%
   # na.fail = FALSE to keep all of the accessions (about 80% don't have lat long,
   # but many of these have province at least)
   st_as_sf(coords = c("longitude", "latitude"), crs = 4326, na.fail = FALSE)
-
-####################################################################################
-# Section 3 - Load and format shapefile data
-####################################################################################
-
-# CRS
-crs_string = "+proj=lcc +lat_1=49 +lat_2=77 +lon_0=-91.52 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs" # 2
-
-# add geojson map with province boundaries 
-canada_cd <- st_read("./Geo_Data/canada_provinces.geojson", quiet = TRUE) # 1
-canada_cd <- canada_cd %>%
-  rename("province" = "name")
-
-# add geojson map with all of canada (no inner boundaries)
-# we will use this as a boundary for trimming all the ecoregion maps
-canada <- st_read("./Geo_Data/canada.geojson", quiet = TRUE) # 1
-
-# add geojson map with ecoregion boundaries
-world_eco <- st_read("./Geo_Data/world_ecoregions.geojson", quiet = TRUE)
-# Trim geojson world map to canada ecoregions from native_occurrence_df
-canada_eco <- semi_join(world_eco, native_occurrence_df_ecoregion_formatted, by=("ECO_NAME")) 
-
-# clip ecoregions to canada national border
-canada_eco_subset <- st_intersection(canada_eco, canada)
-#geojsonio::geojson_write(canada_eco_subset, file = "canada_ecoregions_clipped.geojson")
-
 
 ######################################################################################
 # Section 4 - Project Garden Accessions, Append Geo Data, Format for outputs         #
