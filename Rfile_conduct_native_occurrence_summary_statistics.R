@@ -120,10 +120,6 @@ par(mar=c(4,15,4,4))
 barplot(CWR_inventory_summary$n, #main = "Native CWR Taxa in Broad Crop Categories",
         names.arg = CWR_inventory_summary$PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, xlab = "", ylab = "",
         cex.names=1.5, cex.axis=1.5, horiz=T, las=1, xlim = c(0,140))
-# revert level name
-# cwr_list_summary <- cwr_list_summary %>%
-#  transform(Group=plyr::revalue(Group,c("H/M/O"="Herbs/Medicinals/Ornamentals")))
-
 
 ##############################
 # regional richness and endemics

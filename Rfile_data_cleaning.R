@@ -10,7 +10,8 @@ library(tidyverse)
 # 3 - CONVERT TO DECIMAL DEGREES
 # 4 - FORMAT SHAPEFILES
 # 5 - TRIM OUT OF BOUNDS SPECIES DISTRIBUTIONS
-# 6 - FILTER GARDEN ACCESSIONS
+# 6 - TIDY SOME GARDEN DATA
+# 7 - COMBINE GARDEN DATA
 
 ##################################################
 # COMBINE TAXON LISTS FOR THE INVENTORY BACKBONE #
@@ -118,43 +119,6 @@ sp_distr_province <- read.csv("./GBIF_download_outputs/species_distributions_pro
 
 sp_distr_province <- anti_join(sp_distr_province, out_of_bounds, by = c('SPECIES', 'PROVINCE'))
 write.csv(sp_distr_province, "./GBIF_download_outputs/species_distributions_province_trimmed.csv")
-
-############################
-# FILTER GARDEN ACCESSIONS #
-############################
-##GOAL: Filter Garden/repository accessions for CWR and WUS taxa
-##END-RESULT: A list of all CWR accessions from Garden/repository
-library(stringr)
-
-# setwd()
-master_list <- read.csv("inventory.csv")
-
-#read data for whichever garden you want to compare
-rbg<- read.csv("UBC_bg.csv")
-
-#Most gardens have variant info in their species name so we need to seperate that out in order to compare with our Master List
-
-#rbg_replace <- gsub("\\[", "(", rbg$NAME)  #messy work-around: 
-#replace '[' with '(' because str_split_fixed function can't deal with '['
-#rebinded <- cbind(rbg_replace, rbg) #rebind them together so it's recursive
-#is.recursive(rebinded) #check to see if the data is recursive, str_split_fixed won't work with atomic only recursive
-
-
-#this line will likely have to be slightly modified for each garden after looking at it a bit..
-split_var <- str_split_fixed(rbg$TaxonName, " var. | cv.| subsp.|[']|[(]|sp.", 2)  #seperate names into 2 columns
-# based off of different ways 'variant' 
-#categories were written in the in the database
-
-total<-cbind(rbg, split_var) #put split columns back into original RBG database with proper headings
-colnames(total)[43] <- "species" 
-colnames(total)[44] <- "variant"
-
-total$species <- trimws(total$species, which = c("right"))  #remove trailing white space on species names
-
-CWR_of_RBG<-merge(master_list,total, by.x = "sci_name", by.y = "species") #Finally, cross-reference RBG list with Master list
-#getting a list of all CWR plants in RBG
-
-# write.csv(CWR_of_RBG, "CWR_of_UBC.csv")  
 
 #####################################
 # TIDY PGRC and USDA ACCESSION DATA #
