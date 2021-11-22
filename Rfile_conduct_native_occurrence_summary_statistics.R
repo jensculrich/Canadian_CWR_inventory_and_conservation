@@ -23,38 +23,17 @@ inventory <- read.csv("./Input_Data_and_Files/inventory.csv")
 
 canada_ecoregions_geojson <- st_read("./Geo_Data/canada_ecoregions_clipped.geojson", quiet = TRUE)
 canada_provinces_geojson <- st_read("./Geo_Data/canada_provinces.geojson", quiet = TRUE)
+# rename PROVINCE in shapefile
+canada_provinces_geojson <- canada_provinces_geojson %>%
+  rename("PROVINCE" = "name")
 
 sp_distr_ecoregion <- as_tibble(read.csv("./GBIF_download_outputs/species_distributions_ecoregion_trimmed.csv"))
 sp_distr_province <- as_tibble(read.csv("./GBIF_download_outputs/species_distributions_province_trimmed.csv"))
 
-# CRS 
-crs_string = "+proj=lcc +lat_1=49 +lat_2=77 +lon_0=-91.52 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs" # 2
 
-# Define the maps' theme -- remove axes, ticks, borders, legends, etc.
-theme_map <- function(base_size=9, base_family="") { # 3
-  require(grid)
-  theme_bw(base_size=base_size, base_family=base_family) %+replace%
-    theme(axis.line=element_blank(),
-          axis.text=element_blank(),
-          axis.ticks=element_blank(),
-          axis.title=element_blank(),
-          panel.background=element_blank(),
-          panel.border=element_blank(),
-          panel.grid=element_blank(),
-          panel.spacing=unit(0, "lines"),
-          plot.background=element_blank(),
-          legend.justification = c(0,0),
-          legend.position = c(0,0)
-    )
-}
-
-#########################################################################
-# Reformat Gap Tables So That Garden Points Can Be Projected alternates #
-#########################################################################
-
-# rename PROVINCE in shapefile
-canada_provinces_geojson <- canada_provinces_geojson %>%
-  rename("PROVINCE" = "name")
+######################################################################
+# Reformat (add taxon info) and Project Species Distribution Tables  #
+######################################################################
 
 # add geometry to the species distribution table
 sp_distr_province_sf <- merge(x = sp_distr_province, 
@@ -355,7 +334,8 @@ WUS_sf_provinces <- st_as_sf(total_WUS_group_by_province)
                            projection = crs_string) +
     tm_polygons(col = "total_WUS_in_province",
                 style = "jenks",
-                title = legend_title_WUS) + 
+                title = legend_title_WUS) +
+    tm_style("col_blind") + 
     tm_layout(frame = FALSE,
               legend.position = c("right", "top"))
 )
@@ -366,10 +346,137 @@ WUS_sf_ecoregions <- st_as_sf(total_WUS_group_by_ecoregion)
                             projection = crs_string) +
     tm_polygons(col = "total_WUS_in_ecoregion",
                 style = "jenks",
-                title = legend_title_WUS) + 
+                title = legend_title_WUS) +
+    tm_style("col_blind") + 
     tm_layout(frame = FALSE,
               legend.position = c("right", "top"))
 )
+
+
+###############################
+# GAP ANALYSIS ################
+###############################
+
+#########################################################################################
+# Load and format garden collection data                                
+#########################################################################################
+
+
+##########
+# compile garden data and append ecoregion or province
+# when lat/long was given
+
+# load data from garden collections (already filtered to only CWRs)
+# update and add new gardens as we receive additional datasets
+# cwr_ubc <- read.csv("./Garden_Data/CWR_of_UBC.csv", na.strings=c("","NA"))
+# cwr_rbg <- read.csv("./Garden_Data/CWR_of_RBG.csv", na.strings=c("","NA"))
+# cwr_montreal <- read.csv("./Garden_Data/CWR_of_MontrealBG.csv", na.strings=c("","NA"))
+cwr_guelph <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_guelph.csv", na.strings=c("","NA"))
+# cwr_mountp <- read.csv("./Garden_Data/CWR_of_MountPleasantGroup.csv", na.strings=c("","NA"))
+# cwr_vandusen <- read.csv("./Garden_Data/CWR_of_VanDusenBG.csv", na.strings=c("","NA"))
+# cwr_pgrc <- read.csv("./Garden_Data/CWR_Amelanchier_PGRC.csv") # removing these subsetted data sets for now
+# cwr_usask <- read.csv("Amelanchier_UofSask.csv") # removing these subsetted data sets for now
+# cwr_readerrock <- read.csv("./Garden_Data/CWR_of_ReaderRock.csv", na.strings=c("","NA"))
+
+# join all garden data into one long table
+# update and add new gardens as we receive additional datasets
+garden_accessions <- cwr_guelph
+# all tables need to have the same columns!  
+#rbind(cwr_ubc, cwr_rbg, cwr_montreal, cwr_guelph, cwr_mountp, cwr_vandusen,
+   #                        cwr_readerrock, cwr_pgrc)
+garden_accessions <- garden_accessions %>% # format columns
+  mutate(latitude = as.numeric(LATITUDE), 
+         longitude = as.numeric(LONGITUDE)) # %>%
+# for now, we want to filter our data for coverage of ONLY CANADIAN ecoregions/admin districts
+# delete the follwoing line of code if the focus expands to North America or world
+# filter(country == "Canada")
+
+# Transform garden data into a projected shape file
+sf_garden_accessions <- garden_accessions %>%
+  # na.fail = FALSE to keep all of the accessions (about 80% don't have lat long,
+  # but many of these have province at least)
+  st_as_sf(coords = c("longitude", "latitude"), crs = 4326, na.fail = FALSE)
+
+###########################################################
+# Join with species distributions to conduct gap analyses #
+###########################################################
+
+# Append Province to accession using lat and longitude
+# spatial join to add accession province
+points_polygon <- st_join(sf_garden_accessions, canada_provinces_geojson, left = TRUE)
+# spatial join to add accession ecoregion
+points_polygon_2 <- st_join(points_polygon, canada_ecoregions_geojson, left = TRUE)
+
+# break out new latitude and longitude columns and reformat
+all_garden_accessions_shapefile <- points_polygon_2 %>%
+  # break coordinates into lat/long
+  mutate(longitude=gsub("\\,.*","", geometry)) %>%
+  mutate(latitude=gsub(".*,","",geometry)) %>%
+  # format to remove "c(" and  ")"
+  mutate(longitude = as.numeric(str_sub(longitude, 3)))  %>% 
+  mutate(latitude = as.numeric(str_remove(latitude, "[)]"))) %>% 
+  
+  # select columns that match garden accessions
+  dplyr::select(TAXON, GENUS, SPECIES, RANK, INFRASPECIFIC, 
+                #PRIMARY_ASSOCIATED_CROP_COMMON_NAME, 
+                #SECONDARY_ASSOCIATED_CROP_COMMON_NAME,
+                #PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_1,
+                #PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_2,
+                #SECONDARY_ASSOCIATED_CROP_TYPE_GENERAL,
+                #PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1,
+                #PRIMARY_CROP_OR_WUS_USE_SPECIFIC_2,
+                #PRIMARY_CROP_OR_WUS_USE_SPECIFIC_3,
+                #FINEST_TAXON_RESOLUTION, CWR, WUS, CATEGORY, TIER, 
+                COUNTRY, PROVINCE.x, PROVINCE.y, ECO_NAME,
+                latitude, longitude,
+                GARDEN_CODE, INSTITUTION) %>%
+                # IUCNRedList/conservation_status) %>%
+  #rename(new = province) %>% # add a dummy name for province 
+  # take province from cd_canada unless was already provided by garden (just want one column)
+  mutate(province = ifelse(is.na(PROVINCE.x), PROVINCE.y, PROVINCE.x)) %>%
+  dplyr::select(-PROVINCE.y, - PROVINCE.x) 
+
+
+# gardens often give province but no lat/long
+accessions_w_province_but_no_geo_data <- all_garden_accessions_shapefile %>%
+  filter(!is.na(province)) %>%
+  filter(is.na(latitude))
+# the province layers don't always catch coastal/island collections bounded by ecoregion
+# manually edit these accessions afterwards?
+accessions_w_ecoregion_but_no_province <- all_garden_accessions_shapefile %>%
+  filter(!is.na(ECO_NAME)) %>%
+  filter(is.na(province))
+accessions_lat_long <- all_garden_accessions_shapefile %>%
+  filter(!is.na(latitude))
+
+# for now, want to get rid of collections from outside Canada
+all_garden_accessions_shapefile <- all_garden_accessions_shapefile %>%
+  filter(COUNTRY == "Canada" | is.na(COUNTRY))
+
+# now join the garden data with the sp distributions by province
+# to expand each row where a 
+province_gap_table <- sp_distr_province[ , c("TAXON", "PROVINCE")] %>%
+  rename("province" = "PROVINCE") %>%
+  merge(x = ., y = all_garden_accessions_shapefile,
+        by = c("TAXON", "province"),
+        all = TRUE) %>%
+  select(-GENUS, -SPECIES, -RANK, -INFRASPECIFIC, 
+         -ECO_NAME, -COUNTRY) %>%
+  full_join(inventory)
+
+ecoregion_gap_table <- sp_distr_ecoregion[ , c("TAXON", "ECO_NAME")] %>%
+  merge(x = ., y = all_garden_accessions_shapefile,
+        by = c("TAXON", "ECO_NAME"),
+        all = TRUE) %>%
+  select(-GENUS, -SPECIES, -RANK, -INFRASPECIFIC, 
+         -province, -COUNTRY) %>%
+  full_join(inventory)
+
+
+
+##################################################################
+##################
+##################################################################
 
 
 
