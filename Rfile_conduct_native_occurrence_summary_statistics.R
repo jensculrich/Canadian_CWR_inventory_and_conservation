@@ -52,7 +52,7 @@ theme_map <- function(base_size=9, base_family="") { # 3
 # Reformat Gap Tables So That Garden Points Can Be Projected alternates #
 #########################################################################
 
-# read shapefile
+# rename PROVINCE in shapefile
 canada_provinces_geojson <- canada_provinces_geojson %>%
   rename("PROVINCE" = "name")
 
@@ -77,24 +77,27 @@ sp_distr_province_sf <- merge(x = sp_distr_province_sf,
                                by = c("TAXON"),
                                all.x=TRUE)
 
+# Now ecoregion species distributions
+# add geometry to the species distribution table
+sp_distr_ecoregion_sf <- merge(x = sp_distr_ecoregion, 
+                              y = canada_ecoregions_geojson[ , c("ECO_NAME", "geometry")], 
+                              by = "ECO_NAME", all.x=TRUE)
 
-
-# This is for the garden data >
-# province_gap_table <- province_gap_table %>%
-#  dplyr::select(-geometry, -X, -ECO_CODE, -ECO_NAME)
-
-# province_gap_table_sf <- st_as_sf(province_gap_table, 
-#                                  coords = c("longitude", "latitude"), 
-#                                  crs = 4326, 
-#                                  na.fail = FALSE)
-
-ecoregion_gap_table <- ecoregion_gap_table %>%
-  dplyr::select(-geometry, -X, -province)
-
-ecoregion_gap_table_sf <- st_as_sf(ecoregion_gap_table, 
-                                   coords = c("longitude", "latitude"), 
-                                   crs = 4326, 
-                                   na.fail = FALSE)
+# join with inventory to add taxon information (category, crop relative, IUCN, etc.)
+sp_distr_ecoregion_sf <- merge(x = sp_distr_ecoregion_sf,
+                              y = inventory[ , c("TAXON",
+                                                 "PRIMARY_ASSOCIATED_CROP_COMMON_NAME",
+                                                 "SECONDARY_ASSOCIATED_CROP_COMMON_NAME",
+                                                 "CWR", "WUS", "NATIVE",
+                                                 "PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_1",
+                                                 "PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_2",
+                                                 "PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1",
+                                                 "PRIMARY_CROP_OR_WUS_USE_SPECIFIC_2",
+                                                 "PRIMARY_CROP_OR_WUS_USE_SPECIFIC_3",
+                                                 "SECONDARY_CROP_OR_WUS_USE_1",
+                                                 "CATEGORY", "TIER", "GENEPOOL")],
+                              by = c("TAXON"),
+                              all.x=TRUE)
 
 
 ##############################
@@ -102,7 +105,11 @@ ecoregion_gap_table_sf <- st_as_sf(ecoregion_gap_table,
 ##############################
 
 ##############################
-# CWRs in each category
+# CWRs in each category ######
+##############################
+# end result is a bar chart that displays the number of CWR in each category
+# how to show relative to the number of crop groups?
+
 CWR_inventory_summary <- inventory %>%
   filter(CWR == "Y") %>%
   filter(TIER == 1) %>%
@@ -121,26 +128,30 @@ barplot(CWR_inventory_summary$n, #main = "Native CWR Taxa in Broad Crop Categori
         names.arg = CWR_inventory_summary$PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, xlab = "", ylab = "",
         cex.names=1.5, cex.axis=1.5, horiz=T, las=1, xlim = c(0,140))
 
-##############################
-# regional richness and endemics
+#########################################
+# regional richness and endemics of CWR #
+#########################################
+# end result -> heat map of CWR per province and ecoregion
+# could overlay with gardens/PGRC and accessions or some representation of accessions?
 
 # find ecoregions with the most total native CWRs
 # and most endemic native CWRs
-total_and_endemic_CWRs_ecoregion <- ecoregion_gap_table_sf %>%
-  # count total CWRs (unique sci_name in each ecoregion)
-  # want the rows where garden is NA (just the range data)
-  filter(is.na(garden)) %>%
+total_and_endemic_CWRs_ecoregion <- sp_distr_ecoregion_sf %>%
+  # count total CWRs (unique TAXON in each province) - only tier 1?
+  # want the rows where CWR is Y (just the CWR)
+  filter(CWR == "Y") %>%
+  filter(TIER == "1") %>%
   # group by ecoregion
   group_by(ECO_NAME) %>%
-  # tally the number of unique CWR species
-  distinct(species, .keep_all = TRUE) %>%
+  # tally the number of unique CWR TAXA
+  distinct(TAXON, .keep_all = TRUE) %>%
   add_tally() %>%
   rename(total_CWRs_in_ecoregion = "n") %>%
   mutate(total_CWRs_in_ecoregion = as.numeric(total_CWRs_in_ecoregion)) %>%
   ungroup() %>%
   
   # count endemic CWRs (species that occurs in only 1 ecoregion)
-  group_by(species) %>%
+  group_by(TAXON) %>%
   # if group is only one row, endemic = 1, else endemic = 0
   add_tally() %>%
   rename("native_ecoregions_for_species" = "n") %>%
@@ -171,10 +182,11 @@ P
 
 # find provinces with the most total native CWRs
 # and most endemic native CWRs
-total_and_endemic_CWRs_province <- province_gap_table_sf %>%
-  # count total CWRs (unique sci_name in each province)
-  # want the rows where garden is NA (just the range data)
-  # filter(is.na(garden)) %>%
+total_and_endemic_CWRs_province <- sp_distr_province_sf %>%
+  # count total CWRs (unique TAXON in each province) - only tier 1?
+  # want the rows where CWR is Y (just the CWR)
+  filter(CWR == "Y") %>%
+  filter(TIER == "1") %>%
   # group by province
   group_by(PROVINCE) %>%
   # tally the number of unique CWR species
@@ -209,6 +221,126 @@ total_CWRs_group_by_province <- total_CWRs_group_by_province %>%
 Q <- ggplot(total_CWRs_group_by_province, aes(x = total_CWRs_in_province)) + theme_bw() + 
   geom_histogram()
 Q
+
+#########################################
+# regional richness and endemics of WUS #
+#########################################
+# end result -> heat map of CWR per province and ecoregion
+# could overlay with gardens/PGRC and accessions or some representation of accessions?
+
+
+# find ecoregions with the most total native WUS
+# and most endemic native WUS
+total_and_endemic_WUS_ecoregion <- sp_distr_ecoregion_sf %>%
+  # count total WUS (unique TAXON in each province) - only tier 1?
+  # want the rows where CWR is Y (just the WUS)
+  filter(WUS == "Y") %>%
+  filter(TIER == "1") %>%
+  # group by ecoregion
+  group_by(ECO_NAME) %>%
+  # tally the number of unique CWR TAXA
+  distinct(TAXON, .keep_all = TRUE) %>%
+  add_tally() %>%
+  rename(total_WUS_in_ecoregion = "n") %>%
+  mutate(total_WUS_in_ecoregion = as.numeric(total_WUS_in_ecoregion)) %>%
+  ungroup() %>%
+  
+  # count endemic WUS (species that occurs in only 1 ecoregion)
+  group_by(TAXON) %>%
+  # if group is only one row, endemic = 1, else endemic = 0
+  add_tally() %>%
+  rename("native_ecoregions_for_species" = "n") %>%
+  mutate(is_endemic = ifelse(
+    native_ecoregions_for_species == 1, 1, 0)) %>%
+  ungroup() %>%
+  group_by(ECO_NAME) %>%
+  mutate(endemic_WUS_in_ecoregion = sum(is_endemic))
+
+# just want number of WUS in each region
+# for a histogram and to easily see ranked list of top ecoregions
+# by total WUS:
+total_WUS_group_by_ecoregion <- total_and_endemic_WUS_ecoregion %>% 
+  distinct(ECO_NAME, .keep_all = TRUE ) %>%
+  arrange(desc(total_WUS_in_ecoregion))
+# and by endemic WUS:
+total_CWRs_group_by_ecoregion <- total_WUS_group_by_ecoregion %>% 
+  arrange(desc(endemic_WUS_in_ecoregion))
+
+# Plot number WUS in each province (as a histogram)
+P <- ggplot(total_WUS_group_by_ecoregion, aes(x = total_WUS_in_ecoregion)) + theme_bw() + 
+  geom_histogram()
+P
+
+# Go ahead and add leaflet and/or heatmap here for ecoregions
+# using the total_and_endemic_WUS_ecoregion table?
+
+
+# find provinces with the most total native WUS
+# and most endemic native WUS
+total_and_endemic_WUS_province <- sp_distr_province_sf %>%
+  # count total WUS (unique TAXON in each province) - only tier 1?
+  # want the rows where WUS is Y (just the WUS)
+  filter(WUS == "Y") %>%
+  filter(TIER == "1") %>%
+  # group by province
+  group_by(PROVINCE) %>%
+  # tally the number of unique WUS species
+  distinct(TAXON, .keep_all = TRUE) %>%
+  add_tally() %>%
+  rename(total_WUS_in_province = "n") %>%
+  mutate(total_WUS_in_province = as.numeric(total_WUS_in_province)) %>%
+  ungroup() %>%
+  
+  # count endemic WUS (species that occurs in only 1 province)
+  group_by(TAXON) %>%
+  # if group is only one row, endemic = 1, else endemic = 0
+  add_tally() %>%
+  rename("native_provinces_for_species" = "n") %>%
+  mutate(is_endemic = ifelse(
+    native_provinces_for_species == 1, 1, 0)) %>%
+  ungroup() %>%
+  group_by(PROVINCE) %>%
+  mutate(endemic_WUS_in_province = sum(is_endemic))
+
+# just want number of WUS in each region
+# for a histogram and to easily see ranked list of top ecoregions
+# by total WUS:
+total_WUS_group_by_province <- total_and_endemic_WUS_province %>% 
+  distinct(PROVINCE, .keep_all = TRUE ) %>%
+  arrange(desc(total_WUS_in_province))
+# and by endemic WUS:
+total_WUS_group_by_province <- total_WUS_group_by_province %>% 
+  arrange(desc(endemic_WUS_in_province))
+
+# Plot number WUS in each province (as a histogram)
+Q <- ggplot(total_WUS_group_by_province, aes(x = total_WUS_in_province)) + theme_bw() + 
+  geom_histogram()
+Q
+
+# Create a color palette for the map:
+mypalette <- colorNumeric( palette="YlOrBr", domain=mydat$variable, na.color="transparent")
+mypalette(c(45,43))
+
+leaflet(plotDataNativeRanges()) %>% 
+  addTiles()  %>% 
+  setView( lat=60, lng=-98 , zoom=3) %>%
+  addPolygons(fillOpacity = 0.5, 
+              smoothFactor = 0.5, 
+              color = ~colorNumeric("YlOrBr", variable)(variable),
+              label = mytext,
+              layerId = ~region) %>%
+  addLegend( pal=mypalette, values=~variable, opacity=0.9, title = "CWRs", position = "bottomleft" )
+
+
+
+
+
+
+
+
+
+
+
 
 ##############################
 # identify regional CWR richness and endemics by category
