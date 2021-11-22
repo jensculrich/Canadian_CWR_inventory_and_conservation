@@ -263,7 +263,7 @@ total_WUS_group_by_ecoregion <- total_and_endemic_WUS_ecoregion %>%
   distinct(ECO_NAME, .keep_all = TRUE ) %>%
   arrange(desc(total_WUS_in_ecoregion))
 # and by endemic WUS:
-total_CWRs_group_by_ecoregion <- total_WUS_group_by_ecoregion %>% 
+total_WUS_group_by_ecoregion <- total_WUS_group_by_ecoregion %>% 
   arrange(desc(endemic_WUS_in_ecoregion))
 
 # Plot number WUS in each province (as a histogram)
@@ -317,23 +317,59 @@ Q <- ggplot(total_WUS_group_by_province, aes(x = total_WUS_in_province)) + theme
   geom_histogram()
 Q
 
-# Create a color palette for the map:
-mypalette <- colorNumeric( palette="YlOrBr", domain=mydat$variable, na.color="transparent")
-mypalette(c(45,43))
+############
+# MAPPING ##
+############
+library(tmap) 
 
-leaflet(plotDataNativeRanges()) %>% 
-  addTiles()  %>% 
-  setView( lat=60, lng=-98 , zoom=3) %>%
-  addPolygons(fillOpacity = 0.5, 
-              smoothFactor = 0.5, 
-              color = ~colorNumeric("YlOrBr", variable)(variable),
-              label = mytext,
-              layerId = ~region) %>%
-  addLegend( pal=mypalette, values=~variable, opacity=0.9, title = "CWRs", position = "bottomleft" )
+# CRS 
+crs_string = "+proj=lcc +lat_1=49 +lat_2=77 +lon_0=-91.52 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs" # 2
 
+legend_title_CWR = expression("CWR")
+# breaks = c(0, 40, 80, 120, 160, 200)
+CWR_sf_provinces <- st_as_sf(total_CWRs_group_by_province)
+(map_provinces <- tm_shape(CWR_sf_provinces,
+                           projection = crs_string) +
+    tm_polygons(col = "total_CWRs_in_province",
+          style = "jenks",
+          title = legend_title_CWR) + 
+    tm_layout(frame = FALSE,
+          legend.position = c("right", "top"))
+)
 
+# breaks2 = c(0, 30, 60, 90, 120, 150)
+CWR_sf_ecoregions <- st_as_sf(total_CWRs_group_by_ecoregion)
+(map_ecoregions <- tm_shape(CWR_sf_ecoregions,
+                            projection = crs_string) +
+  tm_polygons(col = "total_CWRs_in_ecoregion",
+          style = "jenks",
+          title = legend_title_CWR) + 
+  tm_layout(frame = FALSE,
+          legend.position = c("right", "top"))
+)
 
+legend_title_WUS = expression("WUS")
+# breaks = c(0, 40, 80, 120, 160, 200)
+WUS_sf_provinces <- st_as_sf(total_WUS_group_by_province)
+(map_provinces_WUS <- tm_shape(WUS_sf_provinces,
+                           projection = crs_string) +
+    tm_polygons(col = "total_WUS_in_province",
+                style = "jenks",
+                title = legend_title_WUS) + 
+    tm_layout(frame = FALSE,
+              legend.position = c("right", "top"))
+)
 
+# breaks2 = c(0, 30, 60, 90, 120, 150)
+WUS_sf_ecoregions <- st_as_sf(total_WUS_group_by_ecoregion)
+(map_ecoregions <- tm_shape(WUS_sf_ecoregions,
+                            projection = crs_string) +
+    tm_polygons(col = "total_WUS_in_ecoregion",
+                style = "jenks",
+                title = legend_title_WUS) + 
+    tm_layout(frame = FALSE,
+              legend.position = c("right", "top"))
+)
 
 
 
