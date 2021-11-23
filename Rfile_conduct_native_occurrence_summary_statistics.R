@@ -370,17 +370,18 @@ WUS_sf_ecoregions <- st_as_sf(total_WUS_group_by_ecoregion)
 # update and add new gardens as we receive additional datasets
 # cwr_ubc <- read.csv("./Garden_Data/CWR_of_UBC.csv", na.strings=c("","NA"))
 # cwr_rbg <- read.csv("./Garden_Data/CWR_of_RBG.csv", na.strings=c("","NA"))
-# cwr_montreal <- read.csv("./Garden_Data/CWR_of_MontrealBG.csv", na.strings=c("","NA"))
+cwr_montreal <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_montreal.csv", na.strings=c("","NA"))
 cwr_guelph <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_guelph.csv", na.strings=c("","NA"))
 # cwr_mountp <- read.csv("./Garden_Data/CWR_of_MountPleasantGroup.csv", na.strings=c("","NA"))
 # cwr_vandusen <- read.csv("./Garden_Data/CWR_of_VanDusenBG.csv", na.strings=c("","NA"))
 # cwr_pgrc <- read.csv("./Garden_Data/CWR_Amelanchier_PGRC.csv") # removing these subsetted data sets for now
 # cwr_usask <- read.csv("Amelanchier_UofSask.csv") # removing these subsetted data sets for now
 # cwr_readerrock <- read.csv("./Garden_Data/CWR_of_ReaderRock.csv", na.strings=c("","NA"))
+cwr_PGRC <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_pgrc.csv", na.strings=c("","NA"))
 
 # join all garden data into one long table
 # update and add new gardens as we receive additional datasets
-garden_accessions <- cwr_guelph
+garden_accessions <- rbind(cwr_guelph, cwr_montreal, cwr_PGRC)
 # all tables need to have the same columns!  
 #rbind(cwr_ubc, cwr_rbg, cwr_montreal, cwr_guelph, cwr_mountp, cwr_vandusen,
    #                        cwr_readerrock, cwr_pgrc)
@@ -417,7 +418,8 @@ all_garden_accessions_shapefile <- points_polygon_2 %>%
   mutate(latitude = as.numeric(str_remove(latitude, "[)]"))) %>% 
   
   # select columns that match garden accessions
-  dplyr::select(TAXON, GENUS, SPECIES, RANK, INFRASPECIFIC, 
+  dplyr::select(TAXON, 
+                #GENUS, SPECIES, RANK, INFRASPECIFIC, 
                 #PRIMARY_ASSOCIATED_CROP_COMMON_NAME, 
                 #SECONDARY_ASSOCIATED_CROP_COMMON_NAME,
                 #PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_1,
@@ -427,7 +429,8 @@ all_garden_accessions_shapefile <- points_polygon_2 %>%
                 #PRIMARY_CROP_OR_WUS_USE_SPECIFIC_2,
                 #PRIMARY_CROP_OR_WUS_USE_SPECIFIC_3,
                 #FINEST_TAXON_RESOLUTION, CWR, WUS, CATEGORY, TIER, 
-                COUNTRY, PROVINCE.x, PROVINCE.y, ECO_NAME,
+                PROVENANCE, COUNTRY, LOCALITY,
+                PROVINCE.x, PROVINCE.y, ECO_NAME,
                 latitude, longitude,
                 GARDEN_CODE, INSTITUTION) %>%
                 # IUCNRedList/conservation_status) %>%
@@ -437,7 +440,7 @@ all_garden_accessions_shapefile <- points_polygon_2 %>%
   dplyr::select(-PROVINCE.y, - PROVINCE.x) 
 
 
-# gardens often give province but no lat/long
+# gardens often give province but no lat/long (including all PGRC)
 accessions_w_province_but_no_geo_data <- all_garden_accessions_shapefile %>%
   filter(!is.na(province)) %>%
   filter(is.na(latitude))
@@ -460,19 +463,17 @@ province_gap_table <- sp_distr_province[ , c("TAXON", "PROVINCE")] %>%
   merge(x = ., y = all_garden_accessions_shapefile,
         by = c("TAXON", "province"),
         all = TRUE) %>%
-  select(-GENUS, -SPECIES, -RANK, -INFRASPECIFIC, 
-         -ECO_NAME, -COUNTRY) %>%
+  select(-ECO_NAME, -COUNTRY) %>%
   full_join(inventory)
 
 ecoregion_gap_table <- sp_distr_ecoregion[ , c("TAXON", "ECO_NAME")] %>%
   merge(x = ., y = all_garden_accessions_shapefile,
         by = c("TAXON", "ECO_NAME"),
         all = TRUE) %>%
-  select(-GENUS, -SPECIES, -RANK, -INFRASPECIFIC, 
-         -province, -COUNTRY) %>%
+  select(-province, -COUNTRY) %>%
   full_join(inventory)
 
-
+# ffix so inventory isn't filtering out hybrid x's!!
 
 ##################################################################
 ##################
