@@ -397,16 +397,16 @@ Leymus mollis subsp. mollis,Leymus,Leymus mollis,subsp.,mollis,Barley,Wheat,Y,Y,
 Leymus triticoides,Leymus,Leymus triticoides,NA,NA,Wheat,NA,Y,Y,N,,Y,Food,,NA,Cereals and pseudocereals,,,NA,1C,1,Tertiary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,
 Leymus villosissimus,Leymus,Leymus villosissimus,NA,NA,Barley,Wheat,Y,Y,Y,wild rye grass; grains,Y,Food,,Food,Cereals and pseudocereals,,,Cereals and pseudocereals,1C,1,Tertiary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
 Lilium columbianum,Lilium,Lilium columbianum,NA,NA,Lily,NA,Y,N,Y,,Y,Food,,NA,Vegetables,,,NA,NA,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
-Linum lewisii,Linum,Linum lewisii,NA,NA,Flax,NA,N,Y,N,,Y,Materials,Food,NA,Materials,Oils,,NA,1C,1,Tertiary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,
-Linum lewisii var. lepagei,Linum,Linum lewisii,var.,lepagei,Flax,NA,Y,Y,N,,Y,Materials,Food,NA,Materials,Oils,,NA,1C,1,Tertiary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,
-Linum lewisii var. lewisii,Linum,Linum lewisii,var.,lewisii,Flax,NA,Y,Y,N,,Y,Materials,Food,NA,Materials,Oils,,NA,1C,1,Tertiary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,
-Linum medium,Linum,Linum medium,NA,NA,Flax,NA,N,Y,N,,Y,Materials,Food,NA,Materials,Oils,,NA,1C,1,Assume distant,,,,,,,,,,,Davidson 1995,,
-Linum medium var. medium,Linum,Linum medium,var.,medium,Flax,NA,Y,Y,N,,Y,Materials,Food,NA,Materials,Oils,,NA,1C,1,Assume distant,,,,,,,,,,,Davidson 1995,,
-Linum medium var. texanum,Linum,Linum medium,var.,texanum,Flax,NA,Y,Y,N,,Y,Materials,Food,NA,Materials,Oils,,NA,1C,1,Assume distant,,,,,,,,,,,Davidson 1995,,
-Linum perenne,Linum,Linum perenne,NA,NA,Flax,NA,Y,Y,Y,seeds,N,Materials,Food,NA,Materials,Oils,,NA,1C,1,Assume distant,,,,,,,,,,,Davidson 1995,,Kuhnlein and Turner 2020
-Linum rigidum,Linum,Linum rigidum,NA,NA,Flax,NA,Y,Y,N,,Y,Materials,Food,NA,Materials,Oils,,NA,1C,1,Assume distant,,,,,,,,,,,Davidson 1995,,
-Linum sulcatum,Linum,Linum sulcatum,NA,NA,Flax,NA,Y,Y,N,,Y,Materials,Food,NA,Materials,Oils,,NA,1C,1,Assume distant,,,,,,,,,,,Davidson 1995,,
-Linum virginianum,Linum,Linum virginianum,NA,NA,Flax,NA,Y,Y,N,,Y,Materials,Food,NA,Materials,Oils,,NA,1C,1,Assume distant,,,,,,,,,,,Davidson 1995,,
+Linum lewisii,Linum,Linum lewisii,NA,NA,Flax,NA,N,Y,N,,Y,Food,Materials,NA,Oils,Materials,,NA,1C,1,Tertiary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,
+Linum lewisii var. lepagei,Linum,Linum lewisii,var.,lepagei,Flax,NA,Y,Y,N,,Y,Food,Materials,NA,Oils,Materials,,NA,1C,1,Tertiary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,
+Linum lewisii var. lewisii,Linum,Linum lewisii,var.,lewisii,Flax,NA,Y,Y,N,,Y,Food,Materials,NA,Oils,Materials,,NA,1C,1,Tertiary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,
+Linum medium,Linum,Linum medium,NA,NA,Flax,NA,N,Y,N,,Y,Food,Materials,NA,Oils,Materials,,NA,1C,1,Assume distant,,,,,,,,,,,Davidson 1995,,
+Linum medium var. medium,Linum,Linum medium,var.,medium,Flax,NA,Y,Y,N,,Y,Food,Materials,NA,Oils,Materials,,NA,1C,1,Assume distant,,,,,,,,,,,Davidson 1995,,
+Linum medium var. texanum,Linum,Linum medium,var.,texanum,Flax,NA,Y,Y,N,,Y,Food,Materials,NA,Oils,Materials,,NA,1C,1,Assume distant,,,,,,,,,,,Davidson 1995,,
+Linum perenne,Linum,Linum perenne,NA,NA,Flax,NA,Y,Y,Y,seeds,N,Food,Materials,NA,Oils,Materials,,NA,1C,1,Assume distant,,,,,,,,,,,Davidson 1995,,Kuhnlein and Turner 2020
+Linum rigidum,Linum,Linum rigidum,NA,NA,Flax,NA,Y,Y,N,,Y,Food,Materials,NA,Oils,Materials,,NA,1C,1,Assume distant,,,,,,,,,,,Davidson 1995,,
+Linum sulcatum,Linum,Linum sulcatum,NA,NA,Flax,NA,Y,Y,N,,Y,Food,Materials,NA,Oils,Materials,,NA,1C,1,Assume distant,,,,,,,,,,,Davidson 1995,,
+Linum virginianum,Linum,Linum virginianum,NA,NA,Flax,NA,Y,Y,N,,Y,Food,Materials,NA,Oils,Materials,,NA,1C,1,Assume distant,,,,,,,,,,,Davidson 1995,,
 Lomatium ambiguum,Lomatium,Lomatium ambiguum,NA,NA,Biscuitroot,NA,Y,N,Y,roots,Y,Food,,NA,Vegetables,,,NA,NA,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
 Lomatium cous,Lomatium,Lomatium cous,NA,NA,Biscuitroot,NA,Y,N,Y,roots,Y,Food,,NA,Vegetables,,,NA,NA,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
 Lomatium dissectum,Lomatium,Lomatium dissectum,NA,NA,Biscuitroot,NA,Y,N,Y,roots,Y,Food,,NA,Vegetables,,,NA,NA,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
@@ -705,12 +705,12 @@ Silphium perfoliatum,Silphium,Silphium perfoliatum,NA,NA,Rosinweed,NA,N,Y,Y,,Y,C
 Silphium perfoliatum var. perfoliatum,Silphium,Silphium perfoliatum,var.,perfoliatum,Rosinweed,NA,Y,Y,Y,,Y,Cultural,,NA,Medicinals,,,NA,NA,NA,Secondary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,
 Sinomalus fusca,Sinomalus,Sinomalus fusca,NA,NA,Apple,NA,Y,Y,Y,fruit,Y,Food,,NA,Fruits,,,NA,1A,1,Tertiary,Graftstock,,,Disease Resistance (B),,Gene Transfer (F),,,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
 Sium suave,Sium,Sium suave,NA,NA,Water-parsnip,NA,Y,N,Y,,Y,Food,,NA,Vegetables,,,NA,NA,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
-Sorbus americana,Sorbus,Sorbus americana,NA,NA,Rowan,NA,Y,Y,Y,fruit,Y,Food,Forest Resources,NA,Fruits,Forest Resources,,2,2,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
-Sorbus decora,Sorbus,Sorbus decora,NA,NA,Rowan,NA,Y,Y,Y,fruit,Y,Food,Forest Resources,NA,Fruits,Forest Resources,,2,2,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
-Sorbus scopulina,Sorbus,Sorbus scopulina,NA,NA,Rowan,NA,Y,Y,Y,fruit,Y,Food,Forest Resources,NA,Fruits,Forest Resources,,2,2,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
-Sorbus sitchensis,Sorbus,Sorbus sitchensis,NA,NA,Rowan,NA,N,Y,Y,fruit,Y,Food,Forest Resources,NA,Fruits,Forest Resources,,2,2,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
-Sorbus sitchensis var. grayi,Sorbus,Sorbus sitchensis,var.,grayi,Rowan,NA,Y,Y,Y,fruit,Y,Food,Forest Resources,NA,Fruits,Forest Resources,,2,2,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
-Sorbus sitchensis var. sitchensis,Sorbus,Sorbus sitchensis,var.,sitchensis,Rowan,NA,Y,Y,Y,fruit,Y,Food,Forest Resources,NA,Fruits,Forest Resources,,2,2,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
+Sorbus americana,Sorbus,Sorbus americana,NA,NA,Rowan,NA,Y,Y,Y,fruit,Y,Forest Resources,Food,NA,Forest Resources,Fruits,,2,2,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
+Sorbus decora,Sorbus,Sorbus decora,NA,NA,Rowan,NA,Y,Y,Y,fruit,Y,Forest Resources,Food,NA,Forest Resources,Fruits,,2,2,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
+Sorbus scopulina,Sorbus,Sorbus scopulina,NA,NA,Rowan,NA,Y,Y,Y,fruit,Y,Forest Resources,Food,NA,Forest Resources,Fruits,,2,2,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
+Sorbus sitchensis,Sorbus,Sorbus sitchensis,NA,NA,Rowan,NA,N,Y,Y,fruit,Y,Forest Resources,Food,NA,Forest Resources,Fruits,,2,2,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
+Sorbus sitchensis var. grayi,Sorbus,Sorbus sitchensis,var.,grayi,Rowan,NA,Y,Y,Y,fruit,Y,Forest Resources,Food,NA,Forest Resources,Fruits,,2,2,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
+Sorbus sitchensis var. sitchensis,Sorbus,Sorbus sitchensis,var.,sitchensis,Rowan,NA,Y,Y,Y,fruit,Y,Forest Resources,Food,NA,Forest Resources,Fruits,,2,2,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
 Spiraea douglasii,Spiraea,Spiraea douglasii,NA,NA,Meadowsweet,NA,N,N,Y,,Y,Cultural,,NA,Medicinals,,,NA,NA,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
 Spiraea douglasii var. douglasii,Spiraea,Spiraea douglasii,var.,douglasii,Meadowsweet,NA,Y,N,Y,,Y,Cultural,,NA,Medicinals,,,NA,NA,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
 Spiraea douglasii var. menziesii,Spiraea,Spiraea douglasii,var.,menziesii,Meadowsweet,NA,Y,N,Y,,Y,Cultural,,NA,Medicinals,,,NA,NA,NA,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
