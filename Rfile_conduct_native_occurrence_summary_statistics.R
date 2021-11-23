@@ -19,7 +19,9 @@ library(geojsonio) # geo json input and output
 ######################################################################################
 
 # Load required data and shapefiles for plotting occurrence maps and data tables
-inventory <- read.csv("./Input_Data_and_Files/inventory.csv")
+inventory <- read.csv("./Input_Data_and_Files/inventory.csv") %>% 
+  mutate(TAXON = str_replace(TAXON, "×", "")) %>% 
+  mutate(SPECIES = str_replace(SPECIES, "×", ""))
 
 canada_ecoregions_geojson <- st_read("./Geo_Data/canada_ecoregions_clipped.geojson", quiet = TRUE)
 canada_provinces_geojson <- st_read("./Geo_Data/canada_provinces.geojson", quiet = TRUE)
@@ -372,16 +374,16 @@ WUS_sf_ecoregions <- st_as_sf(total_WUS_group_by_ecoregion)
 # cwr_rbg <- read.csv("./Garden_Data/CWR_of_RBG.csv", na.strings=c("","NA"))
 cwr_montreal <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_montreal.csv", na.strings=c("","NA"))
 cwr_guelph <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_guelph.csv", na.strings=c("","NA"))
-# cwr_mountp <- read.csv("./Garden_Data/CWR_of_MountPleasantGroup.csv", na.strings=c("","NA"))
+cwr_mountp <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_mpg.csv", na.strings=c("","NA"))
 # cwr_vandusen <- read.csv("./Garden_Data/CWR_of_VanDusenBG.csv", na.strings=c("","NA"))
-# cwr_pgrc <- read.csv("./Garden_Data/CWR_Amelanchier_PGRC.csv") # removing these subsetted data sets for now
 # cwr_usask <- read.csv("Amelanchier_UofSask.csv") # removing these subsetted data sets for now
 # cwr_readerrock <- read.csv("./Garden_Data/CWR_of_ReaderRock.csv", na.strings=c("","NA"))
 cwr_PGRC <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_pgrc.csv", na.strings=c("","NA"))
+cwr_NPGS <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_usda.csv", na.strings=c("","NA"))
 
 # join all garden data into one long table
 # update and add new gardens as we receive additional datasets
-garden_accessions <- rbind(cwr_guelph, cwr_montreal, cwr_PGRC)
+garden_accessions <- rbind(cwr_guelph, cwr_montreal, cwr_mountp, cwr_PGRC, cwr_NPGS)
 # all tables need to have the same columns!  
 #rbind(cwr_ubc, cwr_rbg, cwr_montreal, cwr_guelph, cwr_mountp, cwr_vandusen,
    #                        cwr_readerrock, cwr_pgrc)
@@ -437,7 +439,8 @@ all_garden_accessions_shapefile <- points_polygon_2 %>%
   #rename(new = province) %>% # add a dummy name for province 
   # take province from cd_canada unless was already provided by garden (just want one column)
   mutate(province = ifelse(is.na(PROVINCE.x), PROVINCE.y, PROVINCE.x)) %>%
-  dplyr::select(-PROVINCE.y, - PROVINCE.x) 
+  dplyr::select(-PROVINCE.y, - PROVINCE.x) %>%
+  left_join(inventory[,c("TAXON", "SPECIES")])
 
 
 # gardens often give province but no lat/long (including all PGRC)
@@ -457,7 +460,8 @@ all_garden_accessions_shapefile <- all_garden_accessions_shapefile %>%
   filter(COUNTRY == "Canada" | is.na(COUNTRY))
 
 # now join the garden data with the sp distributions by province
-# to expand each row where a 
+# to expand each row where a taxon/ species occurs
+# for taxon level use these:
 province_gap_table <- sp_distr_province[ , c("TAXON", "PROVINCE")] %>%
   rename("province" = "PROVINCE") %>%
   merge(x = ., y = all_garden_accessions_shapefile,
@@ -473,14 +477,48 @@ ecoregion_gap_table <- sp_distr_ecoregion[ , c("TAXON", "ECO_NAME")] %>%
   select(-province, -COUNTRY) %>%
   full_join(inventory)
 
-# fix so inventory isn't filtering out hybrid x's!!
+# for species level use these:
+inventory_sp <- inventory %>%
+  select(-TAXON, -GENUS, -RANK, -INFRASPECIFIC) %>%
+  distinct(SPECIES, .keep_all = TRUE)
+sp_distr_province_sp <- sp_distr_province %>%
+  # remove duplicates at province within species
+  distinct(SPECIES, PROVINCE, .keep_all=TRUE)
+province_gap_table_species <- sp_distr_province_sp[ , c("SPECIES", "PROVINCE")] %>%
+  rename("province" = "PROVINCE") %>%
+  merge(x = ., y = all_garden_accessions_shapefile,
+        by = c("SPECIES", "province"),
+        all = TRUE) %>%
+  select(-ECO_NAME, -COUNTRY, -TAXON) %>%
+  full_join(inventory_sp)
+
+sp_distr_ecoregion_sp <- sp_distr_ecoregion %>%
+  # remove duplicates at province within species
+  distinct(SPECIES, ECO_NAME, .keep_all=TRUE)
+ecoregion_gap_table_species <- sp_distr_ecoregion_sp[ , c("SPECIES", "ECO_NAME")] %>%
+  merge(x = ., y = all_garden_accessions_shapefile,
+        by = c("SPECIES", "ECO_NAME"),
+        all = TRUE) %>%
+  select(-province, -COUNTRY) %>%
+  full_join(inventory_sp)
 
 ##################################################################
 ##################
 ##################################################################
 
-
-
+# group by species (or taxon), calc number of rows where GARDEN_CODE !(is.na)
+# then group by INSTITUTION (within species or taxon)
+num_accessions <- province_gap_table_species %>%
+  group_by(SPECIES) %>%
+  mutate(total_accessions = sum(!is.na(GARDEN_CODE))) %>%
+  mutate(garden_accessions = sum(!is.na(GARDEN_CODE) & 
+                                   INSTITUTION == "BG")) %>%
+  mutate(genebank_accessions = sum(!is.na(GARDEN_CODE) & 
+                                   INSTITUTION == "G")) %>%
+  distinct(SPECIES, .keep_all = TRUE)
+  
+num_accessions_cwr <- num_accessions %>%
+  filter(TIER == 1)
 
 
 
