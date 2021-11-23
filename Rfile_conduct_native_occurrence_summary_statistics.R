@@ -473,7 +473,7 @@ ecoregion_gap_table <- sp_distr_ecoregion[ , c("TAXON", "ECO_NAME")] %>%
   select(-province, -COUNTRY) %>%
   full_join(inventory)
 
-# ffix so inventory isn't filtering out hybrid x's!!
+# fix so inventory isn't filtering out hybrid x's!!
 
 ##################################################################
 ##################
