@@ -1,15 +1,29 @@
 # INTRO (EDIT THIS)
+# Use the species distribution data and the garden/genebank accession data
+# to explore the inventory itself
+# and more particularly
+# the strengths and gaps in ex situ conservation of the CWR and WUS in the inventory
 
-# load required packages
+
+# load required libraries
 library(tidyverse)
 library(ggplot2)
 library(sf) # the base package manipulating shapes
 library(geojsonio) # geo json input and output
-library(ggridges) # ridgeline plot in fig 4
+library(ggridges) # needed for ridgeline plot in fig 4
+library(tmap) # libary for drawing spatial figures - i.e. fig 2
+library(tigris) # spatial joins between sf's and df
 
-######################################################################################
+############
+# CONTENTS #
+############
 
-######################################################################################
+# 1 - Load inventory and spatial data; species distribution and garden accesions 
+# 2 - Compute some basic summary stats about the inventory   
+
+################################################################################
+# # 1 - Load inventory and spatial data     
+################################################################################
 
 # Load required data and shapefiles for plotting occurrence maps and data tables
 inventory <- read.csv("./Input_Data_and_Files/inventory.csv") %>% 
@@ -18,17 +32,16 @@ inventory <- read.csv("./Input_Data_and_Files/inventory.csv") %>%
 
 canada_ecoregions_geojson <- st_read("./Geo_Data/canada_ecoregions_clipped.geojson", quiet = TRUE)
 canada_provinces_geojson <- st_read("./Geo_Data/canada_provinces.geojson", quiet = TRUE)
-# rename PROVINCE in shapefile
+# rename PROVINCE in shapefile (needs to match the species distribution table)
 canada_provinces_geojson <- canada_provinces_geojson %>%
   rename("PROVINCE" = "name")
-
-sp_distr_ecoregion <- as_tibble(read.csv("./GBIF_download_outputs/species_distributions_ecoregion_trimmed.csv"))
-sp_distr_province <- as_tibble(read.csv("./GBIF_download_outputs/species_distributions_province_trimmed.csv"))
 
 
 ######################################################################
 # Reformat (add taxon info) and Project Species Distribution Tables  #
-######################################################################
+
+sp_distr_ecoregion <- as_tibble(read.csv("./GBIF_download_outputs/species_distributions_ecoregion_trimmed.csv"))
+sp_distr_province <- as_tibble(read.csv("./GBIF_download_outputs/species_distributions_province_trimmed.csv"))
 
 # add geometry to the species distribution table
 sp_distr_province_sf <- merge(x = sp_distr_province, 
@@ -74,9 +87,9 @@ sp_distr_ecoregion_sf <- merge(x = sp_distr_ecoregion_sf,
                               all.x=TRUE)
 
 
-##############################
-# Explore Summary Statistics #
-##############################
+################################################################################
+# # 2 - Compute some basic summary stats about the inventory   
+################################################################################
 
 ##############################
 # CWRs in each category ######
@@ -102,11 +115,14 @@ barplot(CWR_inventory_summary$n, #main = "Native CWR Taxa in Broad Crop Categori
         names.arg = CWR_inventory_summary$PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, xlab = "", ylab = "",
         cex.names=1.5, cex.axis=1.5, horiz=T, las=1, xlim = c(0,140))
 
-#########################################
-# regional richness and endemics of CWR #
-#########################################
-# end result -> heat map of CWR per province and ecoregion
-# could overlay with gardens/PGRC and accessions or some representation of accessions?
+################################################################################
+# # 3 - Analyze patterns of species distributions (re-used later for Fig 2)   
+################################################################################
+# end result -> identify richness of total and endemic CWR and WUS
+# in each region. Will be used later for Figure 2
+# the histograms are just to confirm that the data manipulation produced the results
+# we want to see i.e. a number of taxa per region
+# can also identify the 'hotspots' - areas with the most CWR and WUS using the resulting
 
 # find ecoregions with the most total native CWRs
 # and most endemic native CWRs
@@ -241,9 +257,9 @@ total_WUS_group_by_ecoregion <- total_WUS_group_by_ecoregion %>%
   arrange(desc(endemic_WUS_in_ecoregion))
 
 # Plot number WUS in each province (as a histogram)
-P <- ggplot(total_WUS_group_by_ecoregion, aes(x = total_WUS_in_ecoregion)) + theme_bw() + 
+R <- ggplot(total_WUS_group_by_ecoregion, aes(x = total_WUS_in_ecoregion)) + theme_bw() + 
   geom_histogram()
-P
+R
 
 # Go ahead and add leaflet and/or heatmap here for ecoregions
 # using the total_and_endemic_WUS_ecoregion table?
@@ -287,14 +303,17 @@ total_WUS_group_by_province <- total_WUS_group_by_province %>%
   arrange(desc(endemic_WUS_in_province))
 
 # Plot number WUS in each province (as a histogram)
-Q <- ggplot(total_WUS_group_by_province, aes(x = total_WUS_in_province)) + theme_bw() + 
+S <- ggplot(total_WUS_group_by_province, aes(x = total_WUS_in_province)) + theme_bw() + 
   geom_histogram()
-Q
+S
 
 ############
 # MAPPING ##
 ############
-library(tmap) 
+
+################################################################################
+# # 4 -    
+################################################################################
 
 # CRS 
 crs_string = "+proj=lcc +lat_1=49 +lat_2=77 +lon_0=-91.52 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs" # 2
@@ -993,21 +1012,43 @@ fig4b
 ####################################
 
 # potential figure 5
+# CRS 
+crs_string = "+proj=lcc +lat_1=49 +lat_2=77 +lon_0=-91.52 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs" # 2
+
+# Define the maps' theme -- remove axes, ticks, borders, legends, etc.
+theme_map <- function(base_size=10, base_family="") { # 3
+  require(grid)
+  theme_bw(base_size=base_size, base_family=base_family) %+replace%
+    theme(axis.line=element_blank(),
+          axis.text=element_blank(),
+          axis.ticks=element_blank(),
+          axis.title=element_blank(),
+          panel.background=element_blank(),
+          panel.border=element_blank(),
+          panel.grid=element_blank(),
+          panel.spacing=unit(0, "lines"),
+          plot.background=element_blank(),
+          legend.justification = c(0,0),
+          legend.position = c(0,0)
+    )
+}
 
 ##############
 # By Ecoregion
 saskatoon_cwr_list <- inventory_sp %>%
   filter(PRIMARY_ASSOCIATED_CROP_COMMON_NAME == "Saskatoon")
 
-saskatoon_ecoregion_gap_table <- ecoregion_gap_table_species %>%
-  filter(PRIMARY_ASSOCIATED_CROP_COMMON_NAME == "Saskatoon")
+accessions_sf <- st_as_sf(ecoregion_gap_table_species, 
+         coords = c("longitude", "latitude"), 
+         crs = 4326, 
+         na.fail = FALSE)
 
 # Function to get plot data by taxon
-saskatoon_plotData_ecoregion <- function(species){
+plotData_ecoregion <- function(species){
   # filter province_gap_table frame and calculate species specific stats
-  ecoregionTableData <- saskatoon_ecoregion_gap_table %>%
+  ecoregionTableData <- ecoregion_gap_table_species %>%
     # filter the table to the selected CWR
-    filter(saskatoon_ecoregion_gap_table$SPECIES == species) %>%
+    filter(ecoregion_gap_table_species$SPECIES == species) %>%
     
     # tally the number of rows in each ecoregion with an existing accession (garden is not NA)
     group_by(ECO_NAME) %>%
@@ -1041,13 +1082,13 @@ saskatoon_plotData_ecoregion <- function(species){
 } 
 
 make_a_plot_ecoregion <- function(species) {
-  subset_ecoregion_gap_table_sf <- ecoregion_gap_table_species %>%
-    filter(SPECIES == species)
+  accessions_sf_filtered <- accessions_sf %>%
+    filter(SPECIES == species) 
   
-  plot <- ggplot(saskatoon_plotData_ecoregion(species = SPECIES)) +
+  plot <- ggplot(plotData_ecoregion(species)) +
     geom_sf(aes(fill = as.factor(binary)),
             color = "gray60", size = 0.1) +
-    geom_sf(data = subset_ecoregion_gap_table_sf, color = 'skyblue', alpha = 0.5, size = 2) +
+    geom_sf(data = accessions_sf_filtered, color = 'skyblue', alpha = 0.5, size = 2) +
     coord_sf(crs = crs_string) +
     scale_fill_manual(values = c("gray80", "gray18"), 
                       labels = c("No accessions with geographic data held in collection", 
@@ -1058,7 +1099,7 @@ make_a_plot_ecoregion <- function(species) {
     #                           title.theme = element_text(size = 10, face = "bold")
     # )) +
     theme_map() +
-    ggtitle(taxon) +
+    ggtitle(species) +
     theme(panel.grid.major = element_line(color = "white"),
           plot.title = element_text(color="black",
                                     size=14, face="bold.italic", hjust = 0.5),
@@ -1067,176 +1108,19 @@ make_a_plot_ecoregion <- function(species) {
   return(plot)
 }
 
-test <- make_a_plot_ecoregion("Amelanchier arborea")
+test <- make_a_plot_ecoregion("Amelanchier alnifolia")
 test
 
-plot_ecoregions = list()
-q = 1
-for(i in 1:nrow(saskatoon_cwr_list)) {
-  
-  selected_taxon <- saskatoon_cwr_list[[i,3]] # r is species ("sci_name")
-  plot_ecoregions[[q]] <- make_a_plot_ecoregion(selected_taxon)
-  
-  q = q+1
-  
-} 
+test1 <- make_a_plot_ecoregion("Corylus americana")
+test1
 
-# plot
-plot_ecoregions[c(5, 6, 8, 11, 12, 15)] <- NULL # remove species w no range data
-print(do.call(grid.arrange,plot_ecoregions))
+test2 <- make_a_plot_ecoregion("Helianthus nuttallii")
+test2
+
+test3 <- make_a_plot_ecoregion("Allium tricoccum")
+test3
+
+test4 <- make_a_plot_ecoregion("Fragaria virginiana")
+test4
 
 
-##############################
-# identify regional CWR richness and endemics by category
-# by ecoregion
-
-# function for identifying the native CWRs in each region given a category (x)
-find_native_cwrs_by_group_ecoregion <- function(x) {
-  temp <- ecoregion_gap_table %>%
-    # one unique row per province for each species
-    # this removes the duplicate rows when there are more than one accession per species
-    group_by(species) %>%
-    distinct(ECO_NAME, .keep_all=TRUE) %>%
-    ungroup() %>%
-    
-    filter(Group == x)  %>%
-    
-    group_by(ECO_NAME) %>%
-    # tally the number of unique CWR species
-    distinct(species, .keep_all = TRUE) %>%
-    add_tally() %>%
-    rename(total_CWRs_in_ecoregion = "n") %>%
-    mutate(total_CWRs_in_ecoregion = as.numeric(total_CWRs_in_ecoregion)) %>%
-    ungroup() %>%
-    
-    # count endemic CWRs (species that occurs in only 1 ecoregion)
-    group_by(species) %>%
-    # if group is only one row, endemic = 1, else endemic = 0
-    add_tally() %>%
-    rename("native_ecoregions_for_species" = "n") %>%
-    mutate(is_endemic = ifelse(
-      native_ecoregions_for_species == 1, 1, 0)) %>%
-    ungroup() %>%
-    group_by(ECO_NAME) %>%
-    mutate(endemic_CWRs_in_ecoregion = sum(is_endemic)) %>%
-    
-    distinct(ECO_NAME, .keep_all = TRUE ) %>%
-    arrange(desc(total_CWRs_in_ecoregion))
-    
-  return(as_tibble(temp))
-  
-} 
-
-# create an empty dataframe to be filled in by the function
-native_cwrs_by_group_ecoregion <- data.frame("species" = character(),
-                 "ECO_CODE"= character(), 
-                 "ECO_NAME" = character(), 
-                 "Group" = character(), 
-                 "crop" = character(), 
-                 "garden" = character(),
-                 "variant" = character(),
-                 "country" = character(), 
-                 "IUCNRedList" = character(), 
-                 "geometry" = character(), 
-                 "total_CWRs_in_ecoregion" = character(),
-                 "native_ecoregions_for_species" = character(),
-                 "is_endemic" = character(), 
-                 "endemic_CWRs_in_ecoregion" = character(),
-                 stringsAsFactors=FALSE)
-
-# run the function across all categories (there are 9 crop categories)
-for(i in 1:9) {
-  
-  group_name <- cwr_list_summary[[i,1]]
-  as.data.frame(temp <- find_native_cwrs_by_group_ecoregion(
-    x = group_name)) 
-  native_cwrs_by_group_ecoregion <- rbind(
-    native_cwrs_by_group_ecoregion, temp)
-
-} 
-
-# find "hotspot" regions (regions with most CWR species) for each CWR category
-hotspots_by_crop_category_ecoregion <- native_cwrs_by_group_ecoregion %>%
-  dplyr::select(-species, -crop, -variant, -latitude, -longitude, 
-                -country, -garden, -IUCNRedList, -ECO_CODE) %>%
-  group_by(Group) %>%
-  filter(!is.na(ECO_NAME)) %>%
-  # keep row with max total_CWRs_in_ecoregion
-  slice(which.max(total_CWRs_in_ecoregion))
-  
-#################
-# by province
-
-# function for identifying the native CWRs in each region given a category (x)
-find_native_cwrs_by_group_province <- function(x) {
-  temp <- province_gap_table %>%
-    # one unique row per province for each species
-    # this removes the duplicate rows when there are more than one accession per species
-    group_by(TAXON) %>%
-    distinct(PROVINCE, .keep_all=TRUE) %>%
-    ungroup() %>%
-    
-    filter(Group == x)  %>%
-    
-    # group by province
-    group_by(PROVINCE) %>%
-    # tally the number of unique CWR species
-    distinct(species, .keep_all = TRUE) %>%
-    add_tally() %>%
-    rename(total_CWRs_in_province = "n") %>%
-    mutate(total_CWRs_in_province = as.numeric(total_CWRs_in_province)) %>%
-    ungroup() %>%
-    
-    # count endemic CWRs (species that occurs in only 1 province)
-    group_by(TAXON) %>%
-    # if group is only one row, endemic = 1, else endemic = 0
-    add_tally() %>%
-    rename("native_province_for_species" = "n") %>%
-    mutate(is_endemic = ifelse(
-      native_province_for_species == 1, 1, 0)) %>%
-    ungroup() %>%
-    group_by(PROVINCE) %>%
-    mutate(endemic_CWRs_in_province = sum(is_endemic)) %>%
-    
-    distinct(province, .keep_all = TRUE ) %>%
-    arrange(desc(total_CWRs_in_province))
-  
-  return(as_tibble(temp))
-  
-} 
-
-# create an empty dataframe to be filled in by the function
-native_cwrs_by_group_province <- data.frame("species" = character(),
-                                             "province"= character(), 
-                                             "Group" = character(), 
-                                             "crop" = character(), 
-                                             "garden" = character(),
-                                             "variant" = character(),
-                                             "country" = character(), 
-                                             "IUCNRedList" = character(), 
-                                             "geometry" = character(), 
-                                             "total_CWRs_in_ecoregion" = character(),
-                                             "native_ecoregions_for_species" = character(),
-                                             "is_endemic" = character(), 
-                                             "endemic_CWRs_in_ecoregion" = character(),
-                                             stringsAsFactors=FALSE)
-
-# run the function across all categories (there are 9 crop categories)
-for(i in 1:9) {
-  
-  group_name <- cwr_list_summary[[i,1]]
-  as.data.frame(temp <- find_native_cwrs_by_group_province(
-    x = group_name)) 
-  native_cwrs_by_group_province <- rbind(
-    native_cwrs_by_group_province, temp)
-  
-} 
-
-# find "hotspot" regions (regions with most CWR species) for each CWR category
-hotspots_by_crop_category_province <- native_cwrs_by_group_province %>%
-  dplyr::select(-species, -crop, -variant, -latitude, -longitude, 
-                -country, -garden, -IUCNRedList) %>%
-  group_by(Group) %>%
-  filter(!is.na(province)) %>%
-  # keep row with max total_CWRs_in_province
-  slice(which.max(total_CWRs_in_province))
