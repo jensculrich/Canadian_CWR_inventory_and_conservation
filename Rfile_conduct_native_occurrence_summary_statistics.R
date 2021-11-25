@@ -988,6 +988,102 @@ xlab(expression(paste(
 
 fig4b
 
+####################################
+######## GAP ANALYSIS CASE STUDY   #
+####################################
+
+# potential figure 5
+
+##############
+# By Ecoregion
+saskatoon_cwr_list <- inventory_sp %>%
+  filter(PRIMARY_ASSOCIATED_CROP_COMMON_NAME == "Saskatoon")
+
+saskatoon_ecoregion_gap_table <- ecoregion_gap_table_species %>%
+  filter(PRIMARY_ASSOCIATED_CROP_COMMON_NAME == "Saskatoon")
+
+# Function to get plot data by taxon
+saskatoon_plotData_ecoregion <- function(species){
+  # filter province_gap_table frame and calculate species specific stats
+  ecoregionTableData <- saskatoon_ecoregion_gap_table %>%
+    # filter the table to the selected CWR
+    filter(saskatoon_ecoregion_gap_table$SPECIES == species) %>%
+    
+    # tally the number of rows in each ecoregion with an existing accession (garden is not NA)
+    group_by(ECO_NAME) %>%
+    add_tally(!is.na(GARDEN_CODE)) %>%
+    rename("accessions_in_ecoregion" = "n")  %>%
+    ungroup() %>%
+    
+    # count the number of accessions w/ and w/out geographic data
+    mutate(total_accessions_for_species = sum(!is.na(GARDEN_CODE))) %>%
+    mutate(accessions_no_geo_data = sum(is.na(ECO_NAME))) %>%
+    mutate(accessions_with_geo_data = sum(!is.na(ECO_NAME))) %>%
+    
+    # convert number of accessions to a binary "is there or is there not an accession from x region"
+    group_by(ECO_NAME) %>%
+    filter(row_number() == 1) %>%
+    filter(!is.na(ECO_NAME)) %>%
+    mutate(binary = ifelse(
+      accessions_in_ecoregion > 0, 1, 0)) %>%
+    ungroup() %>%
+    
+    # use the binary variable to determine the proportion of native regions with an accession
+    mutate(num_native_ecoregion = sum(!duplicated(ECO_NAME))) %>%
+    mutate(num_covered_ecoregion = sum(binary)) %>%
+    mutate(perc_ecoregion_range_covered = 
+             num_covered_ecoregion / num_native_ecoregion) 
+  
+  # join plot data with the spatial data frame necessary for projecting the plot  
+  tigris::geo_join(canada_ecoregions_geojson, ecoregionTableData,  
+                   by_sp = "ECO_NAME", by_df = "ECO_NAME")
+  
+} 
+
+make_a_plot_ecoregion <- function(species) {
+  subset_ecoregion_gap_table_sf <- ecoregion_gap_table_species %>%
+    filter(SPECIES == species)
+  
+  plot <- ggplot(saskatoon_plotData_ecoregion(species = SPECIES)) +
+    geom_sf(aes(fill = as.factor(binary)),
+            color = "gray60", size = 0.1) +
+    geom_sf(data = subset_ecoregion_gap_table_sf, color = 'skyblue', alpha = 0.5, size = 2) +
+    coord_sf(crs = crs_string) +
+    scale_fill_manual(values = c("gray80", "gray18"), 
+                      labels = c("No accessions with geographic data held in collection", 
+                                 ">1 accession with geographic data held in collection", 
+                                 "Outside of native range")) +
+    # guides(fill = guide_legend(title = "Conservation Status in Botanic Gardens", 
+    #                            title.position = "top",
+    #                           title.theme = element_text(size = 10, face = "bold")
+    # )) +
+    theme_map() +
+    ggtitle(taxon) +
+    theme(panel.grid.major = element_line(color = "white"),
+          plot.title = element_text(color="black",
+                                    size=14, face="bold.italic", hjust = 0.5),
+          plot.margin=unit(c(0.1,-0.2,0.1,-0.2), "cm"),
+          legend.position = "none") # , legend.text = element_text(size=10)),
+  return(plot)
+}
+
+test <- make_a_plot_ecoregion("Amelanchier arborea")
+test
+
+plot_ecoregions = list()
+q = 1
+for(i in 1:nrow(saskatoon_cwr_list)) {
+  
+  selected_taxon <- saskatoon_cwr_list[[i,3]] # r is species ("sci_name")
+  plot_ecoregions[[q]] <- make_a_plot_ecoregion(selected_taxon)
+  
+  q = q+1
+  
+} 
+
+# plot
+plot_ecoregions[c(5, 6, 8, 11, 12, 15)] <- NULL # remove species w no range data
+print(do.call(grid.arrange,plot_ecoregions))
 
 
 ##############################
