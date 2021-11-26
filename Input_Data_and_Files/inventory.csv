@@ -624,7 +624,7 @@ Ribes sanguineum,Ribes,Ribes sanguineum,NA,NA,"Currant, Gooseberry",NA,N,Y,Y,fru
 Ribes sanguineum var. sanguineum,Ribes,Ribes sanguineum,var.,sanguineum,"Currant, Gooseberry",NA,Y,Y,Y,fruit,Y,Food,,NA,Fruits,Ornamentals,,NA,1B,1,Secondary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
 Ribes triste,Ribes,Ribes triste,NA,NA,"Currant, Gooseberry",NA,Y,Y,Y,fruit,Y,Food,,NA,Fruits,Ornamentals,,NA,1C,1,Tertiary,,,,Cold Tolerance (AB),,,,,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
 Ribes viscosissimum,Ribes,Ribes viscosissimum,NA,NA,"Currant, Gooseberry",NA,Y,Y,Y,fruit,Y,Food,,NA,Fruits,Ornamentals,,NA,1C,1,Assume distant,,,,,,,,,,,Davidson 1995,,Kuhnlein and Turner 2020
-Rorippa aquatica,Rorippa,Rorippa aquatica,NA,NA,Horseradish,NA,Y,Y,Y,horseradish; condiment,Y,Food,,NA,Vegetables,,,NA,1C,1,Assume distant,,,,,,,,,,,Davidson 1995,,Kuhnlein and Turner 2020
+Rorippa aquatica,Rorippa,Rorippa aquatica,NA,NA,Horseradish,NA,Y,Y,Y,horseradish; condiment,Y,Food,,NA,Herbs and Spices,,,NA,1C,1,Assume distant,,,,,,,,,,,Davidson 1995,,Kuhnlein and Turner 2020
 Rosa acicularis,Rosa,Rosa acicularis,NA,NA,Rose,NA,N,Y,Y,fruit,Y,Food,,NA,Fruits,Ornamentals,,NA,2,2,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
 Rosa acicularis subsp. sayi,Rosa,Rosa acicularis,subsp.,sayi,Rose,NA,Y,Y,Y,fruit,Y,Food,,NA,Fruits,Ornamentals,,NA,2,2,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
 Rosa arkansana,Rosa,Rosa arkansana,NA,NA,Rose,NA,Y,Y,Y,fruit,Y,Food,,NA,Fruits,Ornamentals,,NA,2,2,NA,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
@@ -752,7 +752,7 @@ Vaccinium macrocarpum,Vaccinium,Vaccinium macrocarpum,NA,NA,Cranberry,NA,Y,Y,Y,"
 Vaccinium membranaceum,Vaccinium,Vaccinium membranaceum,NA,NA,Blueberry,NA,Y,Y,Y,"fruit, leaves and fruit as tea",Y,Food,,NA,Fruits,,,NA,1B,1,Secondary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
 Vaccinium microcarpum,Vaccinium,Vaccinium microcarpum,NA,NA,Cranberry,NA,Y,Y,Y,"fruit, leaves and fruit as tea",Y,Food,,NA,Fruits,,,NA,1A,1,Primary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
 Vaccinium myrtilloides,Vaccinium,Vaccinium myrtilloides,NA,NA,Blueberry,NA,Y,Y,Y,"fruit, leaves and fruit as tea",Y,Food,,NA,Fruits,,,NA,1A,1,Primary,,,,,,,Crop Quality (AG),,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
-Vaccinium myrtillus,Vaccinium,Vaccinium myrtillus,NA,NA,Blueberry,Lingonberry,Y,Y,Y,"fruit, leaves and fruit as tea",Y,Food,,Food,Fruits,,,Fruits,1A,1,Primary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
+Vaccinium myrtillus,Vaccinium,Vaccinium myrtillus,NA,NA,Blueberry,NA,Y,Y,Y,"fruit, leaves and fruit as tea",Y,Food,,Food,Fruits,,,Fruits,1A,1,Primary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
 Vaccinium ovalifolium,Vaccinium,Vaccinium ovalifolium,NA,NA,Blueberry,NA,Y,Y,Y,"fruit, leaves and fruit as tea",Y,Food,,NA,Fruits,,,NA,1B,1,Secondary,,,,,,,Crop Quality (AG),,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
 Vaccinium ovatum,Vaccinium,Vaccinium ovatum,NA,NA,Blueberry,NA,Y,Y,Y,"fruit, leaves and fruit as tea",Y,Food,,NA,Fruits,,,NA,1C,1,Tertiary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
 Vaccinium oxycoccos,Vaccinium,Vaccinium oxycoccos,NA,NA,Cranberry,NA,Y,Y,Y,"fruit, leaves and fruit as tea",Y,Food,,NA,Fruits,,,NA,1B,1,Secondary,,,,,,,Crop Quality (AG),,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
@@ -760,8 +760,8 @@ Vaccinium pallidum,Vaccinium,Vaccinium pallidum,NA,NA,Blueberry,NA,Y,Y,Y,"fruit,
 Vaccinium parvifolium,Vaccinium,Vaccinium parvifolium,NA,NA,Blueberry,NA,Y,Y,Y,"fruit, leaves and fruit as tea",Y,Food,,NA,Fruits,,,NA,1B,1,Secondary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
 Vaccinium scoparium,Vaccinium,Vaccinium scoparium,NA,NA,Blueberry,NA,Y,Y,Y,"fruit, leaves and fruit as tea",Y,Food,,NA,Fruits,,,NA,1B,1,Secondary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
 Vaccinium stamineum,Vaccinium,Vaccinium stamineum,NA,NA,Blueberry,NA,Y,Y,Y,"fruit, leaves and fruit as tea",Y,Food,,NA,Fruits,,,NA,1C,1,Assume distant,,,,,,,,,,,Davidson 1995,,Kuhnlein and Turner 2020
-Vaccinium uliginosum,Vaccinium,Vaccinium uliginosum,NA,NA,Lingonberry,Blueberry,Y,Y,Y,"fruit, leaves and fruit as tea",Y,Food,,Food,Fruits,,,Fruits,1B,1,Secondary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
-Vaccinium vitis-idaea,Vaccinium,Vaccinium vitis-idaea,NA,NA,Lingonberry,Blueberry,Y,Y,Y,"fruit, leaves and fruit as tea",Y,Food,,Food,Fruits,,,Fruits,1A,1,Primary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
+Vaccinium uliginosum,Vaccinium,Vaccinium uliginosum,NA,NA,Blueberry,NA,Y,Y,Y,"lingonberry; fruit, leaves and fruit as tea",Y,Food,,Food,Fruits,,,Fruits,1B,1,Secondary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
+Vaccinium vitis-idaea,Vaccinium,Vaccinium vitis-idaea,NA,NA,Blueberry,NA,Y,Y,Y,"lingonberry; fruit, leaves and fruit as tea",Y,Food,,Food,Fruits,,,Fruits,1A,1,Primary,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
 Viburnum acerifolium,Viburnum,Viburnum acerifolium,NA,NA,Highbush cranberry,NA,Y,Y,Y,fruit,Y,Cultural,,NA,Ornamentals,,,NA,2,2,NA,,,,,,,,,,,Davidson 1995,,Kuhnlein and Turner 2020
 Viburnum dentatum,Viburnum,Viburnum dentatum,NA,NA,Highbush cranberry,NA,Y,Y,Y,fruit,Y,Cultural,,NA,Ornamentals,,,NA,2,2,NA,,,,,,,,,,,Davidson 1995,,Kuhnlein and Turner 2020
 Viburnum edule,Viburnum,Viburnum edule,NA,NA,Highbush cranberry,NA,Y,Y,Y,fruit,Y,Cultural,,NA,Ornamentals,,,NA,2,2,NA,,,,,,,,,,,Davidson 1995,,Kuhnlein and Turner 2020
