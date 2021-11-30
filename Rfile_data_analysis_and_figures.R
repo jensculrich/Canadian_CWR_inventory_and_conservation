@@ -13,6 +13,9 @@ library(geojsonio) # geo json input and output
 library(ggridges) # needed for ridgeline plot in fig 4
 library(tmap) # libary for drawing spatial figures - i.e. fig 2
 library(tigris) # spatial joins between sf's and df
+library(gridExtra) # panelling figures
+library(scatterpie) # pie charts for map
+library(ggnewscale) # for mixing continuous and discrete fill scales on a map
 
 ############
 # CONTENTS #
@@ -473,22 +476,85 @@ num_accessions <- province_gap_table_species %>%
 num_accessions_cwr <- num_accessions %>%
   filter(TIER == 1) %>%
   mutate(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1 = as.factor(
-    PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1)) 
+    PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1)) %>%
+  group_by(PRIMARY_ASSOCIATED_CROP_COMMON_NAME) %>%
+  mutate(mean = mean(total_accessions))
 
 
-F1 <- ggplot(num_accessions_cwr, 
-             aes(x = reorder(PRIMARY_ASSOCIATED_CROP_COMMON_NAME,
-                             total_accessions), 
+
+F1A <- ggplot(num_accessions_cwr, 
+             aes(x = reorder(PRIMARY_ASSOCIATED_CROP_COMMON_NAME, total_accessions), 
                  y = total_accessions,
                  color = PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1)) + 
-  geom_boxplot() +
-  geom_jitter(shape=16, position=position_jitter(0.2)) +
+  geom_jitter(shape=16, position=position_jitter(0.1)) +
+  facet_grid(cols = vars(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1), scales = "free_x", space = "free_x") +
+  stat_summary(fun=mean, geom="point", shape='-', size= 8, color="black", fill="black") +
   theme_bw() +
-  theme(legend.title = element_blank(),
-        axis.title.y = element_blank()) +
-  coord_flip() +
-  ylab("Total accessions per CWR")
-F1
+  theme(legend.position = 'none',
+        axis.title.x = element_blank(),
+        panel.spacing.x = unit(.1, "cm"),
+        strip.text.x = element_blank(),
+        axis.text.y  = element_text(angle=90, vjust = 1, hjust=0.5, size = 12), 
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 12)) +
+  ylab("Accessions per CWR")
+F1A
+
+F1A_legend <- ggplot(num_accessions_cwr, 
+             aes(x = reorder(PRIMARY_ASSOCIATED_CROP_COMMON_NAME, total_accessions), 
+                 y = total_accessions,
+                 color = PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1)) + 
+  geom_jitter(shape=16, position=position_jitter(0.1)) +
+  theme_bw()
+
+F1A_legend
+
+# some summary statistics
+num_accessions_cwr_summary <- num_accessions_cwr
+
+##########
+# another way to appraoch?
+# function:
+# filter by group
+# make plot (all the same axis scales?)
+# arrange plots on grid
+category_names <- c("Sugars", "Vegetables", 
+                    "Cereals and pseudocereals", "Fruits",
+                    "Nuts", "Oils",
+                    "Herbs and Spices", "Pulses")
+
+make_a_plot_accessions_by_category <- function(category) {
+  num_accessions_cwr_filtered <- num_accessions_cwr %>%
+    filter(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1 == category) 
+  
+  plot <- ggplot(num_accessions_cwr_filtered, 
+                 aes(x = reorder(PRIMARY_ASSOCIATED_CROP_COMMON_NAME,
+                                 total_accessions), 
+                     y = total_accessions)) +
+    # geom_boxplot() +
+    geom_jitter(shape=16, position=position_jitter(0.2)) +
+    stat_summary(fun=mean, geom="point", shape='|', size= 8, color="red", fill="red") +
+    theme_bw() +
+    theme(legend.position = 'none',
+          axis.title.y = element_blank()) +
+    coord_flip()
+    
+    return(plot)
+}
+
+plot_accessions = list()
+q = 1 # make an empty plot object
+for(i in 1:8) {
+  
+  selected_category <- category_names[[i]] # make a vector of cat names
+  plot_accessions[[q]] <- make_a_plot_accessions_by_category(selected_category)
+  
+  q = q+1
+  
+} 
+
+# plot
+plot_accessions
+print(do.call(grid.arrange, plot_accessions))
 
 #############
 # Figure 1B
@@ -499,11 +565,14 @@ num_accessions_cwr_long <- gather(num_accessions_cwr, INSTITUTION_TYPE, accessio
 num_accessions_cwr_long <- num_accessions_cwr_long %>%
   transform(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1 = plyr::revalue(
     PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, 
-    c("Cereals and pseudocereals"="Cereals, pseudo-")))
+    c("Cereals and pseudocereals"="Cereals, pseudo-"))) 
+# %>%
+  #mutate(binary = ifelse(
+   # accessions > 0, 1, 0)))
 
 F1B <- ggplot(num_accessions_cwr_long, aes(x = INSTITUTION_TYPE, 
                                            y = log(accessions), 
-                                           color = PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1)) + 
+                                           fill = PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1)) + 
   geom_boxplot() +
   geom_jitter(shape=16, position=position_jitter(0.2)) +
   facet_grid(. ~ PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1) +
@@ -511,11 +580,87 @@ F1B <- ggplot(num_accessions_cwr_long, aes(x = INSTITUTION_TYPE,
   theme(legend.position = "none",
         axis.title.x = element_blank(),
         strip.text.x = element_text(margin = margin(.4, 0, .1, 0, "cm")),
-        strip.text = element_text(size = 12)) +
+        strip.text = element_text(size = 12),
+        axis.text.y  = element_text(size = 12), 
+        axis.text.x = element_text(size = 12)) +
   scale_x_discrete(labels = c('BG','G')) +
-  ylab("log(Total accessions per CWR)")
+  ylab("log(Accessions per CWR)")
 F1B
 
+####################
+# statistical difference between bg and g for each group?
+
+# to log transform?
+p1 <- ggplot(num_accessions_cwr_long, aes(accessions)) +
+  geom_histogram(fill = "white", color = "grey30") +
+  facet_wrap(~ INSTITUTION_TYPE)
+
+p2 <- ggplot(num_accessions_cwr_long, aes(log(accessions))) +
+  geom_histogram(fill = "white", color = "grey30") +
+  facet_wrap(~ INSTITUTION_TYPE) +
+  scale_x_log10()
+
+grid.arrange(p1, p2, nrow = 2)
+
+# I would say it is better to compare the log-transformed data,
+# not do a t-test at all, given the pretty enormous right-skew of the data distributions
+# non-parametric test?
+
+
+category_names <- c("Sugars", "Vegetables", 
+                    "Cereals, pseudo-", "Fruits",
+                    "Nuts", "Oils",
+                    "Herbs and Spices", "Pulses")
+
+ttest_accessions_by_category <- function(category){
+  num_accessions_cwr_long_filtered <- num_accessions_cwr_long %>%
+    filter(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1 == category) %>%
+    mutate(accessions = as.numeric(accessions))
+  
+  res <- t.test(num_accessions_cwr_long_filtered$accessions ~
+                num_accessions_cwr_long_filtered$INSTITUTION_TYPE)
+  
+  return(res)
+}
+
+ttest_accessions = list()
+q = 1 # specify a list element position
+for(i in 1:8) {
+  
+  selected_category <- category_names[i] # make a vector of cat names
+  ttest_accessions[[q]] <- ttest_accessions_by_category(selected_category)
+  
+  q = q+1
+  
+} 
+
+print(ttest_accessions)
+
+# wilcoxon ranked sum test
+ttest_accessions_by_category <- function(category){
+  num_accessions_cwr_long_filtered <- num_accessions_cwr_long %>%
+    filter(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1 == category) %>%
+    mutate(accessions = as.numeric(accessions))
+  
+  res <- wilcox.test(num_accessions_cwr_long_filtered$accessions ~
+                  num_accessions_cwr_long_filtered$INSTITUTION_TYPE,
+                  exact = FALSE)
+  
+  return(res)
+}
+
+ttest_accessions = list()
+q = 1 # specify a list element position
+for(i in 1:8) {
+  
+  selected_category <- category_names[i] # make a vector of cat names
+  ttest_accessions[[q]] <- ttest_accessions_by_category(selected_category)
+  
+  q = q+1
+  
+} 
+
+print(ttest_accessions)
 
 ##############################
 # # FIGURE 2 # # # # # # # # # 
@@ -603,6 +748,164 @@ CWR_sf_ecoregions_fig2 <- st_as_sf(ecoregion_gap_table_fig2)
     tm_layout(frame = FALSE,
               legend.outside = TRUE)
 )
+
+
+# Figure 2B Alternate - 
+# try making pie charts
+# use species gap table
+# native species in each region represented in BG, G, both, neither
+
+# not using this
+#ecoregion_taxon_density <- ecoregion_gap_table_species %>%
+ # filter(!is.na(ECO_NAME)) %>% # filter for those from Canada AND were able to join w a province
+  # essentially is filtering for the wild origins, but may be capturing some garden origin plants?
+  # filter for tier 1 CWR
+  #filter(TIER == 1) %>%
+  # join with CWR per province to get all provinces possible
+  #full_join(total_CWRs_group_by_ecoregion[ , c("ECO_NAME", "total_CWRs_in_ecoregion")]) %>%
+  # now tally the number of CWR accessions from the province
+  #group_by(ECO_NAME) %>%
+  #distinct(ECO_NAME, .keep_all = TRUE) %>%
+  #filter(ECO_NAME != "Canada") %>%
+  #select(ECO_NAME, latitude, longitude, total_CWRs_in_ecoregion) %>%
+  #full_join(canada_ecoregions_geojson[ , c("ECO_NAME", "geometry")])
+
+ecoregion_species_gaps <- ecoregion_gap_table_species %>%
+  filter(!is.na(ECO_NAME)) %>% # filter for if only want those collections with geo origin
+  # filter for tier 1 CWR
+  filter(TIER == 1) %>%
+  # join with CWR per province to get all provinces possible
+  full_join(total_CWRs_group_by_ecoregion[ , c("ECO_NAME", "total_CWRs_in_ecoregion")]) %>%
+  # now tally the number of CWR accessions from the province
+  group_by(ECO_NAME) %>%
+  mutate(total_accessions = sum(!is.na(INSTITUTION))) %>%
+  # not sure why but having an issue with calculating garden_accessions
+  # works fine if using ecoregion_gap_table df to start with
+  # but produces NAs if using the same script but on the 
+  # ecoregion_gap_table_species df 
+  #mutate(garden_accessions = sum(!is.na(ECO_NAME) & 
+   #                                  INSTITUTION == "BG")) %>%
+  #mutate(genebank_accessions = sum(!is.na(ECO_NAME) & 
+   #                                  INSTITUTION == "G")) %>%
+  group_by(ECO_NAME, SPECIES) %>%
+  # binary 1 = species represented in the region 
+  mutate(in_BG = case_when(
+    INSTITUTION == "BG" ~ 1)) %>%
+  mutate(in_G = case_when(
+    INSTITUTION == "G" ~ 1)) %>%
+  mutate(in_both = case_when(
+    in_BG == 1 && in_G == 1 ~ 1)) %>% # no species are in both; so few G with geolocation
+  # could be better to just do which in each ecoregion are repped at all (w/ or without geo)
+  ungroup() %>%
+  group_by(ECO_NAME) %>%
+  # distinct species # want one line per species
+  # proportion of species in BG, G, both, or any
+  # = sum of all rows (since values are binary) / nrow
+  distinct(SPECIES, .keep_all = TRUE) %>%
+  mutate(proportion_in_BG = 
+           as.numeric(sum(!is.na(in_BG)) / total_CWRs_in_ecoregion)) %>%
+  mutate(proportion_in_G = 
+           as.numeric(sum(!is.na(in_G)) / total_CWRs_in_ecoregion)) %>%
+  mutate(proportion_in_both = 
+           as.numeric((sum(!is.na(in_both)) / total_CWRs_in_ecoregion))) %>%
+  mutate(proportion_in_any = 
+           as.numeric(100 * (sum(!is.na(in_both)) + sum(!is.na(in_BG)) + sum(!is.na(in_G))) 
+         / total_CWRs_in_ecoregion)) %>%
+  mutate(proportion_in_neither = 
+           as.numeric(100 - (proportion_in_any))) %>%
+  distinct(ECO_NAME, .keep_all = TRUE) %>%
+  filter(ECO_NAME != "Canada") %>%
+  select(ECO_NAME, latitude, longitude, total_CWRs_in_ecoregion,
+         total_accessions,
+         in_BG, in_G, in_both,
+         proportion_in_BG, proportion_in_G, proportion_in_both,
+         proportion_in_any, proportion_in_neither) %>%
+  full_join(canada_ecoregions_geojson[ , c("ECO_NAME", "geometry")])
+
+crs_string = "+proj=lcc +lat_1=49 +lat_2=77 +lon_0=-91.52 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs" # 2
+
+legend_title_CWR = expression("CWR")
+
+ecoregion_species_gaps_sf <- st_as_sf(ecoregion_species_gaps)
+
+(map_ecoregions <- tm_shape(ecoregion_species_gaps_sf,
+                            projection = crs_string) +
+    tm_polygons(col = "total_CWRs_in_ecoregion",
+                style = "cont",
+                title = legend_title_CWR) + 
+    tm_symbols(size = "total_accessions", col = "proportion_in_any",
+               scale = 4,
+               palette = rev(RColorBrewer::brewer.pal(5,"Greys")), alpha = 0.9,
+               legend.format = list(text.align="right", text.to.columns = TRUE)) +
+    # tm_bubbles(size="total_accessions", 
+    #         title.size = "CWR accessions",
+    #        scale = 3, col = "black", 
+    #       border.col = "white") +
+    tm_layout(frame = FALSE,
+              legend.outside = TRUE)
+)
+
+
+# Alternate alternate
+test <- ecoregion_species_gaps_sf %>%
+  filter(!is.na(latitude)) %>%
+  mutate(radius = 1/2 * log(total_accessions)) %>%
+  as_tibble() %>%
+  mutate(ECON_NAME = as.factor(ECO_NAME)) 
+
+crs_string = "+proj=lcc +lat_1=49 +lat_2=77 +lon_0=-91.52 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs" # 2
+
+# Define the maps' theme -- remove axes, ticks, borders, legends, etc.
+theme_map <- function(base_size=10, base_family="") { # 3
+  require(grid)
+  theme_bw(base_size=base_size, base_family=base_family) %+replace%
+    theme(axis.line=element_blank(),
+          axis.text=element_blank(),
+          axis.ticks=element_blank(),
+          axis.title=element_blank(),
+          panel.background=element_blank(),
+          panel.border=element_blank(),
+          panel.grid=element_blank(),
+          panel.spacing=unit(0, "lines"),
+          plot.background=element_blank(),
+          legend.justification = c(0,0),
+          legend.position = c(0,0)
+    )
+}
+
+(pies <- ggplot() +
+  geom_scatterpie(data = test,
+                  aes(x=longitude, y=latitude, group = ECO_NAME,
+                      r = radius),
+                  cols = c("proportion_in_any", "proportion_in_neither"),
+                  color = NA)
+)
+  
+(pies_plot <- ggplot(ecoregion_species_gaps_sf) +
+  geom_sf(data = ecoregion_species_gaps_sf, aes(fill = as.numeric(total_CWRs_in_ecoregion))) +
+  scale_fill_viridis_c(option = "B") +
+  
+  theme_map() +
+  new_scale("fill") +
+  geom_scatterpie(data = test,
+                  aes(x = longitude,
+                      y = latitude,
+                      r = radius), alpha = 0.5,
+                  cols = c("proportion_in_any", "proportion_in_neither")
+                  ) + 
+  scale_fill_manual(breaks = c("proportion_in_any", "proportion_in_neither"), 
+                    values=c("black", "white")) +
+  #coord_sf(crs = crs_string)
+  theme(panel.grid.major = element_line(color = "white"),
+        plot.title = element_text(color="black",
+                                  size=14, face="bold.italic", hjust = 0.5),
+        plot.margin=unit(c(0.1,-0.2,0.1,-0.2), "cm"),
+        legend.position = "none") # , legend.text = element_text(size=10))
+  
+)
+# +
+
+
 
 ########################################
 ############ FIGURE 3 ##################
