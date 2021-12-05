@@ -16,6 +16,8 @@ library(tigris) # spatial joins between sf's and df
 library(gridExtra) # panelling figures
 # library(scatterpie) # pie charts for map
 library(ggnewscale) # for mixing continuous and discrete fill scales on a map
+library(FSA) # post hoc Dunn test for significance of Kruskal Wallace test
+library(rcompanion) # pvalue listwise comparison for post-hoc Dunn test
 
 ############
 # CONTENTS #
@@ -706,7 +708,7 @@ F1B
 num_accessions_cwr_long_gardens <- num_accessions_cwr_long %>%
   filter(INSTITUTION_TYPE == "garden_accessions") %>%
   select(institution_binary) %>%
-  mutate(sum = sum(institution_binary)) %>%
+  mutate(sum = sum(institution_binary)) 
   
 
 num_accessions_cwr_long_genebank <- num_accessions_cwr_long %>%
@@ -714,10 +716,6 @@ num_accessions_cwr_long_genebank <- num_accessions_cwr_long %>%
   select(institution_binary) %>%
   mutate(sum = sum(institution_binary))
 
-num_accessions_cwr_long_genebank <- num_accessions_cwr_long %>%
-  filter(INSTITUTION_TYPE == "genebank_accessions") %>%
-  select(institution_binary) %>%
-  mutate(sum = sum(institution_binary))
 
 #### need to run proportion tests by group
 category_names <- c("Sugars", "Vegetables", 
@@ -1175,7 +1173,7 @@ theme_map <- function(base_size=10, base_family="") { # 3
         legend.position = "none") # , legend.text = element_text(size=10))
   
 )
-# +
+
 
 
 
@@ -1522,7 +1520,7 @@ gap_analysis_df_by_province <- data.frame("SPECIES" = character(),
 # add that species as a row to the gap analysis df
 for(i in 1:nrow(inventory_sp_T1)) {
   
-  selected_taxon <- inventory_sp_T1[[i,1]] # column 1 is species ("sci_name")
+  selected_taxon <- inventory_sp_T1[[i,2]] # column 1 is species ("sci_name")
   as.data.frame(temp <- province_gap_analysis(
     species = selected_taxon)) 
   gap_analysis_df_by_province <- rbind(
