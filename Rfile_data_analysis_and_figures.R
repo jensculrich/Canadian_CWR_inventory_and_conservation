@@ -624,8 +624,8 @@ F1A_legend <- ggplot(num_accessions_cwr,
                  y = total_accessions,
                  color = PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1)) + 
   geom_jitter(shape=16, position=position_jitter(0.1)) +
-  theme_bw()
-
+  theme_bw() +
+  theme(legend.position="bottom")
 F1A_legend
 
 
@@ -706,6 +706,12 @@ F1B
 num_accessions_cwr_long_gardens <- num_accessions_cwr_long %>%
   filter(INSTITUTION_TYPE == "garden_accessions") %>%
   select(institution_binary) %>%
+  mutate(sum = sum(institution_binary)) %>%
+  
+
+num_accessions_cwr_long_genebank <- num_accessions_cwr_long %>%
+  filter(INSTITUTION_TYPE == "genebank_accessions") %>%
+  select(institution_binary) %>%
   mutate(sum = sum(institution_binary))
 
 num_accessions_cwr_long_genebank <- num_accessions_cwr_long %>%
@@ -713,31 +719,74 @@ num_accessions_cwr_long_genebank <- num_accessions_cwr_long %>%
   select(institution_binary) %>%
   mutate(sum = sum(institution_binary))
 
-prop.test(x = c(490, 400), n = c(500, 500))
+#### need to run proportion tests by group
+category_names <- c("Sugars", "Vegetables", 
+                    "Cereals, pseudo-", "Fruits",
+                    "Nuts", "Oils",
+                    "Herbs and Spices", "Pulses")
 
-prop.test(x = c(117, 51),
-          n = c(212, 212))
+CWR_prop_test <- function(category){
+  num_accessions_cwr_long_filtered <- num_accessions_cwr_long %>%
+    filter(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1 == category) %>%
+    # group by institution type
+    group_by(INSTITUTION_TYPE) %>%
+    # calc number of species with 1
+    # calc total number of species
+    mutate(species_yes = sum(institution_binary),
+            n = n()) %>%
+    # just want one row from each group
+    distinct(INSTITUTION_TYPE, .keep_all = TRUE)
+  
+  res <- prop.test(x = c(as.numeric(num_accessions_cwr_long_filtered[1, 51]),
+                         as.numeric(num_accessions_cwr_long_filtered[2, 51])),
+                   n = c(as.numeric(num_accessions_cwr_long_filtered[1, 52]),
+                         as.numeric(num_accessions_cwr_long_filtered[2, 52]))
+  )
+  
+  return(res)
+  
+}
+
+ptest_accessions = list()
+q = 1 # specify a list element position
+for(i in 1:8) {
+  
+  selected_category <- category_names[i] # make a vector of cat names
+  ptest_accessions[[q]] <- CWR_prop_test(selected_category)
+  
+  q = q+1
+  
+} 
+
+print(ptest_accessions)
+
 
 F1C <- ggplot(num_accessions_cwr_long, aes(x = INSTITUTION_TYPE, 
-                                           y = institution_binary, 
-                                           fill = PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1)) + 
-  geom_bar(stat="identity")
-  
-  
-  
-  geom_boxplot() +
-  geom_jitter(shape=16, width=0.3, height=0.1) +
+                                           y = as.factor(institution_binary), 
+                                           fill = as.factor(institution_binary))) + 
+  geom_bar(stat="identity") +
   facet_grid(. ~ PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1) +
+  geom_text(aes(y=1, label=as.factor(institution_binary)), vjust=1.6, 
+            color="white", size=3.5) +
+  # scale_fill_brewer(palette="Paired") +
   theme_bw() +
-  theme(legend.position = "none",
+  theme(legend.position = "bottom",
+        axis.ticks.y = element_blank(),
         axis.title.x = element_blank(),
         strip.text.x = element_text(margin = margin(.4, 0, .1, 0, "cm")),
         strip.text = element_text(size = 12),
-        axis.text.y  = element_text(size = 12), 
-        axis.text.x = element_text(size = 12)) +
+        axis.text.y  = element_blank(), 
+        axis.text.x = element_text(size = 12),
+        legend.text=element_text(size = 12)) +
   scale_x_discrete(labels = c('BG','G')) +
-  ylab("Proportion Conserved")
+  scale_fill_manual(labels = c("CWR absent from ex situ collections", "CWR in ex situ collections"), 
+                    values = c("slategray2", "slategray4")) +
+  ylab("") + 
+  guides(fill=guide_legend(title=""))
+  
 F1C
+
+
 
 ####################
 # statistical difference between bg and g for each group?
@@ -1487,8 +1536,8 @@ gap_analysis_df_by_province <- gap_analysis_df_by_province %>%
 
 # Compute the analysis of variance
 res.aov <- aov(perc_province_range_covered ~ 
-                 PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, 
-               data = gap_analysis_df_by_province)
+                PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, 
+             data = gap_analysis_df_by_province)
 # Summary of the analysis
 summary(res.aov)
 
