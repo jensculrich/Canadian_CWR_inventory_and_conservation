@@ -1561,6 +1561,17 @@ cldList(P.adj ~ Comparison,
         data = PT,
         threshold = 0.05)
 
+# what are the actual medians?
+(summary <- group_by(gap_analysis_df_by_province, PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1) %>%
+  summarise(
+    count = n(),
+    mean = mean(perc_province_range_covered, na.rm = TRUE),
+    sd = sd(perc_province_range_covered, na.rm = TRUE),
+    median = as.numeric(median(perc_province_range_covered, na.rm = FALSE)),
+    IQR = IQR(perc_province_range_covered, na.rm = TRUE)
+  )
+)
+
 # 
 ### now make the figure
 #
@@ -1680,7 +1691,7 @@ gap_analysis_df_by_province_T2 <- data.frame("SPECIES" = character(),
 # add that species as a row to the gap analysis df
 for(i in 1:nrow(inventory_sp_T2)) {
   
-  selected_taxon <- inventory_sp_T2[[i,1]] # column 1 is species ("sci_name")
+  selected_taxon <- inventory_sp_T2[[i,2]] # column 1 is species ("sci_name")
   as.data.frame(temp <- province_gap_analysis_T2(
     species = selected_taxon)) 
   gap_analysis_df_by_province_T2 <- rbind(
@@ -1704,7 +1715,7 @@ gap_analysis_df_by_province_T2_f4 <- gap_analysis_df_by_province_T2 %>%
                     fill = PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1,
                     height = ..density..)) +
     geom_density_ridges(alpha = 0.6, trim = TRUE,
-                        scale = 2, size = 0.5,
+                        scale = 1.5, size = 0.5,
                         jittered_points = TRUE,
                         position = position_points_jitter(width = 0.01, height = 0),
                         point_shape = '|', point_size = 3, point_alpha = 1) +
@@ -1803,7 +1814,7 @@ gap_analysis_df_by_province_WUS <- data.frame("SPECIES" = character(),
 # add that species as a row to the gap analysis df
 for(i in 1:nrow(inventory_sp_WUS)) {
   
-  selected_taxon <- inventory_sp_WUS[[i,1]] # column 1 is species ("sci_name")
+  selected_taxon <- inventory_sp_WUS[[i,2]] # column 1 is species ("sci_name")
   as.data.frame(temp <- province_gap_analysis_WUS(
     species = selected_taxon)) 
   gap_analysis_df_by_province_WUS <- rbind(
@@ -1817,7 +1828,7 @@ for(i in 1:nrow(inventory_sp_WUS)) {
 
 gap_analysis_df_by_province_WUS_f4 <- gap_analysis_df_by_province_WUS %>%
  filter(PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_1 %in%
-          c("Food", "Cultural"))
+          c("Food", "Medicinals"))
 
 (fig4 <- ggplot(gap_analysis_df_by_province_WUS_f4, 
                 aes(x = perc_province_range_covered, 
@@ -1825,7 +1836,7 @@ gap_analysis_df_by_province_WUS_f4 <- gap_analysis_df_by_province_WUS %>%
                     fill = PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_1,
                     height = ..density..)) +
     geom_density_ridges(alpha = 0.6, trim = TRUE,
-                        scale = 2, size = 0.5,
+                        scale = 1.5, size = 0.5,
                         jittered_points = TRUE,
                         position = position_points_jitter(width = 0.01, height = 0),
                         point_shape = '|', point_size = 3, point_alpha = 1) +
@@ -1840,7 +1851,7 @@ gap_analysis_df_by_province_WUS_f4 <- gap_analysis_df_by_province_WUS %>%
                                       hjust = 0.5)) +
     scale_x_continuous(labels = function(x) paste0(x*100, "%"),
                        limits = c(0,1))  +
-    scale_y_discrete(labels=c("Cultural" = "WUS - Cultural", 
+    scale_y_discrete(labels=c("Medicinals" = "WUS - Medicinal", 
                               "Food" = "WUS - Food"))
 )
 
