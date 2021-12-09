@@ -376,9 +376,11 @@ sf_garden_accessions <- garden_accessions %>%
 
 # Append Province to accession using lat and longitude
 # spatial join to add accession province
-points_polygon <- st_join(sf_garden_accessions, canada_provinces_geojson, left = TRUE)
+points_polygon <- st_join(sf_garden_accessions, canada_provinces_geojson, left = TRUE,
+                          join = st_nearest_feature, maxdist = 100000)
 # spatial join to add accession ecoregion
-points_polygon_2 <- st_join(points_polygon, canada_ecoregions_geojson, left = TRUE)
+points_polygon_2 <- st_join(points_polygon, canada_ecoregions_geojson, left = TRUE,
+                            join = st_nearest_feature, maxdist = 100000)
 
 # GO BACK AND REDO THIS JOIN BY NEAREST NEIGHBOR!!! 
 # WILL ALSO NEED TO REMOVE COLLECTIONS FROM OUTSIDE CANADA FOR THE GAP ANALYSIS FIGUREs/APP
@@ -565,7 +567,7 @@ lims <- num_accessions_cwr %>%
   select(label) 
   
 
-F1A <- ggplot(num_accessions_cwr, 
+F1 <- ggplot(num_accessions_cwr, 
              aes(x = reorder(PRIMARY_ASSOCIATED_CROP_COMMON_NAME, total_accessions), 
                  y = total_accessions,
                  color = PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1)) + 
@@ -619,66 +621,22 @@ F1A <- ggplot(num_accessions_cwr,
                             "Rice, Wild-rice" = expression(paste("Rice, Wild-rice - ", italic('Zizania'), " (2/2)"))
                             )
   )
-F1A
+F1
 
-F1A_legend <- ggplot(num_accessions_cwr, 
+F1_legend <- ggplot(num_accessions_cwr, 
              aes(x = reorder(PRIMARY_ASSOCIATED_CROP_COMMON_NAME, total_accessions), 
                  y = total_accessions,
                  color = PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1)) + 
   geom_jitter(shape=16, position=position_jitter(0.1)) +
   theme_bw() +
   theme(legend.position="bottom")
-F1A_legend
+F1_legend
 
 
 
-##########
-# another way to appraoch?
-# function:
-# filter by group
-# make plot (all the same axis scales?)
-# arrange plots on grid
-category_names <- c("Sugars", "Vegetables", 
-                    "Cereals and pseudocereals", "Fruits",
-                    "Nuts", "Oils",
-                    "Herbs and Spices", "Pulses")
-
-make_a_plot_accessions_by_category <- function(category) {
-  num_accessions_cwr_filtered <- num_accessions_cwr %>%
-    filter(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1 == category) 
-  
-  plot <- ggplot(num_accessions_cwr_filtered, 
-                 aes(x = reorder(PRIMARY_ASSOCIATED_CROP_COMMON_NAME,
-                                 total_accessions), 
-                     y = total_accessions)) +
-    # geom_boxplot() +
-    geom_jitter(shape=16, position=position_jitter(0.2)) +
-    stat_summary(fun=mean, geom="point", shape='|', size= 8, color="red", fill="red") +
-    theme_bw() +
-    theme(legend.position = 'none',
-          axis.title.y = element_blank()) +
-    coord_flip()
-    
-    return(plot)
-}
-
-plot_accessions = list()
-q = 1 # make an empty plot object
-for(i in 1:8) {
-  
-  selected_category <- category_names[[i]] # make a vector of cat names
-  plot_accessions[[q]] <- make_a_plot_accessions_by_category(selected_category)
-  
-  q = q+1
-  
-} 
-
-# plot
-plot_accessions
-print(do.call(grid.arrange, plot_accessions))
-
-#############
-# Figure 1B
+###############################
+# Figure 2 ####################
+###############################
 
 num_accessions_cwr_long <- gather(num_accessions_cwr, INSTITUTION_TYPE, accessions,
                                   garden_accessions,genebank_accessions, 
@@ -688,7 +646,7 @@ num_accessions_cwr_long <- gather(num_accessions_cwr, INSTITUTION_TYPE, accessio
     c("Cereals and pseudocereals"="Cereals, pseudo-"))) %>%
   mutate(institution_binary = ifelse(accessions > 0, 1, 0))
 
-F1B <- ggplot(num_accessions_cwr_long, aes(x = INSTITUTION_TYPE, 
+F2A <- ggplot(num_accessions_cwr_long, aes(x = INSTITUTION_TYPE, 
                                            y = log(accessions), 
                                            fill = PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1)) + 
   geom_boxplot() +
@@ -703,7 +661,7 @@ F1B <- ggplot(num_accessions_cwr_long, aes(x = INSTITUTION_TYPE,
         axis.text.x = element_text(size = 12)) +
   scale_x_discrete(labels = c('BG','G')) +
   ylab("log(Accessions per CWR)")
-F1B
+F2A
 
 num_accessions_cwr_long_gardens <- num_accessions_cwr_long %>%
   filter(INSTITUTION_TYPE == "garden_accessions") %>%
@@ -758,9 +716,21 @@ for(i in 1:8) {
 
 print(ptest_accessions)
 
+num_accessions_cwr_long <- num_accessions_cwr_long %>%
+  group_by(INSTITUTION_TYPE) %>%
+  with(., reorder(
+    SPECIES, institution_binary))
 
-F1C <- ggplot(num_accessions_cwr_long, aes(x = INSTITUTION_TYPE, 
-                                           y = as.factor(institution_binary), 
+
+num_accessions_cwr_long$SPECIES = 
+  with(num_accessions_cwr_long, reorder(
+    SPECIES, as.factor(INSTITUTION_TYPE)))
+
+arrange(num_accessions_cwr_long, INSTITUTION_TYPE, institution_binary)
+
+
+F2B <- ggplot(num_accessions_cwr_long, aes(x = INSTITUTION_TYPE, 
+                                           y = SPECIES, 
                                            fill = as.factor(institution_binary))) + 
   geom_bar(stat="identity") +
   facet_grid(. ~ PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1) +
@@ -782,7 +752,7 @@ F1C <- ggplot(num_accessions_cwr_long, aes(x = INSTITUTION_TYPE,
   ylab("") + 
   guides(fill=guide_legend(title=""))
   
-F1C
+F2B
 
 
 
@@ -836,7 +806,7 @@ for(i in 1:8) {
 print(ttest_accessions)
 
 # wilcoxon ranked sum test
-ttest_accessions_by_category <- function(category){
+wtest_accessions_by_category <- function(category){
   num_accessions_cwr_long_filtered <- num_accessions_cwr_long %>%
     filter(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1 == category) %>%
     mutate(accessions = as.numeric(accessions))
@@ -848,21 +818,21 @@ ttest_accessions_by_category <- function(category){
   return(res)
 }
 
-ttest_accessions = list()
+wtest_accessions = list()
 q = 1 # specify a list element position
 for(i in 1:8) {
   
   selected_category <- category_names[i] # make a vector of cat names
-  ttest_accessions[[q]] <- ttest_accessions_by_category(selected_category)
+  wtest_accessions[[q]] <- wtest_accessions_by_category(selected_category)
   
   q = q+1
   
 } 
 
-print(ttest_accessions)
+print(wtest_accessions)
 
 ##############################
-# # FIGURE 2 CWR # # # # # # # 
+# # FIGURE 4 # # # # # # # ###
 ##############################
 
 # Geographic gaps in accessions versus species distr density
@@ -967,6 +937,9 @@ province_species_gaps <- province_gap_table_species %>%
          proportion_in_any, proportion_in_neither) %>%
   full_join(canada_provinces_geojson[ , c("PROVINCE", "geometry")],
             by = c("province" = "PROVINCE"))
+
+####################
+# FIG 4 By PROVINCE
 
 
 crs_string = "+proj=lcc +lat_1=49 +lat_2=77 +lon_0=-91.52 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs" # 2
@@ -1095,24 +1068,6 @@ ecoregion_species_gaps_sf <- st_as_sf(ecoregion_species_gaps)
     tm_layout(frame = FALSE,
               legend.outside = TRUE,
               legend.title.size = 1)
-)
-
-#########
-# not using this, old version of the figure
-legend_title_CWR = expression("CWR")
-# breaks = c(0, 40, 80, 120, 160, 200)
-CWR_sf_ecoregions_fig2 <- st_as_sf(ecoregion_gap_table_fig2)
-(map_ecoregions <- tm_shape(CWR_sf_ecoregions_fig2,
-                           projection = crs_string) +
-    tm_polygons(col = "total_CWRs_in_ecoregion",
-                style = "jenks",
-                title = legend_title_CWR) + 
-    tm_bubbles(size="total_accessions", 
-               title.size = "CWR accessions",
-               scale = 3, col = "black", 
-               border.col = "white") +
-    tm_layout(frame = FALSE,
-              legend.outside = TRUE)
 )
 
 
@@ -1301,7 +1256,7 @@ province_species_gaps_WUS_sf <- st_as_sf(province_species_gaps_WUS)
     tm_symbols(size = "total_accessions", col = "proportion_in_any",
                title.size = "Accessions from region",
                title.col = "WUS species conserved (%)",
-               sizes.legend=c(0, 25, 50, 100, 500, 1000),
+               sizes.legend=c(0, 50, 100, 500, 1000),
                scale = 4,
                palette = rev(RColorBrewer::brewer.pal(5,"Greys")), alpha = 0.9,
                legend.format = list(text.align="right", text.to.columns = TRUE)) +
@@ -1381,7 +1336,7 @@ ecoregion_species_gaps_WUS_sf <- st_as_sf(ecoregion_species_gaps_WUS)
     tm_symbols(size = "total_accessions", col = "proportion_in_any",
                title.size = "Accessions from region",
                title.col = "WUS species conserved (%)",
-               sizes.legend=c(0, 25, 50, 100, 500, 1000),
+               sizes.legend=c(0, 50, 100, 500, 1000),
                scale = 4,
                border.col = "white",
                palette = rev(RColorBrewer::brewer.pal(5,"Greys")), alpha = 0.9,
@@ -1392,7 +1347,7 @@ ecoregion_species_gaps_WUS_sf <- st_as_sf(ecoregion_species_gaps_WUS)
 )
 
 
-
+# dont think this is needed anymore
 ecoregion_gap_table_fig3 <- ecoregion_gap_table %>%
   filter(!is.na(ECO_NAME)) %>% # filter for those from Canada AND were able to join w a province
   # essentially is filtering for the wild origins, but may be capturing some garden origin plants?
@@ -1931,7 +1886,7 @@ gap_analysis_df_by_ecoregion <- data.frame("SPECIES" = character(),
 # add that species as a row to the gap analysis df
 for(i in 1:nrow(inventory_sp_T1)) {
   
-  selected_taxon <- inventory_sp_T1[[i,1]] # column 1 is species ("sci_name")
+  selected_taxon <- inventory_sp_T1[[i,2]] # column 1 is species ("sci_name")
   as.data.frame(temp <- ecoregion_gap_analysis(
     species = selected_taxon)) 
   gap_analysis_df_by_ecoregion <- rbind(
@@ -1995,13 +1950,19 @@ theme_map <- function(base_size=10, base_family="") { # 3
 
 ##############
 # By Ecoregion
-saskatoon_cwr_list <- inventory_sp %>%
-  filter(PRIMARY_ASSOCIATED_CROP_COMMON_NAME == "Saskatoon")
+# saskatoon_cwr_list <- inventory_sp %>%
+#  filter(PRIMARY_ASSOCIATED_CROP_COMMON_NAME == "Saskatoon")
 
 accessions_sf <- st_as_sf(ecoregion_gap_table_species, 
          coords = c("longitude", "latitude"), 
          crs = 4326, 
          na.fail = FALSE)
+
+accessions_sf_G <- accessions_sf %>%
+  filter(INSTITUTION == "G")
+
+accessions_sf_BG <- accessions_sf %>%
+  filter(INSTITUTION == "BG")
 
 # Function to get plot data by taxon
 plotData_ecoregion <- function(species){
@@ -2041,30 +2002,42 @@ plotData_ecoregion <- function(species){
   
 } 
 
+
 make_a_plot_ecoregion <- function(species) {
-  accessions_sf_filtered <- accessions_sf %>%
+  accessions_sf_G_filtered <- accessions_sf_G %>%
+    filter(SPECIES == species) %>%
+    filter(is.na(LOCALITY))
+  
+  accessions_sf_BG_filtered <- accessions_sf_BG %>%
     filter(SPECIES == species) 
   
-  plot <- ggplot(plotData_ecoregion(species)) +
-    geom_sf(aes(fill = as.factor(binary)),
-            color = "gray60", size = 0.1) +
-    geom_sf(data = accessions_sf_filtered, color = 'skyblue', alpha = 0.5, size = 2) +
+  df <- plotData_ecoregion(species)
+  
+  df$binary[is.na(df$binary)] <- -1
+  
+  plot <- ggplot(df) +
+    geom_sf(fill = "white", color = "gray60", size = 0.1) +
+    geom_sf(aes(fill = as.factor(binary))) +
+    geom_sf(data = accessions_sf_G_filtered, color = 'mediumorchid1', alpha = 0.5, size = 5) +
+    geom_sf(data = accessions_sf_BG_filtered, color = 'goldenrod1', alpha = 0.5, size = 5) +
     coord_sf(crs = crs_string) +
-    scale_fill_manual(values = c("gray80", "gray18"), 
-                      labels = c("No accessions with geographic data held in collection", 
-                                 ">1 accession with geographic data held in collection", 
-                                 "Outside of native range")) +
-    # guides(fill = guide_legend(title = "Conservation Status in Botanic Gardens", 
-    #                            title.position = "top",
-    #                           title.theme = element_text(size = 10, face = "bold")
-    # )) +
+    scale_fill_manual(values = c("white", "gray60", "gray10"), 
+                      labels = c("Outside range",
+                                 "Not in ex situ collections", 
+                                 "In ex situ collections" 
+                                 )) +
+     guides(fill = guide_legend(title = "", 
+                                title.position = "top",
+                              title.theme = element_text(size = 10, face = "bold")
+    )) +
     theme_map() +
     ggtitle(species) +
     theme(panel.grid.major = element_line(color = "white"),
           plot.title = element_text(color="black",
                                     size=14, face="bold.italic", hjust = 0.5),
           plot.margin=unit(c(0.1,-0.2,0.1,-0.2), "cm"),
-          legend.position = "none") # , legend.text = element_text(size=10)),
+          legend.position = "bottom", legend.text = element_text(size=12))
+  
   return(plot)
 }
 
@@ -2082,4 +2055,7 @@ test3
 
 test4 <- make_a_plot_ecoregion("Fragaria virginiana")
 test4
+
+test5 <- make_a_plot_ecoregion("Elymus canadensis")
+test5
 
