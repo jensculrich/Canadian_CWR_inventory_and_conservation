@@ -1,9 +1,8 @@
-# INTRO (EDIT THIS)
+# INTRO 
 # Use the species distribution data and the garden/genebank accession data
-# to explore the inventory itself
+# to explore CWR and WUS diversity
 # and more particularly
-# the strengths and gaps in ex situ conservation of the CWR and WUS in the inventory
-
+# the strengths and gaps in ex situ conservation 
 
 # load required libraries
 library(tidyverse)
@@ -14,10 +13,10 @@ library(ggridges) # needed for ridgeline plot in fig 4
 library(tmap) # libary for drawing spatial figures - i.e. fig 2
 library(tigris) # spatial joins between sf's and df
 library(gridExtra) # panelling figures
-# library(scatterpie) # pie charts for map
 library(ggnewscale) # for mixing continuous and discrete fill scales on a map
-library(FSA) # post hoc Dunn test for significance of Kruskal Wallace test
-library(rcompanion) # pvalue listwise comparison for post-hoc Dunn test
+
+#library(FSA) # post hoc Dunn test for significance of Kruskal Wallace test
+#library(rcompanion) # pvalue listwise comparison for post-hoc Dunn test
 
 ############
 # CONTENTS #
@@ -46,7 +45,10 @@ library(rcompanion) # pvalue listwise comparison for post-hoc Dunn test
 # Load required data and shapefiles for plotting occurrence maps and data tables
 inventory <- read.csv("./Input_Data_and_Files/inventory.csv") %>% 
   mutate(TAXON = str_replace(TAXON, "×", "")) %>% 
-  mutate(SPECIES = str_replace(SPECIES, "×", ""))
+  mutate(SPECIES = str_replace(SPECIES, "×", "")) 
+
+inventory_finest_taxon_resolution <- inventory %>%
+  filter(FINEST_TAXON_RESOLUTION == "Y")
 
 canada_ecoregions_geojson <- st_read("./Geo_Data/canada_ecoregions_clipped.geojson", quiet = TRUE)
 canada_provinces_geojson <- st_read("./Geo_Data/canada_provinces.geojson", quiet = TRUE)
@@ -68,9 +70,9 @@ sp_distr_province_sf <- merge(x = sp_distr_province,
 
 # join with inventory to add taxon information (category, crop relative, IUCN, etc.)
 sp_distr_province_sf <- merge(x = sp_distr_province_sf,
-                               y = inventory[ , c("TAXON",
+                               y = inventory_finest_taxon_resolution[ , c("TAXON",
                                             "PRIMARY_ASSOCIATED_CROP_COMMON_NAME",
-                                            "SECONDARY_ASSOCIATED_CROP_COMMON_NAME",
+                                            # "SECONDARY_ASSOCIATED_CROP_COMMON_NAME",
                                             "CWR", "WUS", "NATIVE",
                                             "PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_1",
                                             "PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_2",
@@ -90,9 +92,9 @@ sp_distr_ecoregion_sf <- merge(x = sp_distr_ecoregion,
 
 # join with inventory to add taxon information (category, crop relative, IUCN, etc.)
 sp_distr_ecoregion_sf <- merge(x = sp_distr_ecoregion_sf,
-                              y = inventory[ , c("TAXON",
+                              y = inventory_finest_taxon_resolution[ , c("TAXON",
                                                  "PRIMARY_ASSOCIATED_CROP_COMMON_NAME",
-                                                 "SECONDARY_ASSOCIATED_CROP_COMMON_NAME",
+                                                 # "SECONDARY_ASSOCIATED_CROP_COMMON_NAME",
                                                  "CWR", "WUS", "NATIVE",
                                                  "PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_1",
                                                  "PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_2",
@@ -115,14 +117,16 @@ sp_distr_ecoregion_sf <- merge(x = sp_distr_ecoregion_sf,
 # end result is a bar chart that displays the number of CWR in each category
 # how to show relative to the number of crop groups?
 
-CWR_inventory_summary <- inventory %>%
+CWR_inventory_summary <- inventory_finest_taxon_resolution %>%
   filter(CWR == "Y") %>%
   filter(TIER == 1) %>%
   group_by(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1) %>%
   add_tally() %>%
+  distinct(SPECIES, .keep_all = TRUE) %>%
+  add_tally() %>%
   distinct(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, .keep_all = TRUE ) %>%
   arrange(desc(n)) %>%
-  dplyr::select(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, n) %>%
+  dplyr::select(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, n, nn) %>%
   # change level name to fit on the figure page better
   transform(
     PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1=plyr::revalue(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, 
@@ -146,7 +150,7 @@ barplot(CWR_inventory_summary$n, #main = "Native CWR Taxa in Broad Crop Categori
 total_and_endemic_CWRs_ecoregion <- sp_distr_ecoregion_sf %>%
   # count total CWRs (unique TAXON in each province) - only tier 1?
   # want the rows where CWR is Y (just the CWR)
-  filter(CWR == "Y") %>%
+  #filter(CWR == "Y") %>%
   filter(TIER == "1") %>%
   # group by ecoregion
   group_by(ECO_NAME) %>%
@@ -225,7 +229,7 @@ Q <- ggplot(total_CWRs_group_by_province, aes(x = total_CWRs_in_province)) + the
 Q
 
 #########################################
-# repeat for WUS 
+# repeat forWUS 
 
 # WUS per ecoregion
 total_and_endemic_WUS_ecoregion <- sp_distr_ecoregion_sf %>%
@@ -311,14 +315,14 @@ S
 
 
 # inventory summary stats
-unique_taxa <- nrow(inventory)
-unique_species <- inventory %>%
+unique_taxa <- nrow(inventory_finest_taxon_resolution)
+unique_species <- inventory_finest_taxon_resolution %>%
   distinct(SPECIES, .keep_all = TRUE)
-CWR1 <- inventory %>%
+CWR1 <- inventory_finest_taxon_resolution %>%
   filter(TIER == 1)
-CWR2 <- inventory %>%
+CWR2 <- inventory_finest_taxon_resolution %>%
   filter(TIER == 2)
-WUS <- inventory %>%
+WUS <- inventory_finest_taxon_resolution %>%
   filter(WUS == "Y")
 CWR1_sp <- unique_species %>%
   filter(TIER == 1)
@@ -346,23 +350,25 @@ cwr_mountp <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_mpg.csv", na.str
 cwr_vandusen <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_van_dusen.csv", na.strings=c("","NA"))
 cwr_usask <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_sask.csv") 
 cwr_readerrock <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_reader_rock.csv", na.strings=c("","NA"))
-cwr_PGRC <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_pgrc.csv", na.strings=c("","NA"))
+cwr_PGRC <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_pgrc_full.csv", na.strings=c("","NA"))
 cwr_NPGS <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_usda.csv", na.strings=c("","NA"))
-cwr_PGRC_usa <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_pgrc_usa.csv", na.strings=c("","NA"))
 cwr_NPGS_usa <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_usda_usa.csv", na.strings=c("","NA"))
+cwr_NPGS_full <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_NPGS_full.csv", na.strings=c("","NA"))
+cwr_missed <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_missed_taxa.csv", na.strings=c("","NA"))
 
 
 # join all garden data into one long table
 # update and add new gardens as we receive additional datasets
 garden_accessions <- rbind(cwr_ubc, cwr_rbg, cwr_guelph, cwr_montreal, 
-                           cwr_mountp, cwr_vandusen, cwr_usask,
-                           cwr_readerrock, 
-                           cwr_PGRC, cwr_NPGS, 
-                           cwr_PGRC_usa, cwr_NPGS_usa)
+                           cwr_mountp, cwr_vandusen, cwr_usask, cwr_readerrock, 
+                           cwr_PGRC, 
+                           cwr_NPGS, cwr_NPGS_usa, cwr_NPGS_full,
+                           cwr_missed)
 
 garden_accessions <- garden_accessions %>% # format columns
   mutate(latitude = as.numeric(LATITUDE), 
-         longitude = as.numeric(LONGITUDE)) # %>%
+         longitude = as.numeric(LONGITUDE)) %>% 
+  mutate(TAXON = str_replace(TAXON, "×", "")) # R can't match this symbol in joins
 
 # Transform garden data into a projected shape file
 sf_garden_accessions <- garden_accessions %>%
@@ -462,14 +468,58 @@ summary_all_garden_accessions_shapefile_2 <- points_polygon_2 %>%
 
 TIER1 <- summary_all_garden_accessions_shapefile_2 %>%
   filter(TIER == 1)
+TIER1_distinct <- TIER1 %>%
+  distinct(SPECIES)
 TIER2 <- summary_all_garden_accessions_shapefile_2 %>%
   filter(TIER == 2)
 WUS <- summary_all_garden_accessions_shapefile_2 %>%
   filter(WUS == "Y")
 BG <- summary_all_garden_accessions_shapefile_2 %>%
-  filter(INSTITUTION == "BG")
+  filter(INSTITUTION == "BG") %>%
+  group_by(GARDEN_CODE, TIER) %>%
+  count()
+BG_distinct <- summary_all_garden_accessions_shapefile_2 %>%
+  filter(INSTITUTION == "BG",
+         TIER == 1) %>%
+  distinct(SPECIES)
+BG_WUS <- summary_all_garden_accessions_shapefile_2 %>%
+  filter(INSTITUTION == "BG",
+         WUS == "Y") %>%
+  group_by(GARDEN_CODE) %>%
+  count()
 G <- summary_all_garden_accessions_shapefile_2 %>%
-  filter(INSTITUTION == "G")
+  filter(INSTITUTION == "G") # %>%
+  #group_by(TIER) %>%
+  #count()
+G_distinct <- G %>%
+  filter(TIER == 1) %>%
+  distinct(SPECIES)
+PGRC_distinct <- G %>%
+  filter(TIER == 1,
+         GARDEN_CODE == "PGRC") %>%
+  distinct(SPECIES)
+NPGS_distinct <- G %>%
+  filter(TIER == 1,
+         GARDEN_CODE == "NPGS") %>%
+  distinct(SPECIES)
+left <- anti_join(PGRC_distinct, NPGS_distinct)
+left2 <- anti_join(NPGS_distinct, PGRC_distinct)
+left3 <- anti_join(G_distinct, BG_distinct)
+left4 <- anti_join(BG_distinct, G_distinct)
+
+G_WUS <- summary_all_garden_accessions_shapefile_2 %>%
+  filter(INSTITUTION == "G",
+         WUS == "Y") %>%
+  group_by(GARDEN_CODE) %>%
+  count()
+NPGS <- G %>%
+  filter(GARDEN_CODE == "NPGS") %>%
+  group_by(TIER) %>%
+  count()
+PGRC <- G %>%
+  filter(GARDEN_CODE == "PGRC") %>%
+  group_by(TIER) %>%
+  count()
 unique_CWR_repped_species <- TIER1 %>%
   distinct(SPECIES)
 unique_CWR2_repped_species <- TIER2 %>%
@@ -506,6 +556,7 @@ ecoregion_gap_table <- sp_distr_ecoregion[ , c("TAXON", "ECO_NAME")] %>%
 inventory_sp <- inventory %>%
   select(-TAXON, -RANK, -INFRASPECIFIC) %>%
   distinct(SPECIES, .keep_all = TRUE)
+
 sp_distr_province_sp <- sp_distr_province %>%
   # remove duplicates at province within species
   distinct(SPECIES, PROVINCE, .keep_all=TRUE)
@@ -562,16 +613,27 @@ num_accessions_cwr <- num_accessions %>%
                        " - ", GENUS, " (", total_in_ex_situ,
                        "/", total_CWR_taxa, ")"))
 
+# write.csv(num_accessions_cwr, "accessions_tier1_CWR.csv")
+
 lims <- num_accessions_cwr %>%
   distinct(PRIMARY_ASSOCIATED_CROP_COMMON_NAME, .keep_all = TRUE) %>%
   select(label) 
   
+category_names <- c("Sugars", "Vegetables", 
+                    "Cereals and pseudocereals", "Fruits",
+                    "Nuts", "Oils",
+                    "Herbs and Spices", "Pulses")
+
+num_accessions_cwr <- num_accessions_cwr %>%
+  mutate(across(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, factor, 
+                levels=category_names)) %>%
+  arrange(., PRIMARY_ASSOCIATED_CROP_COMMON_NAME)
 
 F1 <- ggplot(num_accessions_cwr, 
-             aes(x = reorder(PRIMARY_ASSOCIATED_CROP_COMMON_NAME, total_accessions), 
+             aes(x = PRIMARY_ASSOCIATED_CROP_COMMON_NAME, 
                  y = total_accessions,
                  color = PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1)) + 
-  geom_jitter(shape=16, position=position_jitter(0.1)) +
+  geom_jitter(shape=16, position=position_jitter(0.3), size = 3, alpha = 0.5) +
   facet_grid(cols = vars(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1), scales = "free_x", space = "free_x") +
   stat_summary(fun=mean, geom="point", shape='-', size= 8, color="black", fill="black") +
   theme_bw() +
@@ -580,45 +642,42 @@ F1 <- ggplot(num_accessions_cwr,
         panel.spacing.x = unit(.1, "cm"),
         strip.text.x = element_blank(),
         axis.text.y  = element_text(angle=90, vjust = 1, hjust=0.5, size = 12), 
-        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 11)) +
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 10)) +
   ylab("Accessions per CWR") +
   # really struggled to automate this (change just genus name to italic after plotting is done) 
   # so just manually wrote these expressions from the df lims created above
-  scale_x_discrete(labels=c("Maple" = expression(paste("Maple - ", italic('Acer'), " (10/10)")),
-                            "Allium" = expression(paste("Allium - ", italic('Allium'), " (10/10)")),
-                            "Amaranth" = expression(paste("Amaranth - ", italic('Amaranthus'), " (2/5)")),
+  scale_x_discrete(labels=c("Sugar Maple" = expression(paste("Sugar Maple - ", italic('Acer'), " (10/10)")),
+                            "Onions, Garlic, Leeks" = expression(paste("Onion, etc. - ", italic('Allium'), " (10/10)")),
+                            "Amaranth" = expression(paste("Amaranth - ", italic('Amaranthus'), " (4/5)")),
                             "Saskatoon" = expression(paste("Saskatoon - ", italic('Amelanchier'), " (10/11)")),
-                            "Spinach" = expression(paste("Spinach - ", italic('Blitum'), " (1/2)")),
-                            "Pecan, Hickory" = expression(paste("Pecan, Hickory - ", italic('Carya'), " (4/5)")),
+                            "Spinach" = expression(paste("Spinach - ", italic('Blitum'), " (2/2)")),
+                            "Pecan, Hickory" = expression(paste("Pecan, Hickory - ", italic('Carya'), " (5/5)")),
                             "Chestnut" = expression(paste("Chestnut - ", italic('Castanea'), " (1/1)")),
-                            "Quinoa" = expression(paste("Quinoa - ", italic('Chenopodiastrum'), " (1/8)")),
+                            "Quinoa" = expression(paste("Quinoa - ", italic('Chenopodium'), " (4/8)")),
                             "Proso-millet" = expression(paste("Proso-millet - ", italic('Panicum'), " (1/16)")),
-                            "Strawberry" = expression(paste("Strawberry - ", italic('Fragaria'), " (7/7)")),
-                            "Filbert" = expression(paste("Filbert - ", italic('Corylus'), " (2/2)")),
+                            "Strawberry" = expression(paste("Strawberry - ", italic('Fragaria, etc.'), " (7/7)")),
+                            "Filbert" = expression(paste("Hazelnut - ", italic('Corylus'), " (3/3)")),
                             "Carrot" = expression(paste("Carrot - ", italic('Daucus'), " (1/1)")),
                             "Yam" = expression(paste("Yam - ", italic('Dioscorea'), " (0/1)")),
-                            "Wheat" = expression(paste("Wheat - ", italic('Elymus'), " (10/23)")),
-                            "Sunflower" = expression(paste("Sunflower - ", italic('Helianthus'), " (7/9)")),
-                            "Jerusalem-Artichoke" = expression(paste("Jerusalem-Artichoke - ", italic('Helianthus'), " (2/3)")),
-                            "Barley" = expression(paste("Barley - ", italic('Hordeum'), " (5/6)")),
-                            "Hop" = expression(paste("Hop - ", italic('Humulus'), " (1/1)")),
+                            "Wheat" = expression(paste("Wheat - ", italic('Elymus, Leymus'), " (15/22)")),
+                            "Sunflower" = expression(paste("Sunflower - ", italic('Helianthus'), " (12/12)")),
+                            "Barley" = expression(paste("Barley - ", italic('Hordeum'), " (3/6)")),
+                            "Hop" = expression(paste("Hops - ", italic('Humulus'), " (1/1)")),
                             "Walnut" = expression(paste("Walnut - ", italic('Juglans'), " (2/2)")),
                             "Lettuce" = expression(paste("Lettuce - ", italic('Lactuca'), " (0/1)")),
                             "Flax" = expression(paste("Flax - ", italic('Linum'), " (3/6)")),
-                            "Andean lupin" = expression(paste("Andean lupin - ", italic('Lupinus'), " (3/4)")),
-                            "Apple" = expression(paste("Apple - ", italic('Malus'), " (1/2)")),
+                            "Lupin" = expression(paste("Lupin - ", italic('Lupinus'), " (3/4)")),
+                            "Apple" = expression(paste("Apple - ", italic('Malus'), " (2/2)")),
                             "Mint" = expression(paste("Mint - ", italic('Mentha'), " (1/1)")),
-                            "Tobacco" = expression(paste("Tobacco - ", italic('Nicotiana'), " (0/1)")),
+                            "Tobacco" = expression(paste("Tobacco - ", italic('Nicotiana'), " (1/1)")),
                             "Tomatillo" = expression(paste("Tomatillo - ", italic('Physalis'), " (1/2)")),
-                            "Apricot, Cherry, Peach, Plum" = expression(paste("Apricot, Cherry, Peach, Plum - ", italic('Prunus'), " (7/9)")),
-                            "Currant, Gooseberry" = expression(paste("Currant, Gooseberry - ", italic('Ribes'), " (12/16)")),
-                            "Horseradish" = expression(paste("Horseradish - ", italic('Rorippa'), " (0/1)")),
-                            "Blackberry, Raspberry" = expression(paste("Blackberry, Raspberry - ", italic('Rubus'), " (11/20)")),
+                            "Apricot, Cherry, Peach, Plum" = expression(paste("Apricot, Cherry, etc. - ", italic('Prunus'), " (7/7)")),
+                            "Currant, Gooseberry" = expression(paste("Currant, Gooseberry - ", italic('Ribes'), " (16/16)")),
+                            "Blackberry, Raspberry" = expression(paste("Black-, Raspberry - ", italic('Rubus'), " (14/20)")),
                             "Rosinweed" = expression(paste("Rosinweed - ", italic('Silphium'), " (2/2)")),
-                            "Blueberry" = expression(paste("Blueberry - ", italic('Vaccinium'), " (13/17)")),
-                            "Cranberry" = expression(paste("Cranberry - ", italic('Vaccinium'), " (1/3)")),
+                            "Blueberry, Cranberry" = expression(paste("Blue-, Cranberry - ", italic('Vaccinium'), " (18/20)")),
                             "Grape" = expression(paste("Grape - ", italic('Vitis'), " (2/2)")),
-                            "Rice, Wild-rice" = expression(paste("Rice, Wild-rice - ", italic('Zizania'), " (2/2)"))
+                            "Wild-rice" = expression(paste("Wild-rice - ", italic('Zizania'), " (2/2)"))
                             )
   )
 F1
@@ -674,85 +733,44 @@ num_accessions_cwr_long_genebank <- num_accessions_cwr_long %>%
   select(institution_binary) %>%
   mutate(sum = sum(institution_binary))
 
+######## 
+# now look at proportions
 
-#### need to run proportion tests by group
-category_names <- c("Sugars", "Vegetables", 
-                    "Cereals, pseudo-", "Fruits",
-                    "Nuts", "Oils",
-                    "Herbs and Spices", "Pulses")
-
-CWR_prop_test <- function(category){
-  num_accessions_cwr_long_filtered <- num_accessions_cwr_long %>%
-    filter(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1 == category) %>%
-    # group by institution type
-    group_by(INSTITUTION_TYPE) %>%
-    # calc number of species with 1
-    # calc total number of species
-    mutate(species_yes = sum(institution_binary),
-            n = n()) %>%
-    # just want one row from each group
-    distinct(INSTITUTION_TYPE, .keep_all = TRUE)
-  
-  res <- prop.test(x = c(as.numeric(num_accessions_cwr_long_filtered[1, 51]),
-                         as.numeric(num_accessions_cwr_long_filtered[2, 51])),
-                   n = c(as.numeric(num_accessions_cwr_long_filtered[1, 52]),
-                         as.numeric(num_accessions_cwr_long_filtered[2, 52]))
-  )
-  
-  return(res)
-  
-}
-
-ptest_accessions = list()
-q = 1 # specify a list element position
-for(i in 1:8) {
-  
-  selected_category <- category_names[i] # make a vector of cat names
-  ptest_accessions[[q]] <- CWR_prop_test(selected_category)
-  
-  q = q+1
-  
-} 
-
-print(ptest_accessions)
-
-num_accessions_cwr_long <- num_accessions_cwr_long %>%
-  group_by(INSTITUTION_TYPE) %>%
-  with(., reorder(
-    SPECIES, institution_binary))
+# num_accessions_cwr_long_test <- num_accessions_cwr_long %>%
+#  group_by(INSTITUTION_TYPE) %>%
+#  with(., reorder(
+#      SPECIES, institution_binary))
 
 
-num_accessions_cwr_long$SPECIES = 
-  with(num_accessions_cwr_long, reorder(
-    SPECIES, as.factor(INSTITUTION_TYPE)))
+# num_accessions_cwr_long$SPECIES = 
+#  with(num_accessions_cwr_long, reorder(
+#    SPECIES, as.factor(INSTITUTION_TYPE)))
 
-arrange(num_accessions_cwr_long, INSTITUTION_TYPE, institution_binary)
+#arrange(num_accessions_cwr_long, INSTITUTION_TYPE, institution_binary)
 
-
-F2B <- ggplot(num_accessions_cwr_long, aes(x = INSTITUTION_TYPE, 
-                                           y = SPECIES, 
-                                           fill = as.factor(institution_binary))) + 
-  geom_bar(stat="identity") +
-  facet_grid(. ~ PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1) +
-  geom_text(aes(y=1, label=as.factor(institution_binary)), vjust=1.6, 
-            color="white", size=3.5) +
-  # scale_fill_brewer(palette="Paired") +
-  theme_bw() +
-  theme(legend.position = "bottom",
-        axis.ticks.y = element_blank(),
-        axis.title.x = element_blank(),
-        strip.text.x = element_text(margin = margin(.4, 0, .1, 0, "cm")),
-        strip.text = element_text(size = 12),
-        axis.text.y  = element_blank(), 
-        axis.text.x = element_text(size = 12),
-        legend.text=element_text(size = 12)) +
-  scale_x_discrete(labels = c('BG','G')) +
-  scale_fill_manual(labels = c("CWR absent from ex situ collections", "CWR in ex situ collections"), 
-                    values = c("slategray2", "slategray4")) +
-  ylab("") + 
-  guides(fill=guide_legend(title=""))
-  
-F2B
+(F2B <- ggplot(num_accessions_cwr_long, 
+       aes(x = INSTITUTION_TYPE, 
+           fill = as.factor(institution_binary))) + 
+  geom_bar(position = "stack") +
+  facet_grid(. ~ PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1)+
+   geom_text(aes(y=1, label=as.factor(institution_binary)), vjust=1.6, 
+             color="white", size=3.5) +
+   # scale_fill_brewer(palette="Paired") +
+   theme_bw() +
+   theme(legend.position = "bottom",
+         #axis.ticks.y = element_blank(),
+         axis.title.x = element_blank(),
+         strip.text.x = element_text(margin = margin(.4, 0, .1, 0, "cm")),
+         strip.text = element_text(size = 12),
+         #axis.text.y  = element_blank(), 
+         axis.text.x = element_text(size = 12),
+         legend.text=element_text(size = 12)) +
+   scale_x_discrete(labels = c('BG','G')) +
+   scale_fill_manual(labels = c("absent from ex situ collections", "in ex situ collections"), 
+                     values = c("slategray2", "slategray4")) +
+   ylab("CWR Species") + 
+   guides(fill=guide_legend(title=""))
+)
 
 
 
@@ -831,6 +849,47 @@ for(i in 1:8) {
 
 print(wtest_accessions)
 
+#### need to run proportion tests by group
+category_names <- c("Sugars", "Vegetables", 
+                    "Cereals, pseudo-", "Fruits",
+                    "Nuts", "Oils",
+                    "Herbs and Spices", "Pulses")
+
+CWR_prop_test <- function(category){
+  num_accessions_cwr_long_filtered <- num_accessions_cwr_long %>%
+    filter(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1 == category) %>%
+    # group by institution type
+    group_by(INSTITUTION_TYPE) %>%
+    # calc number of species with 1
+    # calc total number of species
+    mutate(species_yes = sum(institution_binary),
+           n = n()) %>%
+    # just want one row from each group
+    distinct(INSTITUTION_TYPE, .keep_all = TRUE)
+  
+  res <- prop.test(x = c(as.numeric(num_accessions_cwr_long_filtered[1, 50]),
+                         as.numeric(num_accessions_cwr_long_filtered[2, 50])),
+                   n = c(as.numeric(num_accessions_cwr_long_filtered[1, 51]),
+                         as.numeric(num_accessions_cwr_long_filtered[2, 51]))
+  )
+  
+  return(res)
+  
+}
+
+ptest_accessions = list()
+q = 1 # specify a list element position
+for(i in 1:8) {
+  
+  selected_category <- category_names[i] # make a vector of cat names
+  ptest_accessions[[q]] <- CWR_prop_test(selected_category)
+  
+  q = q+1
+  
+} 
+
+print(ptest_accessions)
+
 ##############################
 # # FIGURE 4 # # # # # # # ###
 ##############################
@@ -838,6 +897,11 @@ print(wtest_accessions)
 # Geographic gaps in accessions versus species distr density
 # total accessions collected from each area, proportion of species in each region that are
 # conserved ex situ via wild-origin accessions collected from that region
+
+province_names <- c("British Columbia", "Alberta", "Newfoundland and Labrador",
+                    "Northwest Territories", "Nunavut", "Saskatchewan", 
+                    "Manitoba", "Quebec", "Nova Scotia", "Ontario",
+                    "New Brunswick", "Prince Edward Island", "Yukon")
 
 # CRS 
 crs_string = "+proj=lcc +lat_1=49 +lat_2=77 +lon_0=-91.52 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs" # 2
@@ -859,7 +923,8 @@ province_gap_table_fig2 <- province_gap_table %>%
   mutate(genebank_accessions = sum(!is.na(province) & 
                                      INSTITUTION == "G")) %>%
   distinct(province, .keep_all = TRUE) %>%
-  filter(province != "Canada") %>%
+  filter(province != "Canada",
+         province %in% province_names) %>%
   select(province, latitude, longitude, total_CWRs_in_province,
          total_accessions, garden_accessions, genebank_accessions) %>%
   full_join(canada_provinces_geojson[ , c("PROVINCE", "geometry")],
@@ -884,7 +949,8 @@ CWR_sf_provinces_fig2 <- st_as_sf(province_gap_table_fig2)
 
 # province by SPECIES
 province_species_gaps <- province_gap_table_species %>%
-  filter(!is.na(province))%>% # filter for if only want those collections with geo origin
+  filter(!is.na(province),
+         province %in% province_names)%>% # filter for if only want those collections with geo origin
   # filter for tier 1 CWR
   filter(TIER == 1) %>%
   # join with CWR per province to get all provinces possible
@@ -946,7 +1012,10 @@ crs_string = "+proj=lcc +lat_1=49 +lat_2=77 +lon_0=-91.52 +x_0=0 +y_0=0 +datum=N
 
 legend_title_CWR = expression("CWR species richness")
 
-province_species_gaps_sf <- st_as_sf(province_species_gaps)
+province_species_gaps_sf <- province_species_gaps %>%
+  filter(., !is.na(total_CWRs_in_province)) %>%
+  st_as_sf(.) 
+
 
 (map_provinces <- tm_shape(province_species_gaps_sf,
                             projection = crs_string) +
@@ -1016,9 +1085,8 @@ ecoregion_species_gaps <- ecoregion_gap_table_species %>%
     INSTITUTION == "BG" ~ 1)) %>%
   mutate(in_G = case_when(
     INSTITUTION == "G" ~ 1)) %>%
-  mutate(in_both = case_when(
-    in_BG == 1 && in_G == 1 ~ 1)) %>% # no species are in both; so few G with geolocation
-  # could be better to just do which in each ecoregion are repped at all (w/ or without geo)
+  mutate(in_any = case_when(
+    INSTITUTION == "G" | INSTITUTION == "BG" ~ 1)) %>%
   ungroup() %>%
   group_by(ECO_NAME) %>%
   # distinct species # want one line per species
@@ -1029,10 +1097,10 @@ ecoregion_species_gaps <- ecoregion_gap_table_species %>%
            as.numeric(sum(!is.na(in_BG)) / total_CWRs_in_ecoregion)) %>%
   mutate(proportion_in_G = 
            as.numeric(sum(!is.na(in_G)) / total_CWRs_in_ecoregion)) %>%
-  mutate(proportion_in_both = 
-           as.numeric((sum(!is.na(in_both)) / total_CWRs_in_ecoregion))) %>%
+  #mutate(proportion_in_both = 
+   #        as.numeric((sum(!is.na(in_both)) / total_CWRs_in_ecoregion))) %>%
   mutate(proportion_in_any = 
-           as.numeric(100 * (sum(!is.na(in_both)) + sum(!is.na(in_BG)) + sum(!is.na(in_G))) 
+           as.numeric(100 * (sum(!is.na(in_BG)) + sum(!is.na(in_G))) 
                       / total_CWRs_in_ecoregion)) %>%
   mutate(proportion_in_neither = 
            as.numeric(100 - (proportion_in_any))) %>%
@@ -1041,8 +1109,8 @@ ecoregion_species_gaps <- ecoregion_gap_table_species %>%
   filter(ECO_NAME != "Canada") %>%
   select(ECO_NAME, latitude, longitude, total_CWRs_in_ecoregion,
          total_accessions, log_accessions,
-         in_BG, in_G, in_both,
-         proportion_in_BG, proportion_in_G, proportion_in_both,
+         in_BG, in_G, in_any,
+         proportion_in_BG, proportion_in_G,
          proportion_in_any, proportion_in_neither) %>%
   full_join(canada_ecoregions_geojson[ , c("ECO_NAME", "geometry")])
 
@@ -1058,75 +1126,20 @@ ecoregion_species_gaps_sf <- st_as_sf(ecoregion_species_gaps)
     tm_polygons(col = "total_CWRs_in_ecoregion",
                 style = "cont",
                 title = legend_title_CWR) + 
-    tm_symbols(size = "total_accessions", col = "proportion_in_any",
-               title.size = "Accessions from region",
-               title.col = "CWR species conserved (%)",
-               sizes.legend=c(0, 25, 50, 100, 500),
-               scale = 4,
-               palette = rev(RColorBrewer::brewer.pal(5,"Greys")), alpha = 0.9,
+    tm_symbols(#size = "total_accessions", 
+               size = "proportion_in_any",
+               #title.size = "Accessions from region",
+               title.size = "(%) CWR conserved ex situ",
+               sizes.legend=c(0, 25, 50, 100),
+               scale = 3,
+               col = "grey",
+               #palette = rev(RColorBrewer::brewer.pal(5,"Greys")), 
+               alpha = 0.7,
                legend.format = list(text.align="right", text.to.columns = TRUE)) +
     tm_layout(frame = FALSE,
               legend.outside = TRUE,
-              legend.title.size = 1)
-)
-
-
-# Alternate alternate
-test <- ecoregion_species_gaps_sf %>%
-  filter(!is.na(latitude)) %>%
-  mutate(radius = 1/2 * log(total_accessions)) %>%
-  as_tibble() %>%
-  mutate(ECON_NAME = as.factor(ECO_NAME)) 
-
-crs_string = "+proj=lcc +lat_1=49 +lat_2=77 +lon_0=-91.52 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs" # 2
-
-# Define the maps' theme -- remove axes, ticks, borders, legends, etc.
-theme_map <- function(base_size=10, base_family="") { # 3
-  require(grid)
-  theme_bw(base_size=base_size, base_family=base_family) %+replace%
-    theme(axis.line=element_blank(),
-          axis.text=element_blank(),
-          axis.ticks=element_blank(),
-          axis.title=element_blank(),
-          panel.background=element_blank(),
-          panel.border=element_blank(),
-          panel.grid=element_blank(),
-          panel.spacing=unit(0, "lines"),
-          plot.background=element_blank(),
-          legend.justification = c(0,0),
-          legend.position = c(0,0)
-    )
-}
-
-(pies <- ggplot() +
-  geom_scatterpie(data = test,
-                  aes(x=longitude, y=latitude, group = ECO_NAME,
-                      r = radius),
-                  cols = c("proportion_in_any", "proportion_in_neither"),
-                  color = NA)
-)
-  
-(pies_plot <- ggplot(ecoregion_species_gaps_sf) +
-  geom_sf(data = ecoregion_species_gaps_sf, aes(fill = as.numeric(total_CWRs_in_ecoregion))) +
-  scale_fill_viridis_c(option = "B") +
-  
-  theme_map() +
-  new_scale("fill") +
-  geom_scatterpie(data = test,
-                  aes(x = longitude,
-                      y = latitude,
-                      r = radius), alpha = 0.5,
-                  cols = c("proportion_in_any", "proportion_in_neither")
-                  ) + 
-  scale_fill_manual(breaks = c("proportion_in_any", "proportion_in_neither"), 
-                    values=c("black", "white")) +
-  #coord_sf(crs = crs_string)
-  theme(panel.grid.major = element_line(color = "white"),
-        plot.title = element_text(color="black",
-                                  size=14, face="bold.italic", hjust = 0.5),
-        plot.margin=unit(c(0.1,-0.2,0.1,-0.2), "cm"),
-        legend.position = "none") # , legend.text = element_text(size=10))
-  
+              legend.title.size = 1.5, 
+              legend.text.size = 1)
 )
 
 
@@ -1333,56 +1346,23 @@ ecoregion_species_gaps_WUS_sf <- st_as_sf(ecoregion_species_gaps_WUS)
                 style = "cont",
                 title = legend_title_WUS,
                 palette = "Blues") + 
-    tm_symbols(size = "total_accessions", col = "proportion_in_any",
-               title.size = "Accessions from region",
-               title.col = "WUS species conserved (%)",
-               sizes.legend=c(0, 50, 100, 500, 1000),
-               scale = 4,
-               border.col = "white",
-               palette = rev(RColorBrewer::brewer.pal(5,"Greys")), alpha = 0.9,
-               legend.format = list(text.align="right", text.to.columns = TRUE)) +
+tm_symbols(#size = "total_accessions", 
+      size = "proportion_in_any",
+      #title.size = "Accessions from region",
+      title.size = "(%) WUS conserved ex situ",
+      sizes.legend=c(0, 25, 50, 100),
+      scale = 4,
+      col = "grey",
+      #palette = rev(RColorBrewer::brewer.pal(5,"Greys")), 
+      alpha = 0.7,
+      legend.format = list(text.align="right", text.to.columns = TRUE)) +
     tm_layout(frame = FALSE,
               legend.outside = TRUE,
-              legend.title.size = 1)
+              legend.title.size = 1.5, 
+              legend.text.size = 1 )
 )
 
 
-# dont think this is needed anymore
-ecoregion_gap_table_fig3 <- ecoregion_gap_table %>%
-  filter(!is.na(ECO_NAME)) %>% # filter for those from Canada AND were able to join w a province
-  # essentially is filtering for the wild origins, but may be capturing some garden origin plants?
-  # filter for tier 1 CWR
-  filter(WUS == "Y") %>%
-  # join with CWR per province to get all provinces possible
-  full_join(total_WUS_group_by_ecoregion[ , c("ECO_NAME", "total_WUS_in_ecoregion")]) %>%
-  # now tally the number of CWR accessions from the province
-  group_by(ECO_NAME) %>%
-  mutate(total_accessions = sum(!is.na(ECO_NAME))) %>%
-  mutate(garden_accessions = sum(!is.na(ECO_NAME) & 
-                                   INSTITUTION == "BG")) %>%
-  mutate(genebank_accessions = sum(!is.na(ECO_NAME) & 
-                                     INSTITUTION == "G")) %>%
-  distinct(ECO_NAME, .keep_all = TRUE) %>%
-  filter(ECO_NAME != "Canada") %>%
-  select(ECO_NAME, latitude, longitude, total_WUS_in_ecoregion,
-         total_accessions, garden_accessions, genebank_accessions) %>%
-  full_join(canada_ecoregions_geojson[ , c("ECO_NAME", "geometry")])
-
-# breaks = c(0, 40, 80, 120, 160, 200)
-WUS_sf_ecoregions_fig3 <- st_as_sf(ecoregion_gap_table_fig3)
-(map_ecoregions <- tm_shape(WUS_sf_ecoregions_fig3,
-                            projection = crs_string) +
-    tm_polygons(col = "total_WUS_in_ecoregion",
-                style = "jenks",
-                title = legend_title_WUS,
-                palette = "Blues") + 
-    tm_bubbles(size="total_accessions", 
-               title.size = "WUS accessions",
-               scale = 3, col = "black", 
-               border.col = "white") +
-    tm_layout(frame = FALSE,
-              legend.outside = TRUE)
-)
 
 
 #####################################################
@@ -1485,7 +1465,9 @@ for(i in 1:nrow(inventory_sp_T1)) {
 
 # summary stats
 gap_analysis_df_by_province <- gap_analysis_df_by_province %>%
-  mutate(mean = mean(perc_province_range_covered))
+  mutate(mean = mean(perc_province_range_covered)) %>%
+  group_by(PRIMARY_ASSOCIATED_CROP_COMMON_NAME) %>%
+  mutate(mean_crop = mean(perc_province_range_covered))
 
 # Compute the analysis of variance
 res.aov <- aov(perc_province_range_covered ~ 
@@ -1530,6 +1512,69 @@ cldList(P.adj ~ Comparison,
 # 
 ### now make the figure
 #
+category_names <- c("Sugars", "Vegetables", 
+                    "Cereals and pseudocereals", "Fruits",
+                    "Nuts", "Oils",
+                    "Herbs and Spices", "Pulses")
+
+gap_analysis_df_by_province_test <- gap_analysis_df_by_province %>%
+  mutate(across(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, factor, 
+                levels=category_names)) %>%
+  arrange(., PRIMARY_ASSOCIATED_CROP_COMMON_NAME)
+  
+
+Fs1B <- ggplot(gap_analysis_df_by_province_test, 
+             aes(x = PRIMARY_ASSOCIATED_CROP_COMMON_NAME, 
+                 y = perc_province_range_covered,
+                 color = PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1)) + 
+  geom_jitter(shape=16, position=position_jitter(0.3), size = 3, alpha = 0.5) +
+  facet_grid(cols = vars(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1), scales = "free_x", space = "free_x") +
+  stat_summary(fun=mean, geom="point", shape='-', size= 8, color="black", fill="black") +
+  theme_bw() +
+  theme(legend.position = 'none',
+        axis.title.x = element_blank(),
+        panel.spacing.x = unit(.1, "cm"),
+        strip.text.x = element_blank(),
+        axis.text.y  = element_text(angle=90, vjust = 1, hjust=0.5, size = 12), 
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 10)) +
+  ylab("Geographic distribution conserved") +
+  scale_y_continuous(labels = scales::percent) +
+  # just keep these labels for now to match up and see potential issues
+  scale_x_discrete(labels=c("Sugar Maple" = expression(paste("Sugar Maple - ", italic('Acer'), " (10/10)")),
+                            "Onions, Garlic, Leeks" = expression(paste("Onion, etc. - ", italic('Allium'), " (10/10)")),
+                            "Amaranth" = expression(paste("Amaranth - ", italic('Amaranthus'), " (4/5)")),
+                            "Saskatoon" = expression(paste("Saskatoon - ", italic('Amelanchier'), " (10/11)")),
+                            "Spinach" = expression(paste("Spinach - ", italic('Blitum'), " (2/2)")),
+                            "Pecan, Hickory" = expression(paste("Pecan, Hickory - ", italic('Carya'), " (5/5)")),
+                            "Chestnut" = expression(paste("Chestnut - ", italic('Castanea'), " (1/1)")),
+                            "Quinoa" = expression(paste("Quinoa - ", italic('Chenopodium'), " (4/8)")),
+                            "Proso-millet" = expression(paste("Proso-millet - ", italic('Panicum'), " (1/16)")),
+                            "Strawberry" = expression(paste("Strawberry - ", italic('Fragaria, etc.'), " (7/7)")),
+                            "Filbert" = expression(paste("Filbert - ", italic('Corylus'), " (2/2)")),
+                            "Carrot" = expression(paste("Carrot - ", italic('Daucus'), " (1/1)")),
+                            "Yam" = expression(paste("Yam - ", italic('Dioscorea'), " (0/1)")),
+                            "Wheat" = expression(paste("Wheat - ", italic('Elymus, Leymus'), " (15/23)")),
+                            "Sunflower" = expression(paste("Sunflower - ", italic('Helianthus'), " (12/12)")),
+                            "Barley" = expression(paste("Barley - ", italic('Hordeum'), " (3/6)")),
+                            "Hop" = expression(paste("Hop - ", italic('Humulus'), " (1/1)")),
+                            "Walnut" = expression(paste("Walnut - ", italic('Juglans'), " (2/2)")),
+                            "Lettuce" = expression(paste("Lettuce - ", italic('Lactuca'), " (0/1)")),
+                            "Flax" = expression(paste("Flax - ", italic('Linum'), " (3/6)")),
+                            "Lupin" = expression(paste("Lupin - ", italic('Lupinus'), " (3/4)")),
+                            "Apple" = expression(paste("Apple - ", italic('Malus'), " (2/2)")),
+                            "Mint" = expression(paste("Mint - ", italic('Mentha'), " (1/1)")),
+                            "Tobacco" = expression(paste("Tobacco - ", italic('Nicotiana'), " (1/1)")),
+                            "Tomatillo" = expression(paste("Tomatillo - ", italic('Physalis'), " (1/2)")),
+                            "Apricot, Cherry, Peach, Plum" = expression(paste("Apricot, Cherry, etc. - ", italic('Prunus'), " (7/9)")),
+                            "Currant, Gooseberry" = expression(paste("Currant, Gooseberry - ", italic('Ribes'), " (16/16)")),
+                            "Blackberry, Raspberry" = expression(paste("Black-, Raspberry - ", italic('Rubus'), " (14/20)")),
+                            "Rosinweed" = expression(paste("Rosinweed - ", italic('Silphium'), " (2/2)")),
+                            "Blueberry, Cranberry" = expression(paste("Blue-, Cranberry - ", italic('Vaccinium'), " (17/20)")),
+                            "Grape" = expression(paste("Grape - ", italic('Vitis'), " (2/2)")),
+                            "Wild-rice" = expression(paste("Wild-rice - ", italic('Zizania'), " (2/2)"))
+  )
+  )
+Fs1B
 
 gap_analysis_df_by_province_f4 <- gap_analysis_df_by_province %>%
   transform(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1 = plyr::revalue(
@@ -1897,6 +1942,70 @@ for(i in 1:nrow(inventory_sp_T1)) {
 # 
 ### now make the figure
 #
+category_names <- c("Sugars", "Vegetables", 
+                    "Cereals and pseudocereals", "Fruits",
+                    "Nuts", "Oils",
+                    "Herbs and Spices", "Pulses")
+
+gap_analysis_df_by_ecoregion_test <- gap_analysis_df_by_ecoregion %>%
+  mutate(across(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, factor, 
+                levels=category_names)) %>%
+  arrange(., PRIMARY_ASSOCIATED_CROP_COMMON_NAME)
+
+
+F1B <- ggplot(gap_analysis_df_by_ecoregion_test, 
+               aes(x = PRIMARY_ASSOCIATED_CROP_COMMON_NAME, 
+                   y = perc_ecoregion_range_covered,
+                   color = PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1)) + 
+  geom_jitter(shape=16, position=position_jitter(0.3), size = 3, alpha = 0.5) +
+  facet_grid(cols = vars(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1), scales = "free_x", space = "free_x") +
+  stat_summary(fun=mean, geom="point", shape='-', size= 8, color="black", fill="black") +
+  theme_bw() +
+  theme(legend.position = 'none',
+        axis.title.x = element_blank(),
+        panel.spacing.x = unit(.1, "cm"),
+        strip.text.x = element_blank(),
+        axis.text.y  = element_text(angle=90, vjust = 1, hjust=0.5, size = 12), 
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 10)) +
+  ylab("exGCS") +
+  scale_y_continuous(labels = scales::percent) +
+  # just keep these labels for now to match up and see potential issues
+  scale_x_discrete(labels=c("Sugar Maple" = expression(paste("Sugar Maple - ", italic('Acer'), " (10/10)")),
+                            "Onions, Garlic, Leeks" = expression(paste("Onion, etc. - ", italic('Allium'), " (10/10)")),
+                            "Amaranth" = expression(paste("Amaranth - ", italic('Amaranthus'), " (4/5)")),
+                            "Saskatoon" = expression(paste("Saskatoon - ", italic('Amelanchier'), " (10/11)")),
+                            "Spinach" = expression(paste("Spinach - ", italic('Blitum'), " (2/2)")),
+                            "Pecan, Hickory" = expression(paste("Pecan, Hickory - ", italic('Carya'), " (5/5)")),
+                            "Chestnut" = expression(paste("Chestnut - ", italic('Castanea'), " (1/1)")),
+                            "Quinoa" = expression(paste("Quinoa - ", italic('Chenopodium'), " (4/8)")),
+                            "Proso-millet" = expression(paste("Proso-millet - ", italic('Panicum'), " (1/16)")),
+                            "Strawberry" = expression(paste("Strawberry - ", italic('Fragaria, etc.'), " (7/7)")),
+                            "Filbert" = expression(paste("Filbert - ", italic('Corylus'), " (2/2)")),
+                            "Carrot" = expression(paste("Carrot - ", italic('Daucus'), " (1/1)")),
+                            "Yam" = expression(paste("Yam - ", italic('Dioscorea'), " (0/1)")),
+                            "Wheat" = expression(paste("Wheat - ", italic('Elymus, Leymus'), " (15/23)")),
+                            "Sunflower" = expression(paste("Sunflower - ", italic('Helianthus'), " (12/12)")),
+                            "Barley" = expression(paste("Barley - ", italic('Hordeum'), " (3/6)")),
+                            "Hop" = expression(paste("Hop - ", italic('Humulus'), " (1/1)")),
+                            "Walnut" = expression(paste("Walnut - ", italic('Juglans'), " (2/2)")),
+                            "Lettuce" = expression(paste("Lettuce - ", italic('Lactuca'), " (0/1)")),
+                            "Flax" = expression(paste("Flax - ", italic('Linum'), " (3/6)")),
+                            "Lupin" = expression(paste("Lupin - ", italic('Lupinus'), " (3/4)")),
+                            "Apple" = expression(paste("Apple - ", italic('Malus'), " (2/2)")),
+                            "Mint" = expression(paste("Mint - ", italic('Mentha'), " (1/1)")),
+                            "Tobacco" = expression(paste("Tobacco - ", italic('Nicotiana'), " (1/1)")),
+                            "Tomatillo" = expression(paste("Tomatillo - ", italic('Physalis'), " (1/2)")),
+                            "Apricot, Cherry, Peach, Plum" = expression(paste("Apricot, Cherry, etc. - ", italic('Prunus'), " (7/9)")),
+                            "Currant, Gooseberry" = expression(paste("Currant, Gooseberry - ", italic('Ribes'), " (16/16)")),
+                            "Blackberry, Raspberry" = expression(paste("Black-, Raspberry - ", italic('Rubus'), " (14/20)")),
+                            "Rosinweed" = expression(paste("Rosinweed - ", italic('Silphium'), " (2/2)")),
+                            "Blueberry, Cranberry" = expression(paste("Blue-, Cranberry - ", italic('Vaccinium'), " (17/20)")),
+                            "Grape" = expression(paste("Grape - ", italic('Vitis'), " (2/2)")),
+                            "Wild-rice" = expression(paste("Wild-rice - ", italic('Zizania'), " (2/2)"))
+  )
+  )
+F1B
+
 
 gap_analysis_df_by_ecoregion_f4b <- gap_analysis_df_by_ecoregion %>%
   transform(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1 = plyr::revalue(
@@ -2044,18 +2153,18 @@ make_a_plot_ecoregion <- function(species) {
 test <- make_a_plot_ecoregion("Amelanchier alnifolia")
 test
 
-test1 <- make_a_plot_ecoregion("Corylus americana")
+test1 <- make_a_plot_ecoregion("Zizania palustris")
 test1
 
 test2 <- make_a_plot_ecoregion("Helianthus nuttallii")
 test2
 
-test3 <- make_a_plot_ecoregion("Allium tricoccum")
+test3 <- make_a_plot_ecoregion("Malus coronaria")
 test3
 
 test4 <- make_a_plot_ecoregion("Fragaria virginiana")
 test4
 
-test5 <- make_a_plot_ecoregion("Elymus canadensis")
+test5 <- make_a_plot_ecoregion("Vaccinium myrtilloides")
 test5
 

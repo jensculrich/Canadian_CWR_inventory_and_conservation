@@ -962,7 +962,7 @@ Corylus cornuta,Corylus,Corylus cornuta,,,Manitoba
 Corylus cornuta,Corylus,Corylus cornuta,,,New Brunswick
 Corylus cornuta,Corylus,Corylus cornuta,,,Saskatchewan
 Corylus cornuta,Corylus,Corylus cornuta,,,Newfoundland and Labrador
-Corylus cornuta subsp. californica,Corylus,Corylus cornuta,subsp.,californica,British Columbia
+Corylus californica,Corylus,Corylus cornuta,subsp.,californica,British Columbia
 Corylus cornuta subsp. cornuta,Corylus,Corylus cornuta,subsp.,cornuta,Ontario
 Corylus cornuta subsp. cornuta,Corylus,Corylus cornuta,subsp.,cornuta,Quebec
 Corylus cornuta subsp. cornuta,Corylus,Corylus cornuta,subsp.,cornuta,British Columbia
@@ -2468,9 +2468,9 @@ Prunella vulgaris subsp. vulgaris,Prunella,Prunella vulgaris,subsp.,vulgaris,New
 Prunus americana,Prunus,Prunus americana,,,Manitoba
 Prunus americana,Prunus,Prunus americana,,,Ontario
 Prunus americana,Prunus,Prunus americana,,,Quebec
-Prunus depressa,Prunus,Prunus depressa,,,Ontario
-Prunus depressa,Prunus,Prunus depressa,,,Quebec
-Prunus depressa,Prunus,Prunus depressa,,,New Brunswick
+Prunus depressa var. susquehana,Prunus,Prunus depressa var. susquehana,,,Ontario
+Prunus depressa var. susquehana,Prunus,Prunus depressa var. susquehana,,,Quebec
+Prunus depressa var. susquehana,Prunus,Prunus depressa var. susquehana,,,New Brunswick
 Prunus emarginata,Prunus,Prunus emarginata,,,British Columbia
 Prunus nigra,Prunus,Prunus nigra,,,Ontario
 Prunus nigra,Prunus,Prunus nigra,,,Quebec
@@ -2504,9 +2504,9 @@ Prunus serotina,Prunus,Prunus serotina,,,Quebec
 Prunus serotina,Prunus,Prunus serotina,,,British Columbia
 Prunus serotina var. serotina,Prunus,Prunus serotina,var.,serotina,Quebec
 Prunus serotina var. serotina,Prunus,Prunus serotina,var.,serotina,New Brunswick
-Prunus susquehanae,Prunus,Prunus susquehanae,,,Ontario
-Prunus susquehanae,Prunus,Prunus susquehanae,,,Quebec
-Prunus susquehanae,Prunus,Prunus susquehanae,,,Manitoba
+Prunus pumila var. susquehanae,Prunus,Prunus pumila var. susquehanae,,,Ontario
+Prunus pumila var. susquehanae,Prunus,Prunus pumila var. susquehanae,,,Quebec
+Prunus pumila var. susquehanae,Prunus,Prunus pumila var. susquehanae,,,Manitoba
 Prunus virginiana,Prunus,Prunus virginiana,,,Nova Scotia
 Prunus virginiana,Prunus,Prunus virginiana,,,British Columbia
 Prunus virginiana,Prunus,Prunus virginiana,,,Ontario
@@ -2615,6 +2615,7 @@ Ribes hirtellum,Ribes,Ribes hirtellum,,,Quebec
 Ribes hirtellum,Ribes,Ribes hirtellum,,,Alberta
 Ribes hirtellum,Ribes,Ribes hirtellum,,,Manitoba
 Ribes hirtellum,Ribes,Ribes hirtellum,,,Newfoundland and Labrador
+Ribes bracteosum,Ribes,Ribes bracteosum,,,Yukon
 Ribes hudsonianum,Ribes,Ribes hudsonianum,,,Yukon
 Ribes hudsonianum,Ribes,Ribes hudsonianum,,,British Columbia
 Ribes hudsonianum,Ribes,Ribes hudsonianum,,,Northwest Territories
@@ -2646,6 +2647,7 @@ Ribes lacustre,Ribes,Ribes lacustre,,,Manitoba
 Ribes laxiflorum,Ribes,Ribes laxiflorum,,,British Columbia
 Ribes laxiflorum,Ribes,Ribes laxiflorum,,,Alberta
 Ribes lobbii,Ribes,Ribes lobbii,,,British Columbia
+Ribes laxiflorum,Ribes,Ribes laxiflorum,,,Yukon
 Ribes oxyacanthoides,Ribes,Ribes oxyacanthoides,,,Yukon
 Ribes oxyacanthoides,Ribes,Ribes oxyacanthoides,,,Saskatchewan
 Ribes oxyacanthoides,Ribes,Ribes oxyacanthoides,,,Northwest Territories
@@ -3075,8 +3077,7 @@ Silphium integrifolium,Silphium,Silphium integrifolium,,,Ontario
 Silphium perfoliatum,Silphium,Silphium perfoliatum,,,Ontario
 Silphium perfoliatum,Silphium,Silphium perfoliatum,,,Quebec
 Silphium perfoliatum,Silphium,Silphium perfoliatum,,,Nova Scotia
-Sinomalus fusca,Sinomalus,Sinomalus fusca,,,British Columbia
-Sinomalus fusca,Sinomalus,Sinomalus fusca,,,Alberta
+Malus fusca,Malus,Malus fusca,,,British Columbia
 Sium suave,Sium,Sium suave,,,Ontario
 Sium suave,Sium,Sium suave,,,Alberta
 Sium suave,Sium,Sium suave,,,Nova Scotia
@@ -3262,14 +3263,14 @@ Vaccinium corymbosum,Vaccinium,Vaccinium corymbosum,,,Quebec
 Vaccinium corymbosum,Vaccinium,Vaccinium corymbosum,,,British Columbia
 Vaccinium corymbosum,Vaccinium,Vaccinium corymbosum,,,New Brunswick
 Vaccinium deliciosum,Vaccinium,Vaccinium deliciosum,,,British Columbia
-Vaccinium macrocarpum,Vaccinium,Vaccinium macrocarpum,,,Nova Scotia
-Vaccinium macrocarpum,Vaccinium,Vaccinium macrocarpum,,,Quebec
-Vaccinium macrocarpum,Vaccinium,Vaccinium macrocarpum,,,New Brunswick
-Vaccinium macrocarpum,Vaccinium,Vaccinium macrocarpum,,,Ontario
-Vaccinium macrocarpum,Vaccinium,Vaccinium macrocarpum,,,British Columbia
-Vaccinium macrocarpum,Vaccinium,Vaccinium macrocarpum,,,Prince Edward Island
-Vaccinium macrocarpum,Vaccinium,Vaccinium macrocarpum,,,Newfoundland and Labrador
-Vaccinium macrocarpum,Vaccinium,Vaccinium macrocarpum,,,Yukon
+Vaccinium macrocarpon,Vaccinium,Vaccinium macrocarpon,,,Nova Scotia
+Vaccinium macrocarpon,Vaccinium,Vaccinium macrocarpon,,,Quebec
+Vaccinium macrocarpon,Vaccinium,Vaccinium macrocarpon,,,New Brunswick
+Vaccinium macrocarpon,Vaccinium,Vaccinium macrocarpon,,,Ontario
+Vaccinium macrocarpon,Vaccinium,Vaccinium macrocarpon,,,British Columbia
+Vaccinium macrocarpon,Vaccinium,Vaccinium macrocarpon,,,Prince Edward Island
+Vaccinium macrocarpon,Vaccinium,Vaccinium macrocarpon,,,Newfoundland and Labrador
+Vaccinium macrocarpon,Vaccinium,Vaccinium macrocarpon,,,Yukon
 Vaccinium membranaceum,Vaccinium,Vaccinium membranaceum,,,British Columbia
 Vaccinium membranaceum,Vaccinium,Vaccinium membranaceum,,,Alberta
 Vaccinium membranaceum,Vaccinium,Vaccinium membranaceum,,,Yukon

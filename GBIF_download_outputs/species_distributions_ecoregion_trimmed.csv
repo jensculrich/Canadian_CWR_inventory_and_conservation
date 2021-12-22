@@ -1608,7 +1608,7 @@ Claytonia caroliniana,Claytonia,Claytonia caroliniana,,,Superior Mixed Forest
 Elymus violaceus,Elymus,Elymus violaceus,,,Northern Appalachian / Acadian
 Elymus violaceus,Elymus,Elymus violaceus,,,Northern Tallgrass Prairie
 Empetrum nigrum,Empetrum,Empetrum nigrum,,,Alaska-Yukon Arctic
-Corylus cornuta subsp. californica,Corylus,Corylus cornuta,subsp.,californica,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests
+Corylus californica,Corylus,Corylus californica,NA,NA,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests
 Cornus sericea subsp. sericea,Cornus,Cornus sericea,subsp.,sericea,North Cascades
 Empetrum nigrum subsp. hermaphroditum,Empetrum,Empetrum nigrum,subsp.,hermaphroditum,Superior Mixed Forest
 Elymus curvatus,Elymus,Elymus curvatus,,,Northern Tallgrass Prairie
@@ -2754,7 +2754,7 @@ Maianthemum racemosum,Maianthemum,Maianthemum racemosum,,,Boreal Shield
 Monarda fistulosa,Monarda,Monarda fistulosa,,,Northern Tallgrass Prairie
 Lonicera involucrata,Lonicera,Lonicera involucrata,,,Pacific Northwest Coast
 Lathyrus japonicus,Lathyrus,Lathyrus japonicus,,,Boreal Plains
-Sinomalus fusca,Sinomalus,Sinomalus fusca,,,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests
+Malus fusca,Sinomalus,Malus fusca,,,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests
 Oplopanax horridus,Oplopanax,Oplopanax horridus,,,Okanagan
 Lathyrus venosus,Lathyrus,Lathyrus venosus,,,Northern Tallgrass Prairie
 Lysichiton americanus,Lysichiton,Lysichiton americanus,,,Okanagan
@@ -2884,7 +2884,7 @@ Linum lewisii,Linum,Linum lewisii,,,Northern Great Plains Steppe
 Kalmia microphylla,Kalmia,Kalmia microphylla,,,S.E. Alaska - B.C. Coastal Forest And Mountains
 Juniperus communis,Juniperus,Juniperus communis,,,Northern Great Plains Steppe
 Monarda fistulosa,Monarda,Monarda fistulosa,,,Boreal Shield
-Sinomalus fusca,Sinomalus,Sinomalus fusca,,,North Cascades
+Malus fusca,Sinomalus,Malus fusca,,,North Cascades
 Myrica gale,Myrica,Myrica gale,,,North Cascades
 Juniperus communis,Juniperus,Juniperus communis,,,Western Taiga Shield
 Monarda fistulosa,Monarda,Monarda fistulosa,,,St. Lawrence - Champlain Valley
@@ -2926,7 +2926,7 @@ Lupinus polyphyllus,Lupinus,Lupinus polyphyllus,,,North Cascades
 Monarda fistulosa,Monarda,Monarda fistulosa,,,Northern Appalachian / Acadian
 Lupinus polyphyllus,Lupinus,Lupinus polyphyllus,,,Great Lakes
 Maianthemum racemosum,Maianthemum,Maianthemum racemosum,,,Pacific Northwest Coast
-Sinomalus fusca,Sinomalus,Sinomalus fusca,,,Pacific Northwest Coast
+Malus fusca,Sinomalus,Malus fusca,,,Pacific Northwest Coast
 Lathyrus nevadensis,Lathyrus,Lathyrus nevadensis,,,Pacific Northwest Coast
 Lupinus nootkatensis,Lupinus,Lupinus nootkatensis,,,S.E. Alaska - B.C. Coastal Forest And Mountains
 Lactuca pulchella,Lactuca,Lactuca pulchella,,,Taiga Plains
@@ -3048,7 +3048,7 @@ Lathyrus palustris,Lathyrus,Lathyrus palustris,,,Aspen Parkland
 Lupinus polyphyllus,Lupinus,Lupinus polyphyllus,,,Pacific Northwest Coast
 Lupinus littoralis,Lupinus,Lupinus littoralis,,,North Cascades
 Kalmia microphylla var. occidentalis,Kalmia,Kalmia microphylla,var.,occidentalis,Pacific Northwest Coast
-Sinomalus fusca,Sinomalus,Sinomalus fusca,,,S.E. Alaska - B.C. Coastal Forest And Mountains
+Malus fusca,Sinomalus,Malus fusca,,,S.E. Alaska - B.C. Coastal Forest And Mountains
 Lomatium foeniculaceum,Lomatium,Lomatium foeniculaceum,,,Boreal Plains
 Lomatium nudicaule,Lomatium,Lomatium nudicaule,,,Pacific Northwest Coast
 Mahonia aquifolium,Mahonia,Mahonia aquifolium,,,St. Lawrence - Champlain Valley
@@ -3232,7 +3232,7 @@ Kalmia microphylla var. occidentalis,Kalmia,Kalmia microphylla,var.,occidentalis
 Lupinus nootkatensis var. nootkatensis,Lupinus,Lupinus nootkatensis,var.,nootkatensis,Boreal Cordillera
 Leymus villosissimus,Leymus,Leymus villosissimus,,,Alaska-Yukon Arctic
 Lonicera ciliosa,Lonicera,Lonicera ciliosa,,,S.E. Alaska - B.C. Coastal Forest And Mountains
-Sinomalus fusca,Sinomalus,Sinomalus fusca,,,Montane Cordillera
+Malus fusca,Sinomalus,Malus fusca,,,Montane Cordillera
 Leymus innovatus subsp. innovatus,Leymus,Leymus innovatus,subsp.,innovatus,Taiga Cordillera
 Lomatium foeniculaceum subsp. foeniculaceum,Lomatium,Lomatium foeniculaceum,subsp.,foeniculaceum,Northern Great Plains Steppe
 Leymus innovatus subsp. innovatus,Leymus,Leymus innovatus,subsp.,innovatus,Alaska-Yukon Arctic
@@ -3347,7 +3347,6 @@ Leymus villosissimus,Leymus,Leymus villosissimus,,,Boreal Shield
 Lathyrus palustris,Lathyrus,Lathyrus palustris,,,Eastern Taiga Shield
 Juniperus communis var. depressa,Juniperus,Juniperus communis,var.,depressa,Fescue-Mixed Grass Prairie
 Mentha canadensis,Mentha,Mentha canadensis,,,Eastern Taiga Shield
-Sinomalus fusca,Sinomalus,Sinomalus fusca,,,Aspen Parkland
 Lathyrus venosus,Lathyrus,Lathyrus venosus,,,Taiga Plains
 Linum perenne,Linum,Linum perenne,,,Boreal Cordillera
 Linum perenne,Linum,Linum perenne,,,Alaska Range
@@ -5673,8 +5672,8 @@ Vaccinium vitis-idaea,Vaccinium,Vaccinium vitis-idaea,,,Boreal Cordillera
 Viburnum nudum,Viburnum,Viburnum nudum,,,Northern Appalachian / Acadian
 Vaccinium parvifolium,Vaccinium,Vaccinium parvifolium,,,Pacific Northwest Coast
 Vaccinium oxycoccos,Vaccinium,Vaccinium oxycoccos,,,Great Lakes
-Vaccinium macrocarpum,Vaccinium,Vaccinium macrocarpum,,,Northern Appalachian / Acadian
-Vaccinium macrocarpum,Vaccinium,Vaccinium macrocarpum,,,Boreal Shield
+Vaccinium macrocarpon,Vaccinium,Vaccinium macrocarpon,,,Northern Appalachian / Acadian
+Vaccinium macrocarpon,Vaccinium,Vaccinium macrocarpon,,,Boreal Shield
 Viburnum lantana,Viburnum,Viburnum lantana,,,St. Lawrence - Champlain Valley
 Viburnum edule,Viburnum,Viburnum edule,,,Boreal Cordillera
 Vaccinium membranaceum,Vaccinium,Vaccinium membranaceum,,,Okanagan
@@ -5715,7 +5714,7 @@ Viburnum edule,Viburnum,Viburnum edule,,,Northern Appalachian / Acadian
 Vicia americana,Vicia,Vicia americana,,,Boreal Plains
 Viburnum rafinesqueanum,Viburnum,Viburnum rafinesqueanum,,,Superior Mixed Forest
 Vicia americana,Vicia,Vicia americana,,,Canadian Rocky Mountains
-Vaccinium macrocarpum,Vaccinium,Vaccinium macrocarpum,,,Great Lakes
+Vaccinium macrocarpon,Vaccinium,Vaccinium macrocarpon,,,Great Lakes
 Viburnum opulus,Viburnum,Viburnum opulus,,,Boreal Shield
 Vaccinium corymbosum,Vaccinium,Vaccinium corymbosum,,,Northern Appalachian / Acadian
 Viburnum opulus,Viburnum,Viburnum opulus,,,Northern Tallgrass Prairie
@@ -5760,7 +5759,7 @@ Viburnum lantana,Viburnum,Viburnum lantana,,,Fescue-Mixed Grass Prairie
 Vaccinium vitis-idaea,Vaccinium,Vaccinium vitis-idaea,,,Southern Arctic
 Vaccinium myrtilloides,Vaccinium,Vaccinium myrtilloides,,,Boreal Plains
 Glycyrrhiza lepidota,Glycyrrhiza,Glycyrrhiza lepidota,,,Fescue-Mixed Grass Prairie
-Vaccinium macrocarpum,Vaccinium,Vaccinium macrocarpum,,,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests
+Vaccinium macrocarpon,Vaccinium,Vaccinium macrocarpon,,,Willamette Valley - Puget Trough - Georgia Basin: Temperate Conifer Forests
 Viburnum opulus var. americanum,Viburnum,Viburnum opulus,var.,americanum,Great Lakes
 Vaccinium membranaceum,Vaccinium,Vaccinium membranaceum,,,Boreal Plains
 Viburnum rafinesqueanum,Viburnum,Viburnum rafinesqueanum,,,Aspen Parkland
@@ -5831,7 +5830,7 @@ Vaccinium uliginosum,Vaccinium,Vaccinium uliginosum,,,Taiga Cordillera
 Viburnum opulus var. americanum,Viburnum,Viburnum opulus,var.,americanum,Northern Appalachian / Acadian
 Vaccinium vitis-idaea,Vaccinium,Vaccinium vitis-idaea,,,Great Lakes
 Vaccinium vitis-idaea,Vaccinium,Vaccinium vitis-idaea,,,Taiga Plains
-Vaccinium macrocarpum,Vaccinium,Vaccinium macrocarpum,,,St. Lawrence - Champlain Valley
+Vaccinium macrocarpon,Vaccinium,Vaccinium macrocarpon,,,St. Lawrence - Champlain Valley
 Vaccinium cespitosum,Vaccinium,Vaccinium cespitosum,,,Canadian Rocky Mountains
 Vaccinium vitis-idaea,Vaccinium,Vaccinium vitis-idaea,,,Superior Mixed Forest
 Glycyrrhiza lepidota,Glycyrrhiza,Glycyrrhiza lepidota,,,Boreal Plains
@@ -5903,7 +5902,7 @@ Zizania aquatica,Zizania,Zizania aquatica,,,Great Lakes
 Zizania aquatica,Zizania,Zizania aquatica,,,Northern Appalachian / Acadian
 Zizania palustris,Zizania,Zizania palustris,,,Superior Mixed Forest
 Vaccinium uliginosum,Vaccinium,Vaccinium uliginosum,,,Superior Mixed Forest
-Vaccinium macrocarpum,Vaccinium,Vaccinium macrocarpum,,,Superior Mixed Forest
+Vaccinium macrocarpon,Vaccinium,Vaccinium macrocarpon,,,Superior Mixed Forest
 Vaccinium cespitosum,Vaccinium,Vaccinium cespitosum,,,Pacific Northwest Coast
 Vaccinium scoparium,Vaccinium,Vaccinium scoparium,,,North Cascades
 Viburnum opulus var. americanum,Viburnum,Viburnum opulus,var.,americanum,Boreal Plains
@@ -6029,12 +6028,12 @@ Vicia americana var. americana,Vicia,Vicia americana,var.,americana,Northern Gre
 Zizania aquatica var. brevis,Zizania,Zizania aquatica,var.,brevis,Northern Appalachian / Acadian
 Vaccinium myrtilloides,Vaccinium,Vaccinium myrtilloides,,,Eastern Taiga Shield
 Vaccinium ovalifolium,Vaccinium,Vaccinium ovalifolium,,,Eastern Taiga Shield
-Vaccinium macrocarpum,Vaccinium,Vaccinium macrocarpum,,,Hudson Plains
+Vaccinium macrocarpon,Vaccinium,Vaccinium macrocarpon,,,Hudson Plains
 Vaccinium cespitosum,Vaccinium,Vaccinium cespitosum,,,Hudson Plains
 Vaccinium microcarpum,Vaccinium,Vaccinium microcarpum,,,Eastern Taiga Shield
 Viburnum opulus var. opulus,Viburnum,Viburnum opulus,var.,opulus,Aspen Parkland
-Vaccinium macrocarpum,Vaccinium,Vaccinium macrocarpum,,,Boreal Cordillera
-Vaccinium macrocarpum,Vaccinium,Vaccinium macrocarpum,,,Eastern Taiga Shield
+Vaccinium macrocarpon,Vaccinium,Vaccinium macrocarpon,,,Boreal Cordillera
+Vaccinium macrocarpon,Vaccinium,Vaccinium macrocarpon,,,Eastern Taiga Shield
 Vaccinium cespitosum,Vaccinium,Vaccinium cespitosum,,,Taiga Cordillera
 Vaccinium myrtilloides,Vaccinium,Vaccinium myrtilloides,,,Okanagan
 Zizania aquatica,Zizania,Zizania aquatica,,,Boreal Plains
@@ -6047,7 +6046,7 @@ Vaccinium microcarpum,Vaccinium,Vaccinium microcarpum,,,Aspen Parkland
 Vaccinium cespitosum,Vaccinium,Vaccinium cespitosum,,,St. Lawrence - Champlain Valley
 Viburnum dentatum,Viburnum,Viburnum dentatum,,,Boreal Shield
 Zizania aquatica var. aquatica,Zizania,Zizania aquatica,var.,aquatica,Northern Appalachian / Acadian
-Zizania aquatica var. interior,Zizania,Zizania aquatica,var.,interior,Northern Appalachian / Acadian
+Zizania palustris var. interior,Zizania,Zizania aquatica,var.,interior,Northern Appalachian / Acadian
 Vaccinium microcarpum,Vaccinium,Vaccinium microcarpum,,,Pacific Northwest Coast
 Vaccinium oxycoccos,Vaccinium,Vaccinium oxycoccos,,,Arctic Cordillera
 Viburnum nudum var. cassinoides,Viburnum,Viburnum nudum,var.,cassinoides,Arctic Cordillera
@@ -6160,13 +6159,13 @@ Poa lanata,Poa,Poa lanata,,,Southern Arctic
 Poa pattersonii,Poa,Poa pattersonii,,,Canadian Rocky Mountains
 Poa pattersonii,Poa,Poa pattersonii,,,Boreal Plains
 Poa pattersonii,Poa,Poa pattersonii,,,Northern Great Plains Steppe
-Prunus depressa,Prunus,Prunus depressa,,,Great Lakes
-Prunus depressa,Prunus,Prunus depressa,,,St. Lawrence - Champlain Valley
-Prunus depressa,Prunus,Prunus depressa,,,Northern Appalachian / Acadian
-Prunus susquehanae,Prunus,Prunus susquehanae,,,St. Lawrence - Champlain Valley
-Prunus susquehanae,Prunus,Prunus susquehanae,,,Great Lakes
-Prunus susquehanae,Prunus,Prunus susquehanae,,,Boreal Shield
-Prunus susquehanae,Prunus,Prunus susquehanae,,,Superior Mixed Forest
+Prunus pumila var. depressa,Prunus,Prunus pumila var. depressa,,,Great Lakes
+Prunus pumila var. depressa,Prunus,Prunus pumila var. depressa,,,St. Lawrence - Champlain Valley
+Prunus pumila var. depressa,Prunus,Prunus pumila var. depressa,,,Northern Appalachian / Acadian
+Prunus pumila var. susquehanae,Prunus,Prunus pumila var. susquehanae,,,St. Lawrence - Champlain Valley
+Prunus pumila var. susquehanae,Prunus,Prunus pumila var. susquehanae,,,Great Lakes
+Prunus pumila var. susquehanae,Prunus,Prunus pumila var. susquehanae,,,Boreal Shield
+Prunus pumila var. susquehanae,Prunus,Prunus pumila var. susquehanae,,,Superior Mixed Forest
 Salix lucida,Salix,Salix lucida,,,St. Lawrence - Champlain Valley
 Salix lucida,Salix,Salix lucida,,,Boreal Shield
 Salix lucida,Salix,Salix lucida,,,Great Lakes
@@ -6258,7 +6257,7 @@ Sedum oreganum subsp. oreganum,Sedum,Sedum oreganum,subsp.,oreganum,Montane Cord
 Sedum oreganum subsp. oreganum,Sedum,Sedum oreganum,subsp.,oreganum,Pacific Northwest Coast
 Sedum oreganum subsp. oreganum,Sedum,Sedum oreganum,subsp.,oreganum,Boreal Cordillera
 Sedum oreganum subsp. oreganum,Sedum,Sedum oreganum,subsp.,oreganum,S.E. Alaska - B.C. Coastal Forest And Mountains
-Zizania aquatica var. interior,Zizania,Zizania aquatica,var.,interior,Superior Mixed Forest
+Zizania palustris var. interior,Zizania,Zizania aquatica,var.,interior,Superior Mixed Forest
 Alnus incana,Alnus,Alnus incana,,,Taiga Cordillera
 Achillea millefolium,Achillea,Achillea millefolium,,,Arctic Cordillera
 Alnus incana,Alnus,Alnus incana,,,Southern Arctic
@@ -6366,8 +6365,8 @@ Poa alpigena,Poa,Poa alpigena,,,Boreal Shield
 Poa cusickii,Poa,Poa cusickii,,,Western Taiga Shield
 Physaria arctica,Physaria,Physaria arctica,,,Boreal Plains
 Poa alpigena,Poa,Poa alpigena,,,Northern Appalachian / Acadian
-Prunus depressa,Prunus,Prunus depressa,,,Hudson Plains
-Prunus depressa,Prunus,Prunus depressa,,,Boreal Shield
+Prunus pumila var. depressa,Prunus,Prunus pumila var. depressa,,,Hudson Plains
+Prunus pumila var. depressa,Prunus,Prunus pumila var. depressa,,,Boreal Shield
 Argentina anserina,Argentina,Argentina anserina,,,S.E. Alaska - B.C. Coastal Forest And Mountains
 Rosa gymnocarpa,Rosa,Rosa gymnocarpa,,,Montane Cordillera
 Argentina anserina,Argentina,Argentina anserina,,,Alaska-Yukon Arctic
@@ -6399,3 +6398,14 @@ Poa angustifolia,Poa,Poa angustifolia,,,Canadian Rocky Mountains
 Poa angustifolia,Poa,Poa angustifolia,,,Fescue-Mixed Grass Prairie
 Poa angustifolia,Poa,Poa angustifolia,,,Southern Arctic
 Poa angustifolia,Poa,Poa angustifolia,,,Northern Appalachian / Acadian
+Vaccinium oxycoccos,Vaccinium,Vaccinium oxycoccos,,,Gulf Of Alaska Mountains And Fjordlands
+Vaccinium vitis-idaea,Vaccinium,Vaccinium vitis-idaea,,,Gulf Of Alaska Mountains And Fjordlands
+Vaccinium ovalifolium,Vaccinium,Vaccinium ovalifolium,,,Gulf Of Alaska Mountains And Fjordlands
+Rubus spectabilis,Rubus,Rubus spectabilis,,,Gulf Of Alaska Mountains And Fjordlands
+Rubus idaeus,Rubus,Rubus idaeus,,,Gulf Of Alaska Mountains And Fjordlands
+Rubus idaeus subsp. idaeus,Rubus,Rubus idaeus,subsp.,idaeus,Gulf Of Alaska Mountains And Fjordlands
+Rubus arcticus,Rubus,Rubus arcticus,,,Gulf Of Alaska Mountains And Fjordlands
+Rubus arcticus subsp. stellatus,Rubus,Rubus arcticus,subsp.,stellatus,Gulf Of Alaska Mountains And Fjordlands
+Ribes laxiflorum,Ribes,Ribes laxiflorum,,,Gulf Of Alaska Mountains And Fjordlands
+Ribes hudsonianum,Ribes,Ribes hudsonianum,,,Gulf Of Alaska Mountains And Fjordlands
+Ribes bracteosum,Ribes,Ribes bracteosum,,,Gulf Of Alaska Mountains And Fjordlands

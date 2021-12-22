@@ -8,8 +8,7 @@
 library(stringr)
 library(dplyr)
 
-setwd("~/Desktop/Grad courses/RES500/CWR project/CWR")
-master_list <- read.csv("cwr_inventory_nov17.csv") #complete inventory of all identified CWRs in Canada, this is what we will be using to filter each botanical garden with
+master_list <- read.csv("inventory.csv") #complete inventory of all identified CWRs in Canada, this is what we will be using to filter each botanical garden with
 
 #########Royal Botanical Garden###############
 
@@ -599,3 +598,46 @@ CWR_of_usda_usa<-merge(master_list,usda_usa_cleaned, by.x = "TAXON", by.y = "Tax
 write.csv(CWR_of_usda_usa, "CWR_of_usda_usa_nov17.csv")  
 rm(CWR_of_usda_usa, usda_usa, usda_usa_cleaned, split_var)
 
+
+############ USDA NPGS FULL COLLECTIONS #################
+
+#Read data for whichever garden you want to compare
+usda_usa<- read.csv("combined_GRIN_clean.csv") #Note that there are no repeat names, instead they have a count column!
+
+usda_usa_cleaned<- usda_usa %>% 
+  mutate(TAXONOMY = str_replace(TAXONOMY, "×", "")) #removing 'x' and symbol from hybrids for filtering simplicity - will be added back later!
+
+#Now that the garden dataset is cleaned in the same way as the master list, we can filter them against eachother
+usda_usa_cleaned$Rank <- tolower(usda_usa_cleaned$Rank)
+usda_usa_cleaned$Taxon <-  paste(usda_usa_cleaned$Species, usda_usa_cleaned$Rank, usda_usa_cleaned$Infraspecific) #now join columns to get full taxon name
+usda_usa_cleaned$Taxon <- trimws(usda_usa_cleaned$Taxon, which = c("both"))  #remove trailing white space on species names
+
+# split ORIGIN and COORDINATES
+usda_usa_cleaned_test <- usda_usa_cleaned %>%
+  extract(ORIGIN, c("PROVINCE", "COUNTRY"), "([^,]+), ([^)]+)") %>%
+  extract(COORDINATES, c("LATITUDE", "LONGITUDE"), "([^,]+), ([^)]+)")
+  
+CWR_of_usda_full <- merge(master_list, usda_usa_cleaned_test, by.x = "TAXON", by.y = "Taxon") #Finally, cross-reference usda_usa list with Master list
+#getting a list of all CWR plants in usda_usa
+
+write.csv(CWR_of_usda_full, "CWR_of_NPGS_full.csv")  
+rm(CWR_of_usda_usa, usda_usa, usda_usa_cleaned, split_var)
+
+############ PGRC CANADA FULL #################
+
+#Read data for whichever garden you want to compare
+pgrc_cad<- read.csv("PGRC_full_cleaned.csv") #Note that there are no repeat names, instead they have a count column!
+pgrc_cad<- pgrc_cad %>% 
+  mutate(Taxon = str_replace(Taxon, "×", "")) #removing 'x' and symbol from hybrids for filtering simplicity - will be added back later!
+
+pgrc_cad$Taxon <- trimws(pgrc_cad$Taxon, which = c("both"))  #remove trailing white space on species names
+
+#Now that the garden dataset is cleaned in the same way as the master list, we can filter them against eachother
+CWR_of_pgrc_cad<-merge(master_list,pgrc_cad, by.x = "TAXON", by.y = "Taxon") #Finally, cross-reference pgrc_cad list with Master list
+#getting a list of all CWR plants in pgrc_cad
+
+CWR_of_pgrc_cad <- CWR_of_pgrc_cad %>%
+  extract(ORIGIN, c("PROVINCE", "COUNTRY"), "([^,]+), ([^)]+)")
+
+write.csv(CWR_of_pgrc_cad, "CWR_of_pgrc_full.csv")  
+rm(CWR_of_pgrc_cad, pgrc_cad, pgrc_cad_cleaned, split_var)
