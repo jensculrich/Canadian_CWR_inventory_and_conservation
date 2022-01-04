@@ -38,7 +38,7 @@ df2 <- df %>%
 # second column with "RANK" (subsp. or var.),
 # third column with "INFRASPECIFIC" (subspecies or varietal name)
 # want to keep the full name "TAXON" column
-df <- read.csv("inventory.csv")
+df <- read.csv("Input_Data_and_Files/inventory.csv")
 
 df2 <- df %>% 
   mutate(GENUS = word(TAXON, 1)) %>%
@@ -48,7 +48,7 @@ df2 <- df %>%
            sep = "\\ ") %>%
   unite("SPECIES", "SPECIES1", "SPECIES2", sep = " ")
 
-# write.csv(df2, "inventory.csv")  
+write.csv(df2, "inventory.csv")  
 
 ####################################################
 # CONVERT MANUAL GBIF DOWNLOADS TO DECIMAL DEGREES #
@@ -177,11 +177,11 @@ total <- total[, c(1,2,3,4,5,10,6,9,7,8)] #reorder into the order we want
 
 
 ### NOV 1 - Tidying and seperating column names of PGRC accession data USDA DATASETS####
-USDA_cad<- read.csv("USDA_NPGS_accessions_Canada.csv")
+NPGS <- read.csv("Garden_PGRC_Data/GRIN/GRIN_full_raw.csv")
 
-split_var <- str_split_fixed(USDA_cad$TAXONOMY, "\\s+", 3)  #seperate names into 3 columns, \\s+ is any sized white space
+split_var <- str_split_fixed(NPGS$TAXONOMY, "\\s+", 3)  #seperate names into 3 columns, \\s+ is any sized white space
 
-total<-cbind(USDA_cad, split_var) #put split columns back into database then rename the columns
+total<-cbind(NPGS, split_var) #put split columns back into database then rename the columns
 colnames(total)[8] <- "Genus" 
 colnames(total)[9] <- "Species_only" 
 colnames(total)[10] <- "The_rest" 
@@ -213,8 +213,8 @@ colnames(total)[15] <- "garbage_2"
 
 total <- subset(total, select=-c(Variant_interm, Subspecies_interm, garbage, garbage_2))
 #give proper name to Rank Column using iselse statement
-total$Rank <- ifelse(total$Variant!="", "Var.",
-                     ifelse(total$Subspecies!="", "Subsp.", ""))
+total$Rank <- ifelse(total$Variant!="", "var.",
+                     ifelse(total$Subspecies!="", "subsp.", ""))
 total$Infraspecific <- paste(total$Variant, total$Subspecies)
 total$Infraspecific <- trimws(total$Infraspecific, which = c("both"))  #remove trailing white space on species names
 
@@ -222,110 +222,40 @@ total$Species<- paste(total$Genus, total$Species_only)
 total$Taxon <-  paste(total$Species, total$Rank, total$Infraspecific)
 
 total <- subset(total, select=-c(Variant, Subspecies, Species_only))
-total <- total[, c(1,2,3,4,5,6,7,12,8,11,9,10)] #reorder into the order we want
 
-# write.csv(total, "Cleaned_USDA_CAD.csv")  
+total_distinct <- total %>%
+  distinct()
 
-### NOV 1 - Tidying and seperating column names of NPGS non-wild accession data USDA DATASETS####
-# first navigate to directory
+total_distinct_filtered <- total_distinct %>%
+  filter(AVAILABILITY != "Historic")
 
-for (data in list.files()){
-  
-  # Create the first data if no data exist yet
-  if (!exists("dataset")){
-    dataset <- read.csv(data, header=TRUE)
-  }
-  
-  # if data already exist, then append it together
-  if (exists("dataset")){
-    tempory <-read.csv(data, header=TRUE)
-    dataset <-unique(rbind(dataset, tempory))
-    rm(tempory)
-  }
-}
-View(dataset)
-
-colnames(dataset) <- as.character(unlist(dataset[1,]))
-dataset = dataset[-1, -1]
-
-
-split_var <- str_split_fixed(dataset$TAXONOMY, "\\s+", 3)  #seperate names into 3 columns, \\s+ is any sized white space
-
-total<-cbind(dataset, split_var) #put split columns back into database then rename the columns
-colnames(total)[19] <- "Genus" 
-colnames(total)[20] <- "Species_only" 
-colnames(total)[21] <- "The_rest" 
-
-
-split_var <- str_split_fixed(total$The_rest, " var.\\s+", 2) #split again to get variant info
-total<-cbind(total, split_var) #put split columns back 
-colnames(total)[22] <- "not_needed" 
-colnames(total)[23] <- "Variant_interm" 
-
-
-split_var <- str_split_fixed(total$The_rest, "subsp.\\s+", 2) #split for subspecies info
-total<-cbind(total, split_var) 
-colnames(total)[24] <- "not_needed2" 
-colnames(total)[25] <- "Subspecies_interm" 
-
-#now get rid of all the columns and text within columns that aren't needed
-total <- subset(total, select=-c(not_needed,not_needed2, The_rest))
-
-#now we're removing all unneeded text after the variant + subspecies information
-split_var <- str_split_fixed(total$Variant_interm, "\\s+", 2)  #seperate names into 2 columns, \\s+ is any sized white space
-total<-cbind(total, split_var) 
-colnames(total)[23] <- "Variant" 
-colnames(total)[24] <- "garbage" 
-split_var <- str_split_fixed(total$Subspecies_interm, "\\s+", 2)  #seperate names into 2 columns, \\s+ is any sized white space
-total<-cbind(total, split_var) 
-colnames(total)[25] <- "Subspecies" 
-colnames(total)[26] <- "garbage_2" 
-
-total <- subset(total, select=-c(Variant_interm, Subspecies_interm, garbage, garbage_2))
-#give proper name to Rank Column using iselse statement
-total$Rank <- ifelse(total$Variant!="", "Var.",
-                     ifelse(total$Subspecies!="", "Subsp.", ""))
-total$Infraspecific <- paste(total$Variant, total$Subspecies)
-total$Infraspecific <- trimws(total$Infraspecific, which = c("both"))  #remove trailing white space on species names
-
-total$Species<- paste(total$Genus, total$Species_only)
-total$Taxon <-  paste(total$Species, total$Rank, total$Infraspecific)
-
-total <- subset(total, select=-c(Variant, Subspecies, Species_only))
-total2 <- total %>% #reorder into the order we want
-  select("ACCESSION", "NAME", "TAXONOMY", "ORIGIN", "REPOSITORY", 
-         "AVAILABILITY", "COLLECTION SITE", "COORDINATES", 
-         "IMPROVEMENT STATUS", "Genus", "Rank", "Infraspecific",
-         "Species", "Taxon"
-         )
-
-write.csv(total, "combined_GRIN_clean.csv")  
+write.csv(total_distinct_filtered, "Garden_PGRC_Data/GRIN/GRIN_full_clean.csv")  
 
 
 ############ 
 # PGRC full
 ### NOV 1 - Tidying and seperating column names of PGRC accession data PGRC DATASETS ####
-pgrc <- read.csv("PGRC_full.csv")
+pgrc <- read.csv("Garden_PGRC_Data/GRIN_PGRC/PGRC_full.csv")
 
 #this line will likely have to be slightly modified for each garden after looking at it a bit..
 split_var <- str_split_fixed(pgrc$TAXONOMY, "\\s+", 3)  #seperate names into 3 columns, \\s+ is any sized white space
 
 total<-cbind(pgrc, split_var) #put split columns back into original database and rename new columns
-colnames(total)[8] <- "Genus" 
-colnames(total)[9] <- "Species_only" 
-colnames(total)[10] <- "The_rest" 
+colnames(total)[6] <- "Genus" 
+colnames(total)[7] <- "Species_only" 
+colnames(total)[8] <- "The_rest" 
 
 
 split_var <- str_split_fixed(total$The_rest, " var.\\s+", 2)
 total<-cbind(total, split_var) #split off text for names with variants
-colnames(total)[11] <- "not_needed" 
-colnames(total)[12] <- "Variant_interm" 
+colnames(total)[9] <- "not_needed" 
+colnames(total)[10] <- "Variant_interm" 
 
 
 split_var <- str_split_fixed(total$The_rest, "subsp.\\s+", 2)
 total<-cbind(total, split_var) #split off text for names with subspecies
-colnames(total)[13] <- "not_needed2" 
-colnames(total)[14] <- "Subspecies_interm" 
+colnames(total)[11] <- "not_needed2" 
+colnames(total)[12] <- "Subspecies_interm" 
 
 #now get rid of all the columns and text within columns that aren't needed
 total <- subset(total, select=-c(not_needed,not_needed2, The_rest))
@@ -333,18 +263,18 @@ total <- subset(total, select=-c(not_needed,not_needed2, The_rest))
 #now splitting the newly created columns again to get rid of text after the variant or subspecies names
 split_var <- str_split_fixed(total$Variant_interm, "\\s+", 2)  #seperate names into 2 columns, \\s+ is any sized white space
 total<-cbind(total, split_var) 
-colnames(total)[12] <- "Variant" 
-colnames(total)[13] <- "garbage" 
+colnames(total)[10] <- "Variant" 
+colnames(total)[11] <- "garbage" 
 split_var <- str_split_fixed(total$Subspecies_interm, "\\s+", 2)  #seperate names into 2 columns, \\s+ is any sized white space
 total<-cbind(total, split_var) 
-colnames(total)[14] <- "Subspecies" 
-colnames(total)[15] <- "garbage_2" 
+colnames(total)[12] <- "Subspecies" 
+colnames(total)[13] <- "garbage_2" 
 
 total <- subset(total, select=-c(Variant_interm, Subspecies_interm, garbage, garbage_2)) #removing unneeded columns
 
 #giving correct name in Rank Column using iselse statement 
-total$Rank <- ifelse(total$Variant!="", "Var.",
-                     ifelse(total$Subspecies!="", "Subsp.", ""))
+total$Rank <- ifelse(total$Variant!="", "var.",
+                     ifelse(total$Subspecies!="", "subsp.", ""))
 total$Infraspecific <- paste(total$Variant, total$Subspecies)
 total$Infraspecific <- trimws(total$Infraspecific, which = c("both"))  #remove trailing white space on species names
 
@@ -354,6 +284,8 @@ total$Taxon <-  paste(total$Species, total$Rank, total$Infraspecific)
 total <- subset(total, select=-c(Variant, Subspecies, Species_only))
 total$Rank <- tolower(total$Rank)
 
-total <- total[, c(1,2,3,4,5,10,6,9,7,8)] #reorder into the order we want
+total_split <- total %>%
+  extract(ORIGIN, c("PROVINCE", "COUNTRY"), "([^,]+), ([^)]+)")
 
-write.csv(total, "PGRC_full_cleaned.csv")  
+write.csv(total_split, "Garden_PGRC_Data/GRIN_PGRC/PGRC_full_cleaned.csv")  
+

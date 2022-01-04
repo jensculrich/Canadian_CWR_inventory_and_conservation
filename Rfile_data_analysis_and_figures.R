@@ -15,9 +15,6 @@ library(tigris) # spatial joins between sf's and df
 library(gridExtra) # panelling figures
 library(ggnewscale) # for mixing continuous and discrete fill scales on a map
 
-#library(FSA) # post hoc Dunn test for significance of Kruskal Wallace test
-#library(rcompanion) # pvalue listwise comparison for post-hoc Dunn test
-
 ############
 # CONTENTS #
 ############
@@ -315,9 +312,12 @@ S
 
 
 # inventory summary stats
+# number of unique taxa and distinct species
 unique_taxa <- nrow(inventory_finest_taxon_resolution)
 unique_species <- inventory_finest_taxon_resolution %>%
   distinct(SPECIES, .keep_all = TRUE)
+# and again within the 3 main groupings
+# number of distinct taxa and distinct species
 CWR1 <- inventory_finest_taxon_resolution %>%
   filter(TIER == 1)
 CWR2 <- inventory_finest_taxon_resolution %>%
@@ -342,27 +342,25 @@ WUS_sp <- unique_species %>%
 
 # load data from garden collections (already filtered to only CWRs)
 # update and add new gardens as we receive additional datasets
-cwr_ubc <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_UBC.csv", na.strings=c("","NA"))
-cwr_rbg <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_RBG.csv", na.strings=c("","NA"))
-cwr_montreal <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_montreal.csv", na.strings=c("","NA"))
-cwr_guelph <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_guelph.csv", na.strings=c("","NA"))
-cwr_mountp <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_mpg.csv", na.strings=c("","NA"))
-cwr_vandusen <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_van_dusen.csv", na.strings=c("","NA"))
-cwr_usask <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_sask.csv") 
-cwr_readerrock <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_reader_rock.csv", na.strings=c("","NA"))
-cwr_PGRC <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_pgrc_full.csv", na.strings=c("","NA"))
-cwr_NPGS <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_usda.csv", na.strings=c("","NA"))
-cwr_NPGS_usa <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_usda_usa.csv", na.strings=c("","NA"))
-cwr_NPGS_full <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_NPGS_full.csv", na.strings=c("","NA"))
+cwr_BG1 <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG1.csv", na.strings=c("","NA"))
+cwr_BG2 <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG2.csv", na.strings=c("","NA"))
+cwr_BG3 <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG3.csv", na.strings=c("","NA"))
+cwr_BG4 <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG4.csv", na.strings=c("","NA"))
+cwr_BG5 <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG5.csv", na.strings=c("","NA"))
+cwr_BG6 <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG6.csv", na.strings=c("","NA"))
+cwr_BG7 <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG7.csv", na.strings=c("","NA")) 
+cwr_BG8 <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG8.csv", na.strings=c("","NA"))
+cwr_PGRC <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_PGRC.csv", na.strings=c("","NA"))
+cwr_NPGS <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_NPGS.csv", na.strings=c("","NA"))
 cwr_missed <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_missed_taxa.csv", na.strings=c("","NA"))
 
 
 # join all garden data into one long table
 # update and add new gardens as we receive additional datasets
-garden_accessions <- rbind(cwr_ubc, cwr_rbg, cwr_guelph, cwr_montreal, 
-                           cwr_mountp, cwr_vandusen, cwr_usask, cwr_readerrock, 
+garden_accessions <- rbind(cwr_BG1, cwr_BG2, cwr_BG3, cwr_BG4, 
+                           cwr_BG5, cwr_BG6, cwr_BG7, cwr_BG8, 
                            cwr_PGRC, 
-                           cwr_NPGS, cwr_NPGS_usa, cwr_NPGS_full,
+                           cwr_NPGS,
                            cwr_missed)
 
 garden_accessions <- garden_accessions %>% # format columns
@@ -466,6 +464,8 @@ summary_all_garden_accessions_shapefile_2 <- points_polygon_2 %>%
   dplyr::select(-PROVINCE.y, - PROVINCE.x) %>%
   left_join(inventory[,c("TAXON", "SPECIES", "TIER", "CWR", "WUS")])
 
+## summary of accessions
+# how many for each category
 TIER1 <- summary_all_garden_accessions_shapefile_2 %>%
   filter(TIER == 1)
 TIER1_distinct <- TIER1 %>%
@@ -474,6 +474,8 @@ TIER2 <- summary_all_garden_accessions_shapefile_2 %>%
   filter(TIER == 2)
 WUS <- summary_all_garden_accessions_shapefile_2 %>%
   filter(WUS == "Y")
+
+# and broken down by those in gardens, those in genebanks (and within the two genebanks types)
 BG <- summary_all_garden_accessions_shapefile_2 %>%
   filter(INSTITUTION == "BG") %>%
   group_by(GARDEN_CODE, TIER) %>%
@@ -502,7 +504,9 @@ NPGS_distinct <- G %>%
   filter(TIER == 1,
          GARDEN_CODE == "NPGS") %>%
   distinct(SPECIES)
-left <- anti_join(PGRC_distinct, NPGS_distinct)
+
+# which species in one type of institution but not the other
+left <- anti_join(PGRC_distinct, NPGS_distinct) # in x but not in y
 left2 <- anti_join(NPGS_distinct, PGRC_distinct)
 left3 <- anti_join(G_distinct, BG_distinct)
 left4 <- anti_join(BG_distinct, G_distinct)
@@ -629,7 +633,12 @@ num_accessions_cwr <- num_accessions_cwr %>%
                 levels=category_names)) %>%
   arrange(., PRIMARY_ASSOCIATED_CROP_COMMON_NAME)
 
-F1 <- ggplot(num_accessions_cwr, 
+num_accessions_cwr_outliers <- num_accessions_cwr
+  
+num_accessions_cwr_outliers$total_accessions[which(
+  num_accessions_cwr_outliers$total_accessions > 1000)] = 1000
+
+F1 <- ggplot(num_accessions_cwr_outliers, 
              aes(x = PRIMARY_ASSOCIATED_CROP_COMMON_NAME, 
                  y = total_accessions,
                  color = PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1)) + 
@@ -646,34 +655,34 @@ F1 <- ggplot(num_accessions_cwr,
   ylab("Accessions per CWR") +
   # really struggled to automate this (change just genus name to italic after plotting is done) 
   # so just manually wrote these expressions from the df lims created above
-  scale_x_discrete(labels=c("Sugar Maple" = expression(paste("Sugar Maple - ", italic('Acer'), " (10/10)")),
-                            "Onions, Garlic, Leeks" = expression(paste("Onion, etc. - ", italic('Allium'), " (10/10)")),
-                            "Amaranth" = expression(paste("Amaranth - ", italic('Amaranthus'), " (4/5)")),
+  scale_x_discrete(labels=c("Sugar Maple" = expression(paste("Sugar Maple - ", italic('Acer'), " (9/9)")),
+                            "Onions, Garlic, Leeks" = expression(paste("Onion, etc. - ", italic('Allium'), " (11/11)")),
+                            "Amaranth" = expression(paste("Amaranth - ", italic('Amaranthus'), " (5/5)")),
                             "Saskatoon" = expression(paste("Saskatoon - ", italic('Amelanchier'), " (10/11)")),
                             "Spinach" = expression(paste("Spinach - ", italic('Blitum'), " (2/2)")),
                             "Pecan, Hickory" = expression(paste("Pecan, Hickory - ", italic('Carya'), " (5/5)")),
                             "Chestnut" = expression(paste("Chestnut - ", italic('Castanea'), " (1/1)")),
-                            "Quinoa" = expression(paste("Quinoa - ", italic('Chenopodium'), " (4/8)")),
-                            "Proso-millet" = expression(paste("Proso-millet - ", italic('Panicum'), " (1/16)")),
+                            "Quinoa" = expression(paste("Quinoa - ", italic('Chenopodium'), " (8/8)")),
+                            "Proso-millet" = expression(paste("Proso-millet - ", italic('Panicum'), " (8/14)")),
                             "Strawberry" = expression(paste("Strawberry - ", italic('Fragaria, etc.'), " (7/7)")),
                             "Filbert" = expression(paste("Hazelnut - ", italic('Corylus'), " (3/3)")),
                             "Carrot" = expression(paste("Carrot - ", italic('Daucus'), " (1/1)")),
-                            "Yam" = expression(paste("Yam - ", italic('Dioscorea'), " (0/1)")),
-                            "Wheat" = expression(paste("Wheat - ", italic('Elymus, Leymus'), " (15/22)")),
+                            "Yam" = expression(paste("Yam - ", italic('Dioscorea'), " (1/1)")),
+                            "Wheat" = expression(paste("Wheat - ", italic('Elymus, Leymus'), " (21/22)")),
                             "Sunflower" = expression(paste("Sunflower - ", italic('Helianthus'), " (12/12)")),
-                            "Barley" = expression(paste("Barley - ", italic('Hordeum'), " (3/6)")),
-                            "Hop" = expression(paste("Hops - ", italic('Humulus'), " (1/1)")),
+                            "Barley" = expression(paste("Barley - ", italic('Hordeum'), " (3/4)")),
+                            "Hops" = expression(paste("Hops - ", italic('Humulus'), " (1/1)")),
                             "Walnut" = expression(paste("Walnut - ", italic('Juglans'), " (2/2)")),
-                            "Lettuce" = expression(paste("Lettuce - ", italic('Lactuca'), " (0/1)")),
-                            "Flax" = expression(paste("Flax - ", italic('Linum'), " (3/6)")),
-                            "Lupin" = expression(paste("Lupin - ", italic('Lupinus'), " (3/4)")),
+                            "Lettuce" = expression(paste("Lettuce - ", italic('Lactuca'), " (1/1)")),
+                            "Flax" = expression(paste("Flax - ", italic('Linum'), " (5/9)")),
+                            "Lupin" = expression(paste("Lupin - ", italic('Lupinus'), " (16/19)")),
                             "Apple" = expression(paste("Apple - ", italic('Malus'), " (2/2)")),
                             "Mint" = expression(paste("Mint - ", italic('Mentha'), " (1/1)")),
                             "Tobacco" = expression(paste("Tobacco - ", italic('Nicotiana'), " (1/1)")),
-                            "Tomatillo" = expression(paste("Tomatillo - ", italic('Physalis'), " (1/2)")),
+                            "Tomatillo" = expression(paste("Tomatillo - ", italic('Physalis'), " (2/3)")),
                             "Apricot, Cherry, Peach, Plum" = expression(paste("Apricot, Cherry, etc. - ", italic('Prunus'), " (7/7)")),
                             "Currant, Gooseberry" = expression(paste("Currant, Gooseberry - ", italic('Ribes'), " (16/16)")),
-                            "Blackberry, Raspberry" = expression(paste("Black-, Raspberry - ", italic('Rubus'), " (14/20)")),
+                            "Blackberry, Raspberry" = expression(paste("Black-, Raspberry - ", italic('Rubus'), " (17/19)")),
                             "Rosinweed" = expression(paste("Rosinweed - ", italic('Silphium'), " (2/2)")),
                             "Blueberry, Cranberry" = expression(paste("Blue-, Cranberry - ", italic('Vaccinium'), " (18/20)")),
                             "Grape" = expression(paste("Grape - ", italic('Vitis'), " (2/2)")),

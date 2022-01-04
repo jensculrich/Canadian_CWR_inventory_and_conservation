@@ -1,208 +1,26 @@
-SPECIES,GENUS,GENEPOOL,CATEGORY,GRAFTSTOCK,PRIMARY_ASSOCIATED_CROP_COMMON_NAME,total_accessions,garden_accessions,genebank_accessions,mean,binary,total_CWR_taxa,total_in_ex_situ,proportion_in_ex_situ
-Helianthus annuus,Helianthus,Primary,1A,,Sunflower,842,2,840,80.41666667,1,12,12,1
-Fragaria chiloensis,Fragaria,Primary,1A,,Strawberry,286,14,272,131,1,7,7,1
-Fragaria ananassa,Fragaria,Primary,1A,,Strawberry,282,4,278,131,1,7,7,1
-Leymus cinereus,Leymus,Tertiary,1C,,Wheat,280,1,279,29.54545455,1,22,15,0.681818182
-Rubus idaeus,Rubus,Primary,1A,,"Blackberry, Raspberry",271,38,233,30.55,1,20,14,0.7
-Castanea dentata,Castanea,Primary,1A,,Chestnut,263,258,5,263,1,1,1,1
-Acer rubrum,Acer,Assume distant,1C,,Sugar Maple,248,240,8,58.6,1,10,10,1
-Prunus serotina,Prunus,Tertiary,1C,,"Apricot, Cherry, Peach, Plum",182,179,3,69.85714286,1,7,7,1
-Vaccinium corymbosum,Vaccinium,Primary,1A,,"Blueberry, Cranberry",158,32,126,23.45,1,20,18,0.9
-Amelanchier alnifolia,Amelanchier,Progenitor,1A,,Saskatoon,148,122,26,26.45454545,1,11,10,0.909090909
-Fragaria virginiana,Fragaria,Primary,1A,,Strawberry,139,8,131,131,1,7,7,1
-Juglans nigra,Juglans,Progenitor,1A,,Walnut,128,123,5,97,1,2,2,1
-Acer saccharinum,Acer,Assume distant,1C,,Sugar Maple,125,125,0,58.6,1,10,10,1
-Elymus elymoides,Elymus,Tertiary,1C,,Wheat,111,0,111,29.54545455,1,22,15,0.681818182
-Vaccinium macrocarpon,Vaccinium,Primary,1A,,"Blueberry, Cranberry",110,0,110,23.45,1,20,18,0.9
-Prunus virginiana,Prunus,Tertiary,1C,,"Apricot, Cherry, Peach, Plum",104,90,14,69.85714286,1,7,7,1
-Elymus glaucus,Elymus,Tertiary,1C,,Wheat,102,6,96,29.54545455,1,22,15,0.681818182
-Dasiphora fruticosa,Dasiphora,Tertiary,1C,,Strawberry,93,89,4,131,1,7,7,1
-Prunus americana,Prunus,Progenitor,1A,Graftstock,"Apricot, Cherry, Peach, Plum",86,81,5,69.85714286,1,7,7,1
-Rubus occidentalis,Rubus,Primary,1A,,"Blackberry, Raspberry",86,3,83,30.55,1,20,14,0.7
-Corylus americana,Corylus,Secondary,1B,,Filbert,85,50,35,53.33333333,1,3,3,1
-Fragaria vesca,Fragaria,Tertiary,1C,,Strawberry,80,11,69,131,1,7,7,1
-Hordeum brachyantherum,Hordeum,Tertiary,1C,,Barley,72,0,72,14,1,6,3,0.5
-Prunus pensylvanica,Prunus,Progenitor,1A,Graftstock,"Apricot, Cherry, Peach, Plum",72,69,3,69.85714286,1,7,7,1
-Malus coronaria,Malus,Tertiary,1C,,Apple,67,8,59,62.5,1,2,2,1
-Juglans cinerea,Juglans,Tertiary,1C,,Walnut,66,47,19,97,1,2,2,1
-Acer saccharum,Acer,Progenitor,1A,,Sugar Maple,62,62,0,58.6,1,10,10,1
-Ribes sanguineum,Ribes,Secondary,1B,,"Currant, Gooseberry",62,43,19,18.125,1,16,16,1
-Rubus spectabilis,Rubus,Primary,1A,,"Blackberry, Raspberry",60,15,45,30.55,1,20,14,0.7
-Malus fusca,Malus,Tertiary,1A,Graftstock,Apple,58,10,48,62.5,1,2,2,1
-Ribes aureum,Ribes,Tertiary,1A,Graftstock,"Currant, Gooseberry",54,27,27,18.125,1,16,16,1
-Elymus lanceolatus,Elymus,Tertiary,1C,,Wheat,52,0,52,29.54545455,1,22,15,0.681818182
-Lupinus polyphyllus,Lupinus,Progenitor,1A,,Lupin,52,10,42,20,1,3,3,1
-Vitis riparia,Vitis,Progenitor,1A,Graftstock,Grape,52,21,31,37,1,2,2,1
-Vaccinium angustifolium,Vaccinium,Primary,1A,,"Blueberry, Cranberry",50,20,30,23.45,1,20,18,0.9
-Acer pensylvanicum,Acer,Assume distant,1C,,Sugar Maple,44,43,1,58.6,1,10,10,1
-Amelanchier laevis,Amelanchier,Assume distant,1C,,Saskatoon,44,42,2,26.45454545,1,11,10,0.909090909
-Acer spicatum,Acer,Assume distant,1C,,Sugar Maple,42,37,5,58.6,1,10,10,1
-Ribes cereum,Ribes,Tertiary,1C,,"Currant, Gooseberry",41,3,38,18.125,1,16,16,1
-Acer circinatum,Acer,Assume distant,1C,,Sugar Maple,40,40,0,58.6,1,10,10,1
-Corylus californica,Corylus,Secondary,1B,,Filbert,38,5,33,53.33333333,1,3,3,1
-Corylus cornuta,Corylus,Tertiary,1C,,Filbert,37,28,9,53.33333333,1,3,3,1
-Amelanchier canadensis,Amelanchier,Assume distant,1C,,Saskatoon,36,34,2,26.45454545,1,11,10,0.909090909
-Rubus ursinus,Rubus,Primary,1A,,"Blackberry, Raspberry",36,0,36,30.55,1,20,14,0.7
-Vaccinium ovatum,Vaccinium,Tertiary,1C,,"Blueberry, Cranberry",36,26,10,23.45,1,20,18,0.9
-Carya laciniosa,Carya,Primary,1A,,"Pecan, Hickory",35,35,0,23.2,1,5,5,1
-Elymus canadensis,Elymus,Tertiary,1C,,Wheat,35,2,33,29.54545455,1,22,15,0.681818182
-Allium cernuum,Allium,Assume distant,1C,,"Onions, Garlic, Leeks",32,25,7,10.4,1,10,10,1
-Helianthus petiolaris,Helianthus,Secondary,1B,,Sunflower,32,1,31,80.41666667,1,12,12,1
-Rubus leucodermis,Rubus,Primary,1A,,"Blackberry, Raspberry",32,1,31,30.55,1,20,14,0.7
-Carya ovata,Carya,Primary,1A,,"Pecan, Hickory",31,29,2,23.2,1,5,5,1
-Amaranthus hybridus,Amaranthus,Progenitor,1A,,Amaranth,30,0,30,9.6,1,5,4,0.8
-Elymus virginicus,Elymus,Tertiary,1C,,Wheat,30,0,30,29.54545455,1,22,15,0.681818182
-Prunus pumila,Prunus,Progenitor,1A,Graftstock,"Apricot, Cherry, Peach, Plum",30,26,4,69.85714286,1,7,7,1
-Drymocallis glandulosa,Drymocallis,Tertiary,1C,,Strawberry,28,0,28,131,1,7,7,1
-Mentha canadensis,Mentha,Secondary,1B,,Mint,27,2,25,27,1,1,1,1
-Ribes bracteosum,Ribes,Secondary,1B,,"Currant, Gooseberry",27,9,18,18.125,1,16,16,1
-Rubus odoratus,Rubus,Secondary,1B,,"Blackberry, Raspberry",27,22,5,30.55,1,20,14,0.7
-Silphium perfoliatum,Silphium,Secondary,1B,,Rosinweed,27,8,19,14.5,1,2,2,1
-Carya cordiformis,Carya,Primary,1A,,"Pecan, Hickory",26,25,1,23.2,1,5,5,1
-Rubus allegheniensis,Rubus,Primary,1A,,"Blackberry, Raspberry",25,4,21,30.55,1,20,14,0.7
-Vaccinium vitis-idaea,Vaccinium,Primary,1A,,"Blueberry, Cranberry",25,10,15,23.45,1,20,18,0.9
-Nicotiana attenuata,Nicotiana,Tertiary,1C,,Tobacco,24,0,24,24,1,1,1,1
-Rubus nutkanus,Rubus,Secondary,1B,,"Blackberry, Raspberry",24,0,24,30.55,1,20,14,0.7
-Carya glabra,Carya,Secondary,1B,,"Pecan, Hickory",23,22,1,23.2,1,5,5,1
-Daucus pusillus,Daucus,Tertiary,1C,,Carrot,23,0,23,23,1,1,1,1
-Ribes lacustre,Ribes,Assume distant,1C,,"Currant, Gooseberry",22,7,15,18.125,1,16,16,1
-Vitis aestivalis,Vitis,Progenitor,1A,Graftstock,Grape,22,13,9,37,1,2,2,1
-Helianthus tuberosus,Helianthus,Progenitor,1A,,Sunflower,20,0,20,80.41666667,1,12,12,1
-Linum lewisii,Linum,Tertiary,1C,,Flax,20,5,15,4,1,6,3,0.5
-Rubus arcticus,Rubus,Tertiary,1C,,"Blackberry, Raspberry",20,11,9,30.55,1,20,14,0.7
-Amelanchier arborea,Amelanchier,Assume distant,1C,,Saskatoon,18,12,6,26.45454545,1,11,10,0.909090909
-Ribes americanum,Ribes,Secondary,1B,,"Currant, Gooseberry",18,12,6,18.125,1,16,16,1
-Allium schoenoprasum,Allium,Tertiary,1C,,"Onions, Garlic, Leeks",17,16,1,10.4,1,10,10,1
-Rubus canadensis,Rubus,Primary,1A,,"Blackberry, Raspberry",17,6,11,30.55,1,20,14,0.7
-Allium acuminatum,Allium,Assume distant,1C,,"Onions, Garlic, Leeks",16,2,14,10.4,1,10,10,1
-Chenopodium berlandieri,Chenopodium,Secondary,1B,,Quinoa,16,0,16,4.375,1,8,4,0.5
-Amelanchier humilis,Amelanchier,Assume distant,1C,,Saskatoon,15,15,0,26.45454545,1,11,10,0.909090909
-Allium textile,Allium,Assume distant,1C,,"Onions, Garlic, Leeks",14,0,14,10.4,1,10,10,1
-Helianthus maximiliani,Helianthus,Tertiary,1C,,Sunflower,14,0,14,80.41666667,1,12,12,1
-Vaccinium ovalifolium,Vaccinium,Secondary,1B,,"Blueberry, Cranberry",14,11,3,23.45,1,20,18,0.9
-Acer glabrum,Acer,Assume distant,1C,,Sugar Maple,13,13,0,58.6,1,10,10,1
-Vaccinium parvifolium,Vaccinium,Secondary,1B,,"Blueberry, Cranberry",13,10,3,23.45,1,20,18,0.9
-Amelanchier intermedia,Amelanchier,Assume distant,1C,,Saskatoon,12,11,1,26.45454545,1,11,10,0.909090909
-Amelanchier spicata,Amelanchier,Assume distant,1C,,Saskatoon,12,0,12,26.45454545,1,11,10,0.909090909
-Helianthus pauciflorus,Helianthus,Tertiary,1C,,Sunflower,12,1,11,80.41666667,1,12,12,1
-Leymus triticoides,Leymus,Tertiary,1C,,Wheat,12,0,12,29.54545455,1,22,15,0.681818182
-Allium tricoccum,Allium,Assume distant,1C,,"Onions, Garlic, Leeks",11,11,0,10.4,1,10,10,1
-Amaranthus tuberculatus,Amaranthus,Assume distant,1C,,Amaranth,11,0,11,9.6,1,5,4,0.8
-Elymus sibiricus,Elymus,Assume distant,1C,,Wheat,11,0,11,29.54545455,1,22,15,0.681818182
-Helianthus decapetalus,Helianthus,Tertiary,1C,,Sunflower,11,1,10,80.41666667,1,12,12,1
-Leymus mollis,Leymus,Tertiary,1C,,Barley,11,1,10,14,1,6,3,0.5
-Prunus nigra,Prunus,Secondary,1B,,"Apricot, Cherry, Peach, Plum",11,11,0,69.85714286,1,7,7,1
-Vaccinium uliginosum,Vaccinium,Secondary,1B,,"Blueberry, Cranberry",11,8,3,23.45,1,20,18,0.9
-Chenopodium watsonii,Chenopodium,Tertiary,1C,,Quinoa,10,0,10,4.375,1,8,4,0.5
-Helianthus divaricatus,Helianthus,Tertiary,1C,,Sunflower,10,6,4,80.41666667,1,12,12,1
-Humulus lupulus,Humulus,Primary,1A,,Hop,10,10,0,10,1,1,1,1
-Ribes inerme,Ribes,Secondary,1B,,"Currant, Gooseberry",10,0,10,18.125,1,16,16,1
-Vaccinium myrtilloides,Vaccinium,Primary,1A,,"Blueberry, Cranberry",10,8,2,23.45,1,20,18,0.9
-Comarum palustre,Comarum,Tertiary,1C,,Strawberry,9,6,3,131,1,7,7,1
-Helianthus nuttallii,Helianthus,Tertiary,1C,,Sunflower,9,0,9,80.41666667,1,12,12,1
-Ribes viscosissimum,Ribes,Assume distant,1C,,"Currant, Gooseberry",9,0,9,18.125,1,16,16,1
-Vaccinium membranaceum,Vaccinium,Secondary,1B,,"Blueberry, Cranberry",9,8,1,23.45,1,20,18,0.9
-Ribes cynosbati,Ribes,Secondary,1B,,"Currant, Gooseberry",8,6,2,18.125,1,16,16,1
-Ribes lobbii,Ribes,Assume distant,1C,,"Currant, Gooseberry",8,3,5,18.125,1,16,16,1
-Rubus pedatus,Rubus,Assume distant,1C,,"Blackberry, Raspberry",8,7,1,30.55,1,20,14,0.7
-Vaccinium oxycoccos,Vaccinium,Secondary,1B,,"Blueberry, Cranberry",8,3,5,23.45,1,20,18,0.9
-Acer negundo,Acer,Assume distant,1C,,Sugar Maple,7,5,2,58.6,1,10,10,1
-Blitum nuttallianum,Blitum,Tertiary,1C,,Spinach,7,0,7,5,1,2,2,1
-Helianthus giganteus,Helianthus,Tertiary,1C,,Sunflower,7,1,6,80.41666667,1,12,12,1
-Ribes hudsonianum,Ribes,Secondary,1B,,"Currant, Gooseberry",7,1,6,18.125,1,16,16,1
-Ribes triste,Ribes,Tertiary,1C,,"Currant, Gooseberry",7,2,5,18.125,1,16,16,1
-Helianthus strumosus,Helianthus,Tertiary,1C,,Sunflower,6,1,5,80.41666667,1,12,12,1
-Ribes laxiflorum,Ribes,Assume distant,1C,,"Currant, Gooseberry",6,0,6,18.125,1,16,16,1
-Vaccinium stamineum,Vaccinium,Assume distant,1C,,"Blueberry, Cranberry",6,5,1,23.45,1,20,18,0.9
-Amaranthus retroflexus,Amaranthus,Secondary,1B,,Amaranth,5,0,5,9.6,1,5,4,0.8
-Chenopodium hians,Chenopodium,Tertiary,1C,,Quinoa,5,0,5,4.375,1,8,4,0.5
-Leymus innovatus,Leymus,Tertiary,1C,,Wheat,5,0,5,29.54545455,1,22,15,0.681818182
-Ribes oxyacanthoides,Ribes,Progenitor,1A,,"Currant, Gooseberry",5,1,4,18.125,1,16,16,1
-Vaccinium boreale,Vaccinium,Secondary,1B,,"Blueberry, Cranberry",5,0,5,23.45,1,20,18,0.9
-Vaccinium cespitosum,Vaccinium,Primary,1A,,"Blueberry, Cranberry",5,4,1,23.45,1,20,18,0.9
-Allium geyeri,Allium,Assume distant,1C,,"Onions, Garlic, Leeks",4,1,3,10.4,1,10,10,1
-Allium stellatum,Allium,Assume distant,1C,,"Onions, Garlic, Leeks",4,4,0,10.4,1,10,10,1
-Amelanchier sanguinea,Amelanchier,Assume distant,1C,,Saskatoon,4,2,2,26.45454545,1,11,10,0.909090909
-Chenopodium leptophyllum,Chenopodium,Assume distant,1C,,Quinoa,4,0,4,4.375,1,8,4,0.5
-Elymus villosus,Elymus,Assume distant,1C,,Wheat,4,2,2,29.54545455,1,22,15,0.681818182
-Lupinus littoralis,Lupinus,Assume distant,1C,,Lupin,4,2,2,20,1,3,3,1
-Lupinus nootkatensis,Lupinus,Assume distant,1C,,Lupin,4,1,3,20,1,3,3,1
-Prunus emarginata,Prunus,Secondary,1A,Graftstock,"Apricot, Cherry, Peach, Plum",4,4,0,69.85714286,1,7,7,1
-Ribes divaricatum,Ribes,Secondary,1A,Graftstock,"Currant, Gooseberry",4,2,2,18.125,1,16,16,1
-Zizania aquatica,Zizania,Secondary,1B,,Wild-rice,4,4,0,2.5,1,2,2,1
-Acer nigrum,Acer,Assume distant,1C,,Sugar Maple,3,3,0,58.6,1,10,10,1
-Allium amplectens,Allium,Assume distant,1C,,"Onions, Garlic, Leeks",3,1,2,10.4,1,10,10,1
-Blitum capitatum,Blitum,Tertiary,1C,,Spinach,3,1,2,5,1,2,2,1
-Elymus hystrix,Elymus,Tertiary,1C,,Wheat,3,1,2,29.54545455,1,22,15,0.681818182
-Linum perenne,Linum,Assume distant,1C,,Flax,3,2,1,4,1,6,3,0.5
-Vaccinium myrtillus,Vaccinium,Primary,1A,,"Blueberry, Cranberry",3,1,2,23.45,1,20,18,0.9
-Vaccinium pallidum,Vaccinium,Secondary,1B,,"Blueberry, Cranberry",3,0,3,23.45,1,20,18,0.9
-Acer macrophyllum,Acer,Assume distant,1C,,Sugar Maple,2,2,0,58.6,1,10,10,1
-Allium canadense,Allium,Assume distant,1C,,"Onions, Garlic, Leeks",2,2,0,10.4,1,10,10,1
-Amaranthus albus,Amaranthus,Assume distant,1C,,Amaranth,2,0,2,9.6,1,5,4,0.8
-Elymus violaceus,Elymus,Tertiary,1C,,Wheat,2,0,2,29.54545455,1,22,15,0.681818182
-Ribes hirtellum,Ribes,Progenitor,1A,,"Currant, Gooseberry",2,0,2,18.125,1,16,16,1
-Rubus chamaemorus,Rubus,Tertiary,1C,,"Blackberry, Raspberry",2,2,0,30.55,1,20,14,0.7
-Rubus flagellaris,Rubus,Secondary,1B,,"Blackberry, Raspberry",2,1,1,30.55,1,20,14,0.7
-Silphium integrifolium,Silphium,Primary,1A,,Rosinweed,2,1,1,14.5,1,2,2,1
-Vaccinium deliciosum,Vaccinium,Secondary,1B,,"Blueberry, Cranberry",2,2,0,23.45,1,20,18,0.9
-Allium crenulatum,Allium,Assume distant,1C,,"Onions, Garlic, Leeks",1,1,0,10.4,1,10,10,1
-Amelanchier bartramiana,Amelanchier,Assume distant,1C,,Saskatoon,1,1,0,26.45454545,1,11,10,0.909090909
-Amelanchier interior,Amelanchier,Assume distant,1C,,Saskatoon,1,1,0,26.45454545,1,11,10,0.909090909
-Carya ovalis,Carya,Secondary,1B,,"Pecan, Hickory",1,0,1,23.2,1,5,5,1
-Elymus alaskanus,Elymus,Tertiary,1C,,Wheat,1,0,1,29.54545455,1,22,15,0.681818182
-Elymus macrourus,Elymus,Tertiary,1C,,Wheat,1,0,1,29.54545455,1,22,15,0.681818182
-Elymus scribneri,Elymus,Tertiary,1C,,Wheat,1,0,1,29.54545455,1,22,15,0.681818182
-Helianthus hirsutus,Helianthus,Progenitor,1A,,Sunflower,1,0,1,80.41666667,1,12,12,1
-Helianthus laetiflorus,Helianthus,Tertiary,1C,,Sunflower,1,0,1,80.41666667,1,12,12,1
-Hordeum pusillum,Hordeum,Tertiary,1C,,Barley,1,0,1,14,1,6,3,0.5
-Linum rigidum,Linum,Assume distant,1C,,Flax,1,0,1,4,1,6,3,0.5
-Physalis heterophylla,Physalis,Assume distant,1C,,Tomatillo,1,1,0,0.5,1,2,1,0.5
-Rubus lasiococcus,Rubus,Assume distant,1C,,"Blackberry, Raspberry",1,0,1,30.55,1,20,14,0.7
-Vaccinium scoparium,Vaccinium,Secondary,1B,,"Blueberry, Cranberry",1,0,1,23.45,1,20,18,0.9
-Zizania palustris,Zizania,Tertiary,1A,,Wild-rice,1,1,0,2.5,1,2,2,1
-Amaranthus californicus,Amaranthus,Assume distant,1C,,Amaranth,0,0,0,9.6,0,5,4,0.8
-Amelanchier pumila,Amelanchier,Assume distant,1C,,Saskatoon,0,0,0,26.45454545,0,11,10,0.909090909
-Chenopodiastrum simplex,Chenopodiastrum,Assume distant,1C,,Quinoa,0,0,0,4.375,0,8,4,0.5
-Chenopodium desiccatum,Chenopodium,Tertiary,1C,,Quinoa,0,0,0,4.375,0,8,4,0.5
-Chenopodium fremontii,Chenopodium,Assume distant,1C,,Quinoa,0,0,0,4.375,0,8,4,0.5
-Coleataenia longifolia,Coleataenia,Assume distant,1C,,Proso-millet,0,0,0,0,0,16,0,0
-Dioscorea villosa,Dioscorea,Assume distant,1C,,Yam,0,0,0,0,0,1,0,0
-Elymus albicans,Elymus,Tertiary,1C,,Wheat,0,0,0,29.54545455,0,22,15,0.681818182
-Elymus curvatus,Elymus,Tertiary,1C,,Wheat,0,0,0,29.54545455,0,22,15,0.681818182
-Elymus hirsutus,Elymus,Tertiary,1C,,Wheat,0,0,0,29.54545455,0,22,15,0.681818182
-Elymus riparius,Elymus,Tertiary,1C,,Wheat,0,0,0,29.54545455,0,22,15,0.681818182
-Hordeum depressum,Hordeum,Tertiary,1C,,Barley,0,0,0,14,0,6,3,0.5
-Hordeum jubatum,Hordeum,Tertiary,1C,,Barley,0,0,0,14,0,6,3,0.5
-Lactuca pulchella,Lactuca,Tertiary,1C,,Lettuce,0,0,0,0,0,1,0,0
-Leymus villosissimus,Leymus,Tertiary,1C,,Barley,0,0,0,14,0,6,3,0.5
-Linum medium,Linum,Assume distant,1C,,Flax,0,0,0,4,0,6,3,0.5
-Linum sulcatum,Linum,Assume distant,1C,,Flax,0,0,0,4,0,6,3,0.5
-Linum virginianum,Linum,Assume distant,1C,,Flax,0,0,0,4,0,6,3,0.5
-Oxybasis rubra,Oxybasis,Assume distant,1C,,Quinoa,0,0,0,4.375,0,8,4,0.5
-Panicum capillare,Panicum,Probable progenitor,1A,,Proso-millet,0,0,0,0,0,16,0,0
-Panicum dichotomiflorum,Panicum,Assume distant,1C,,Proso-millet,0,0,0,0,0,16,0,0
-Panicum philadelphicum,Panicum,Assume distant,1C,,Proso-millet,0,0,0,0,0,16,0,0
-Panicum xanthophysum,Dichanthelium,Assume distant,1C,,Proso-millet,0,0,0,0,0,16,0,0
-Physalis virginiana,Physalis,Assume distant,1C,,Tomatillo,0,0,0,0.5,0,2,1,0.5
-Rubus chloocladus,Rubus,Assume distant,1C,,"Blackberry, Raspberry",0,0,0,30.55,0,20,14,0.7
-Rubus nivalis,Rubus,Assume distant,1C,,"Blackberry, Raspberry",0,0,0,30.55,0,20,14,0.7
-Rubus paracaulis,Rubus,Assume distant,1C,,"Blackberry, Raspberry",0,0,0,30.55,0,20,14,0.7
-Rubus pensilvanicus,Rubus,Assume distant,1C,,"Blackberry, Raspberry",0,0,0,30.55,0,20,14,0.7
-Rubus recurvicaulis,Rubus,Assume distant,1C,,"Blackberry, Raspberry",0,0,0,30.55,0,20,14,0.7
-Rubus setosus,Rubus,Assume distant,1C,,"Blackberry, Raspberry",0,0,0,30.55,0,20,14,0.7
-Vaccinium microcarpum,Vaccinium,Primary,1A,,"Blueberry, Cranberry",0,0,0,23.45,0,20,18,0.9
-Vaccinium nubigenum,Vaccinium,Assume distant,1C,,"Blueberry, Cranberry",0,0,0,23.45,0,20,18,0.9
-Pascopyrum smithii,Pascopyrum,Assume distant,1C,,Wheat,0,0,0,29.54545455,0,22,15,0.681818182
-Pseudoroegneria spicata,Pseudoroegneria,Assume distant,1C,,Wheat,0,0,0,29.54545455,0,22,15,0.681818182
-Dichanthelium aciculare,Dichanthelium,Assume distant,1C,,Proso-millet,0,0,0,0,0,16,0,0
-Dichanthelium acuminatum,Dichanthelium,Assume distant,1C,,Proso-millet,0,0,0,0,0,16,0,0
-Dichanthelium boreale,Dichanthelium,Assume distant,1C,,Proso-millet,0,0,0,0,0,16,0,0
-Dichanthelium clandestinum,Dichanthelium,Assume distant,1C,,Proso-millet,0,0,0,0,0,16,0,0
-Dichanthelium depauperatum,Dichanthelium,Assume distant,1C,,Proso-millet,0,0,0,0,0,16,0,0
-Dichanthelium dichotomum,Dichanthelium,Assume distant,1C,,Proso-millet,0,0,0,0,0,16,0,0
-Dichanthelium latifolium,Dichanthelium,Assume distant,1C,,Proso-millet,0,0,0,0,0,16,0,0
-Dichanthelium leibergii,Dichanthelium,Assume distant,1C,,Proso-millet,0,0,0,0,0,16,0,0
-Dichanthelium linearifolium,Dichanthelium,Assume distant,1C,,Proso-millet,0,0,0,0,0,16,0,0
-Dichanthelium sphaerocarpon,Dichanthelium,Assume distant,1C,,Proso-millet,0,0,0,0,0,16,0,0
-Dichanthelium xanthophysum,Dichanthelium,Assume distant,1C,,Proso-millet,0,0,0,0,0,16,0,0
+RANK,TAXON,Associated Crop,Priority Category,Total Accessions,Garden Accessions,Genebank Accessions,Growth Form
+1,Helianthus annuus,Sunflower,1A,842,2,840,Herb
+2,Fragaria chiloensis,Strawberry,1A,286,14,272,Herb
+3,Fragaria ananassa,Strawberry,1A,282,4,278,Herb
+4,Leymus cinereus,Wheat,1C,280,1,279,Herb
+5,Rubus idaeus,"Blackberry, Raspberry",1A,271,38,233,Shrub
+6,Castanea dentata,Chestnut,1A,263,258,5,Tree
+7,Acer rubrum,Sugar Maple,1C,248,240,8,Tree
+8,Prunus serotina,"Apricot, Cherry, Peach, Plum",1C,182,179,3,Tree/Shrub
+9,Vaccinium corymbosum,"Blueberry, Cranberry",1A,158,32,126,Shrub
+10,Amelanchier alnifolia,Saskatoon,1A,148,122,26,Shrub
+11,Fragaria virginiana,Strawberry,1A,139,8,131,Herb
+12,Juglans nigra,Walnut,1A,128,123,5,Tree
+13,Acer saccharinum,Sugar Maple,1C,125,125,0,Tree
+14,Elymus elymoides,Wheat,1C,111,0,111,Herb
+15,Vaccinium macrocarpon,"Blueberry, Cranberry",1A,110,0,110,Herb
+16,Prunus virginiana,"Apricot, Cherry, Peach, Plum",1C,104,90,14,Tree/Shrub
+17,Elymus glaucus,Wheat,1C,102,6,96,Herb
+18,Dasiphora fruticosa,Strawberry,1C,93,89,4,Herb
+19,Prunus americana,"Apricot, Cherry, Peach, Plum",1A,86,81,5,Tree/Shrub
+20,Rubus occidentalis,"Blackberry, Raspberry",1A,86,3,83,Herb
+21,Corylus americana,Filbert,1B,85,50,35,Tree/Shrub
+22,Fragaria vesca,Strawberry,1C,80,11,69,Herb
+23,Hordeum brachyantherum,Barley,1C,72,0,72,Herb
+24,Prunus pensylvanica,"Apricot, Cherry, Peach, Plum",1A,72,69,3,Tree
+25,Malus coronaria,Apple,1C,67,8,59,Tree
