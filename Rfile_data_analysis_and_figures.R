@@ -8,12 +8,11 @@
 library(tidyverse)
 library(ggplot2)
 library(sf) # the base package manipulating shapes
-library(geojsonio) # geo json input and output
-library(ggridges) # needed for ridgeline plot in fig 4
+#library(geojsonio) # geo json input and output
 library(tmap) # libary for drawing spatial figures - i.e. fig 2
 library(tigris) # spatial joins between sf's and df
 library(gridExtra) # panelling figures
-library(ggnewscale) # for mixing continuous and discrete fill scales on a map
+#library(ggnewscale) # for mixing continuous and discrete fill scales on a map
 
 ############
 # CONTENTS #
@@ -47,557 +46,36 @@ inventory <- read.csv("./Input_Data_and_Files/inventory.csv") %>%
 inventory_finest_taxon_resolution <- inventory %>%
   filter(FINEST_TAXON_RESOLUTION == "Y")
 
+# aggregate inventory at the species level 
+inventory_sp <- inventory %>%
+  distinct(SPECIES, .keep_all = TRUE)
+
+# filter inventory to Tier 1 species
+inventory_sp_T1 <- inventory_sp %>%
+  filter(TIER == 1)
+
+
 canada_ecoregions_geojson <- st_read("./Geo_Data/canada_ecoregions_clipped.geojson", quiet = TRUE)
 canada_provinces_geojson <- st_read("./Geo_Data/canada_provinces.geojson", quiet = TRUE)
 # rename PROVINCE in shapefile (needs to match the species distribution table)
 canada_provinces_geojson <- canada_provinces_geojson %>%
   rename("PROVINCE" = "name")
 
+# read in gap tables
+province_gap_table <- read.csv("Garden_PGRC_Data/province_gap_table_species.csv")
+ecoregion_gap_table <- read.csv("Garden_PGRC_Data/ecoregion_gap_table_species.csv")
 
-######################################################################
-# Reformat (add taxon info) and Project Species Distribution Tables  #
+# read in accessions summary
+num_accessions <- read.csv("Garden_PGRC_Data/summary_accessions_all_species.csv")
 
-sp_distr_ecoregion <- as_tibble(read.csv("./GBIF_download_outputs/species_distributions_ecoregion_trimmed.csv"))
-sp_distr_province <- as_tibble(read.csv("./GBIF_download_outputs/species_distributions_province_trimmed.csv"))
-
-# add geometry to the species distribution table
-sp_distr_province_sf <- merge(x = sp_distr_province, 
-                               y = canada_provinces_geojson[ , c("PROVINCE", "geometry")], 
-                               by = "PROVINCE", all.x=TRUE)
-
-# join with inventory to add taxon information (category, crop relative, IUCN, etc.)
-sp_distr_province_sf <- merge(x = sp_distr_province_sf,
-                               y = inventory_finest_taxon_resolution[ , c("TAXON",
-                                            "PRIMARY_ASSOCIATED_CROP_COMMON_NAME",
-                                            # "SECONDARY_ASSOCIATED_CROP_COMMON_NAME",
-                                            "CWR", "WUS", "NATIVE",
-                                            "PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_1",
-                                            "PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_2",
-                                            "PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1",
-                                            "PRIMARY_CROP_OR_WUS_USE_SPECIFIC_2",
-                                            "PRIMARY_CROP_OR_WUS_USE_SPECIFIC_3",
-                                            "SECONDARY_CROP_OR_WUS_USE_1",
-                                            "CATEGORY", "TIER", "GENEPOOL")],
-                               by = c("TAXON"),
-                               all.x=TRUE)
-
-# Now ecoregion species distributions
-# add geometry to the species distribution table
-sp_distr_ecoregion_sf <- merge(x = sp_distr_ecoregion, 
-                              y = canada_ecoregions_geojson[ , c("ECO_NAME", "geometry")], 
-                              by = "ECO_NAME", all.x=TRUE)
-
-# join with inventory to add taxon information (category, crop relative, IUCN, etc.)
-sp_distr_ecoregion_sf <- merge(x = sp_distr_ecoregion_sf,
-                              y = inventory_finest_taxon_resolution[ , c("TAXON",
-                                                 "PRIMARY_ASSOCIATED_CROP_COMMON_NAME",
-                                                 # "SECONDARY_ASSOCIATED_CROP_COMMON_NAME",
-                                                 "CWR", "WUS", "NATIVE",
-                                                 "PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_1",
-                                                 "PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_2",
-                                                 "PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1",
-                                                 "PRIMARY_CROP_OR_WUS_USE_SPECIFIC_2",
-                                                 "PRIMARY_CROP_OR_WUS_USE_SPECIFIC_3",
-                                                 "SECONDARY_CROP_OR_WUS_USE_1",
-                                                 "CATEGORY", "TIER", "GENEPOOL")],
-                              by = c("TAXON"),
-                              all.x=TRUE)
-
-
-################################################################################
-# # 2 - Compute some basic summary stats about the inventory   
-################################################################################
-
-##############################
-# CWRs in each category ######
-##############################
-# end result is a bar chart that displays the number of CWR in each category
-# how to show relative to the number of crop groups?
-
-CWR_inventory_summary <- inventory_finest_taxon_resolution %>%
-  filter(CWR == "Y") %>%
-  filter(TIER == 1) %>%
-  group_by(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1) %>%
-  add_tally() %>%
-  distinct(SPECIES, .keep_all = TRUE) %>%
-  add_tally() %>%
-  distinct(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, .keep_all = TRUE ) %>%
-  arrange(desc(n)) %>%
-  dplyr::select(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, n, nn) %>%
-  # change level name to fit on the figure page better
-  transform(
-    PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1=plyr::revalue(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, 
-    c("Cereals and pseudocereals"="Cereals, Pseudocereals")))
- 
-par(mar=c(4,15,4,4))
-barplot(CWR_inventory_summary$n, #main = "Native CWR Taxa in Broad Crop Categories",
-        names.arg = CWR_inventory_summary$PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, xlab = "", ylab = "",
-        cex.names=1.5, cex.axis=1.5, horiz=T, las=1, xlim = c(0,140))
-
-################################################################################
-# # 3 - Determine patterns of species distributions (re-used later for Fig 2)   
-################################################################################
-# end result -> identify richness of total and endemic CWR and WUS
-# in each region. Will be used later for Figure 2
-# the histograms plots (P, Q, R, and S) are just to confirm that the data manipulation
-# produced the results we want to see i.e. a number of taxa per region
-# can also identify the 'hotspots' - areas with the most CWR and WUS using the resulting
-
-# CWR per ecoregion
-total_and_endemic_CWRs_ecoregion <- sp_distr_ecoregion_sf %>%
-  # count total CWRs (unique TAXON in each province) - only tier 1?
-  # want the rows where CWR is Y (just the CWR)
-  #filter(CWR == "Y") %>%
-  filter(TIER == "1") %>%
-  # group by ecoregion
-  group_by(ECO_NAME) %>%
-  # tally the number of unique CWR TAXA
-  distinct(TAXON, .keep_all = TRUE) %>%
-  add_tally() %>%
-  rename(total_CWRs_in_ecoregion = "n") %>%
-  mutate(total_CWRs_in_ecoregion = as.numeric(total_CWRs_in_ecoregion)) %>%
-  ungroup() %>%
-  
-  # count endemic CWRs (species that occurs in only 1 ecoregion)
-  group_by(TAXON) %>%
-  # if group is only one row, endemic = 1, else endemic = 0
-  add_tally() %>%
-  rename("native_ecoregions_for_species" = "n") %>%
-  mutate(is_endemic = ifelse(
-    native_ecoregions_for_species == 1, 1, 0)) %>%
-  ungroup() %>%
-  group_by(ECO_NAME) %>%
-  mutate(endemic_CWRs_in_ecoregion = sum(is_endemic))
-
-# just want number of CWRS in each region
-# for a histogram and to easily see ranked list of top ecoregions
-# by total CWRs:
-total_CWRs_group_by_ecoregion <- total_and_endemic_CWRs_ecoregion %>% 
-  distinct(ECO_NAME, .keep_all = TRUE ) %>%
-  arrange(desc(total_CWRs_in_ecoregion))
-# and by endemic CWRs:
-total_CWRs_group_by_ecoregion <- total_CWRs_group_by_ecoregion %>% 
-  arrange(desc(endemic_CWRs_in_ecoregion))
-
-# Plot number CWRs in each province (as a histogram)
-P <- ggplot(total_CWRs_group_by_ecoregion, aes(x = total_CWRs_in_ecoregion)) + theme_bw() + 
-  geom_histogram()
-P
-
-# CWR per province
-total_and_endemic_CWRs_province <- sp_distr_province_sf %>%
-  # count total CWRs (unique TAXON in each province) - only tier 1?
-  # want the rows where CWR is Y (just the CWR)
-  filter(CWR == "Y") %>%
-  filter(TIER == "1") %>%
-  # group by province
-  group_by(PROVINCE) %>%
-  # tally the number of unique CWR species
-  distinct(TAXON, .keep_all = TRUE) %>%
-  add_tally() %>%
-  rename(total_CWRs_in_province = "n") %>%
-  mutate(total_CWRs_in_province = as.numeric(total_CWRs_in_province)) %>%
-  ungroup() %>%
-  
-  # count endemic CWRs (species that occurs in only 1 province)
-  group_by(TAXON) %>%
-  # if group is only one row, endemic = 1, else endemic = 0
-  add_tally() %>%
-  rename("native_provinces_for_species" = "n") %>%
-  mutate(is_endemic = ifelse(
-    native_provinces_for_species == 1, 1, 0)) %>%
-  ungroup() %>%
-  group_by(PROVINCE) %>%
-  mutate(endemic_CWRs_in_province = sum(is_endemic))
-
-# just want number of CWRS in each region
-# for a histogram and to easily see ranked list of top ecoregions
-# by total CWRs:
-total_CWRs_group_by_province <- total_and_endemic_CWRs_province %>% 
-  distinct(PROVINCE, .keep_all = TRUE ) %>%
-  arrange(desc(total_CWRs_in_province))
-# and by endemic CWRs:
-total_CWRs_group_by_province <- total_CWRs_group_by_province %>% 
-  arrange(desc(endemic_CWRs_in_province))
-
-# Plot number CWRs in each province (as a histogram)
-Q <- ggplot(total_CWRs_group_by_province, aes(x = total_CWRs_in_province)) + theme_bw() + 
-  geom_histogram()
-Q
-
-#########################################
-# repeat forWUS 
-
-# WUS per ecoregion
-total_and_endemic_WUS_ecoregion <- sp_distr_ecoregion_sf %>%
-  # count total WUS (unique TAXON in each province) - only tier 1?
-  # want the rows where CWR is Y (just the WUS)
-  filter(WUS == "Y") %>%
-  filter(TIER == "1") %>%
-  # group by ecoregion
-  group_by(ECO_NAME) %>%
-  # tally the number of unique CWR TAXA
-  distinct(TAXON, .keep_all = TRUE) %>%
-  add_tally() %>%
-  rename(total_WUS_in_ecoregion = "n") %>%
-  mutate(total_WUS_in_ecoregion = as.numeric(total_WUS_in_ecoregion)) %>%
-  ungroup() %>%
-  
-  # count endemic WUS (species that occurs in only 1 ecoregion)
-  group_by(TAXON) %>%
-  # if group is only one row, endemic = 1, else endemic = 0
-  add_tally() %>%
-  rename("native_ecoregions_for_species" = "n") %>%
-  mutate(is_endemic = ifelse(
-    native_ecoregions_for_species == 1, 1, 0)) %>%
-  ungroup() %>%
-  group_by(ECO_NAME) %>%
-  mutate(endemic_WUS_in_ecoregion = sum(is_endemic))
-
-# just want number of WUS in each region
-# for a histogram and to easily see ranked list of top ecoregions
-# by total WUS:
-total_WUS_group_by_ecoregion <- total_and_endemic_WUS_ecoregion %>% 
-  distinct(ECO_NAME, .keep_all = TRUE ) %>%
-  arrange(desc(total_WUS_in_ecoregion))
-# and by endemic WUS:
-total_WUS_group_by_ecoregion <- total_WUS_group_by_ecoregion %>% 
-  arrange(desc(endemic_WUS_in_ecoregion))
-
-# Plot number WUS in each province (as a histogram)
-R <- ggplot(total_WUS_group_by_ecoregion, aes(x = total_WUS_in_ecoregion)) + theme_bw() + 
-  geom_histogram()
-R
-
-# WUS per province
-total_and_endemic_WUS_province <- sp_distr_province_sf %>%
-  # count total WUS (unique TAXON in each province) - only tier 1?
-  # want the rows where WUS is Y (just the WUS)
-  filter(WUS == "Y") %>%
-  filter(TIER == "1") %>%
-  # group by province
-  group_by(PROVINCE) %>%
-  # tally the number of unique WUS species
-  distinct(TAXON, .keep_all = TRUE) %>%
-  add_tally() %>%
-  rename(total_WUS_in_province = "n") %>%
-  mutate(total_WUS_in_province = as.numeric(total_WUS_in_province)) %>%
-  ungroup() %>%
-  
-  # count endemic WUS (species that occurs in only 1 province)
-  group_by(TAXON) %>%
-  # if group is only one row, endemic = 1, else endemic = 0
-  add_tally() %>%
-  rename("native_provinces_for_species" = "n") %>%
-  mutate(is_endemic = ifelse(
-    native_provinces_for_species == 1, 1, 0)) %>%
-  ungroup() %>%
-  group_by(PROVINCE) %>%
-  mutate(endemic_WUS_in_province = sum(is_endemic))
-
-# just want number of WUS in each region
-# for a histogram and to easily see ranked list of top ecoregions
-# by total WUS:
-total_WUS_group_by_province <- total_and_endemic_WUS_province %>% 
-  distinct(PROVINCE, .keep_all = TRUE ) %>%
-  arrange(desc(total_WUS_in_province))
-# and by endemic WUS:
-total_WUS_group_by_province <- total_WUS_group_by_province %>% 
-  arrange(desc(endemic_WUS_in_province))
-
-# Plot number WUS in each province (as a histogram)
-S <- ggplot(total_WUS_group_by_province, aes(x = total_WUS_in_province)) + theme_bw() + 
-  geom_histogram()
-S
-
-
-# inventory summary stats
-# number of unique taxa and distinct species
-unique_taxa <- nrow(inventory_finest_taxon_resolution)
-unique_species <- inventory_finest_taxon_resolution %>%
-  distinct(SPECIES, .keep_all = TRUE)
-# and again within the 3 main groupings
-# number of distinct taxa and distinct species
-CWR1 <- inventory_finest_taxon_resolution %>%
-  filter(TIER == 1)
-CWR2 <- inventory_finest_taxon_resolution %>%
-  filter(TIER == 2)
-WUS <- inventory_finest_taxon_resolution %>%
-  filter(WUS == "Y")
-CWR1_sp <- unique_species %>%
-  filter(TIER == 1)
-CWR2_sp <- unique_species %>%
-  filter(TIER == 2)
-WUS_sp <- unique_species %>%
-  filter(WUS == "Y")
-
-################################################################################
-# # 4 - Load garden data format for gap analyses
-################################################################################
-
-##########
-# compile garden data and append ecoregion or province of the origin for
-# wild-collected accessions,
-# when lat/long was given
-
-# load data from garden collections (already filtered to only CWRs)
-# update and add new gardens as we receive additional datasets
-cwr_BG1 <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG1.csv", na.strings=c("","NA"))
-cwr_BG2 <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG2.csv", na.strings=c("","NA"))
-cwr_BG3 <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG3.csv", na.strings=c("","NA"))
-cwr_BG4 <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG4.csv", na.strings=c("","NA"))
-cwr_BG5 <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG5.csv", na.strings=c("","NA"))
-cwr_BG6 <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG6.csv", na.strings=c("","NA"))
-cwr_BG7 <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG7.csv", na.strings=c("","NA")) 
-cwr_BG8 <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG8.csv", na.strings=c("","NA"))
-cwr_PGRC <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_PGRC.csv", na.strings=c("","NA"))
-cwr_NPGS <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_NPGS.csv", na.strings=c("","NA"))
-cwr_missed <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_missed_taxa.csv", na.strings=c("","NA"))
-
-
-# join all garden data into one long table
-# update and add new gardens as we receive additional datasets
-garden_accessions <- rbind(cwr_BG1, cwr_BG2, cwr_BG3, cwr_BG4, 
-                           cwr_BG5, cwr_BG6, cwr_BG7, cwr_BG8, 
-                           cwr_PGRC, 
-                           cwr_NPGS,
-                           cwr_missed)
-
-garden_accessions <- garden_accessions %>% # format columns
-  mutate(latitude = as.numeric(LATITUDE), 
-         longitude = as.numeric(LONGITUDE)) %>% 
-  mutate(TAXON = str_replace(TAXON, "×", "")) # R can't match this symbol in joins
-
-# Transform garden data into a projected shape file
-sf_garden_accessions <- garden_accessions %>%
-  # na.fail = FALSE to keep all of the accessions (about 80% don't have lat long,
-  # but many of these have province at least)
-  st_as_sf(coords = c("longitude", "latitude"), crs = 4326, na.fail = FALSE)
-
-###########################################################
-# Join with species distributions to conduct gap analyses #
-###########################################################
-
-# Append Province to accession using lat and longitude
-# spatial join to add accession province
-points_polygon <- st_join(sf_garden_accessions, canada_provinces_geojson, left = TRUE,
-                          join = st_nearest_feature, maxdist = 100000)
-# spatial join to add accession ecoregion
-points_polygon_2 <- st_join(points_polygon, canada_ecoregions_geojson, left = TRUE,
-                            join = st_nearest_feature, maxdist = 100000)
-
-# GO BACK AND REDO THIS JOIN BY NEAREST NEIGHBOR!!! 
-# WILL ALSO NEED TO REMOVE COLLECTIONS FROM OUTSIDE CANADA FOR THE GAP ANALYSIS FIGUREs/APP
-
-# break out new latitude and longitude columns and reformat
-all_garden_accessions_shapefile <- points_polygon_2 %>%
-  # break coordinates into lat/long
-  mutate(longitude=gsub("\\,.*","", geometry)) %>%
-  mutate(latitude=gsub(".*,","",geometry)) %>%
-  # format to remove "c(" and  ")"
-  mutate(longitude = as.numeric(str_sub(longitude, 3)))  %>% 
-  mutate(latitude = as.numeric(str_remove(latitude, "[)]"))) %>% 
-  
-  # select columns that match garden accessions
-  dplyr::select(TAXON, 
-                #GENUS, SPECIES, RANK, INFRASPECIFIC, 
-                #PRIMARY_ASSOCIATED_CROP_COMMON_NAME, 
-                #SECONDARY_ASSOCIATED_CROP_COMMON_NAME,
-                #PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_1,
-                #PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_2,
-                #SECONDARY_ASSOCIATED_CROP_TYPE_GENERAL,
-                #PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1,
-                #PRIMARY_CROP_OR_WUS_USE_SPECIFIC_2,
-                #PRIMARY_CROP_OR_WUS_USE_SPECIFIC_3,
-                #FINEST_TAXON_RESOLUTION, CWR, WUS, CATEGORY, TIER, 
-                PROVENANCE, COUNTRY, LOCALITY,
-                PROVINCE.x, PROVINCE.y, ECO_NAME,
-                latitude, longitude,
-                GARDEN_CODE, INSTITUTION) %>%
-  # IUCNRedList/conservation_status) %>%
-  # take province from cd_canada unless was already provided by garden (just want one column)
-  mutate(province = ifelse(is.na(PROVINCE.x), PROVINCE.y, PROVINCE.x)) %>%
-  dplyr::select(-PROVINCE.y, - PROVINCE.x) %>%
-  left_join(inventory[,c("TAXON", "SPECIES")])
-
-
-# gardens often give province but no lat/long (including all PGRC)
-accessions_w_province_but_no_geo_data <- all_garden_accessions_shapefile %>%
-  filter(!is.na(province)) %>%
-  filter(is.na(latitude))
-# the province layers don't always catch coastal/island collections bounded by ecoregion
-# manually edit these accessions afterwards?
-accessions_w_ecoregion_but_no_province <- all_garden_accessions_shapefile %>%
-  filter(!is.na(ECO_NAME)) %>%
-  filter(is.na(province))
-accessions_lat_long <- all_garden_accessions_shapefile %>%
-  filter(!is.na(latitude))
-
-# break out new latitude and longitude columns and reformat
-summary_all_garden_accessions_shapefile_2 <- points_polygon_2 %>%
-  # break coordinates into lat/long
-  mutate(longitude=gsub("\\,.*","", geometry)) %>%
-  mutate(latitude=gsub(".*,","",geometry)) %>%
-  # format to remove "c(" and  ")"
-  mutate(longitude = as.numeric(str_sub(longitude, 3)))  %>% 
-  mutate(latitude = as.numeric(str_remove(latitude, "[)]"))) %>% 
-  
-  # select columns that match garden accessions
-  dplyr::select(TAXON, 
-                #GENUS, SPECIES, RANK, INFRASPECIFIC, 
-                #PRIMARY_ASSOCIATED_CROP_COMMON_NAME, 
-                #SECONDARY_ASSOCIATED_CROP_COMMON_NAME,
-                #PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_1,
-                #PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_2,
-                #SECONDARY_ASSOCIATED_CROP_TYPE_GENERAL,
-                #PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1,
-                #PRIMARY_CROP_OR_WUS_USE_SPECIFIC_2,
-                #PRIMARY_CROP_OR_WUS_USE_SPECIFIC_3,
-                #FINEST_TAXON_RESOLUTION, CWR, WUS, CATEGORY, TIER, 
-                PROVENANCE, COUNTRY, LOCALITY,
-                PROVINCE.x, PROVINCE.y, ECO_NAME,
-                latitude, longitude,
-                GARDEN_CODE, INSTITUTION) %>%
-  # IUCNRedList/conservation_status) %>%
-  # take province from cd_canada unless was already provided by garden (just want one column)
-  mutate(province = ifelse(is.na(PROVINCE.x), PROVINCE.y, PROVINCE.x)) %>%
-  dplyr::select(-PROVINCE.y, - PROVINCE.x) %>%
-  left_join(inventory[,c("TAXON", "SPECIES", "TIER", "CWR", "WUS")])
-
-## summary of accessions
-# how many for each category
-TIER1 <- summary_all_garden_accessions_shapefile_2 %>%
-  filter(TIER == 1)
-TIER1_distinct <- TIER1 %>%
-  distinct(SPECIES)
-TIER2 <- summary_all_garden_accessions_shapefile_2 %>%
-  filter(TIER == 2)
-WUS <- summary_all_garden_accessions_shapefile_2 %>%
-  filter(WUS == "Y")
-
-# and broken down by those in gardens, those in genebanks (and within the two genebanks types)
-BG <- summary_all_garden_accessions_shapefile_2 %>%
-  filter(INSTITUTION == "BG") %>%
-  group_by(GARDEN_CODE, TIER) %>%
-  count()
-BG_distinct <- summary_all_garden_accessions_shapefile_2 %>%
-  filter(INSTITUTION == "BG",
-         TIER == 1) %>%
-  distinct(SPECIES)
-BG_WUS <- summary_all_garden_accessions_shapefile_2 %>%
-  filter(INSTITUTION == "BG",
-         WUS == "Y") %>%
-  group_by(GARDEN_CODE) %>%
-  count()
-G <- summary_all_garden_accessions_shapefile_2 %>%
-  filter(INSTITUTION == "G") # %>%
-  #group_by(TIER) %>%
-  #count()
-G_distinct <- G %>%
-  filter(TIER == 1) %>%
-  distinct(SPECIES)
-PGRC_distinct <- G %>%
-  filter(TIER == 1,
-         GARDEN_CODE == "PGRC") %>%
-  distinct(SPECIES)
-NPGS_distinct <- G %>%
-  filter(TIER == 1,
-         GARDEN_CODE == "NPGS") %>%
-  distinct(SPECIES)
-
-# which species in one type of institution but not the other
-left <- anti_join(PGRC_distinct, NPGS_distinct) # in x but not in y
-left2 <- anti_join(NPGS_distinct, PGRC_distinct)
-left3 <- anti_join(G_distinct, BG_distinct)
-left4 <- anti_join(BG_distinct, G_distinct)
-
-G_WUS <- summary_all_garden_accessions_shapefile_2 %>%
-  filter(INSTITUTION == "G",
-         WUS == "Y") %>%
-  group_by(GARDEN_CODE) %>%
-  count()
-NPGS <- G %>%
-  filter(GARDEN_CODE == "NPGS") %>%
-  group_by(TIER) %>%
-  count()
-PGRC <- G %>%
-  filter(GARDEN_CODE == "PGRC") %>%
-  group_by(TIER) %>%
-  count()
-unique_CWR_repped_species <- TIER1 %>%
-  distinct(SPECIES)
-unique_CWR2_repped_species <- TIER2 %>%
-  distinct(SPECIES)
-unique_WUS_repped_species <- WUS %>%
-  distinct(SPECIES)
-
-
-# for now, want to get rid of collections from outside Canada
-# all_garden_accessions_shapefile <- all_garden_accessions_shapefile %>%
-#  filter(COUNTRY == "Canada" | COUNTRY == "United States" |
-#           COUNTRY == "United States of America" |
-#           is.na(COUNTRY))
-
-# now join the garden data with the sp distributions by province
-# to expand each row where a taxon/ species occurs
-# for taxon level use these:
-province_gap_table <- sp_distr_province[ , c("TAXON", "PROVINCE")] %>%
-  rename("province" = "PROVINCE") %>%
-  merge(x = ., y = all_garden_accessions_shapefile,
-        by = c("TAXON", "province"),
-        all = TRUE) %>%
-  select(-ECO_NAME, -COUNTRY) %>%
-  full_join(inventory)
-
-ecoregion_gap_table <- sp_distr_ecoregion[ , c("TAXON", "ECO_NAME")] %>%
-  merge(x = ., y = all_garden_accessions_shapefile,
-        by = c("TAXON", "ECO_NAME"),
-        all = TRUE) %>%
-  select(-province, -COUNTRY) %>%
-  full_join(inventory)
-
-# for species level use these:
-inventory_sp <- inventory %>%
-  select(-TAXON, -RANK, -INFRASPECIFIC) %>%
-  distinct(SPECIES, .keep_all = TRUE)
-
-sp_distr_province_sp <- sp_distr_province %>%
-  # remove duplicates at province within species
-  distinct(SPECIES, PROVINCE, .keep_all=TRUE)
-
-province_gap_table_species <- sp_distr_province_sp[ , c("SPECIES", "PROVINCE")] %>%
-  rename("province" = "PROVINCE") %>%
-  merge(x = ., y = all_garden_accessions_shapefile,
-        by = c("SPECIES", "province"),
-        all = TRUE) %>%
-  select(-ECO_NAME, -COUNTRY, -TAXON) %>%
-  full_join(inventory_sp)
-
-sp_distr_ecoregion_sp <- sp_distr_ecoregion %>%
-  # remove duplicates at province within species
-  distinct(SPECIES, ECO_NAME, .keep_all=TRUE)
-ecoregion_gap_table_species <- sp_distr_ecoregion_sp[ , c("SPECIES", "ECO_NAME")] %>%
-  merge(x = ., y = all_garden_accessions_shapefile,
-        by = c("SPECIES", "ECO_NAME"),
-        all = TRUE) %>%
-  select(-province, -COUNTRY) %>%
-  full_join(inventory_sp)
+need_range_maps <- province_gap_table %>% 
+  filter(is.na(PROVINCE)) %>%
+  select(SPECIES)
 
 ##################################################################
 # # FIGURE 1 # # # # # # # # # # # # # # #
 ##################################################################
 
-# group by species (or taxon), calc number of rows where GARDEN_CODE !(is.na)
-# GARDEN_CODE !(is.na) reduces the gap table to just the garden accessions 
-# then group by INSTITUTION (within species or taxon)
-num_accessions <- province_gap_table_species %>%
-  group_by(SPECIES) %>%
-  mutate(total_accessions = sum(!is.na(GARDEN_CODE))) %>%
-  mutate(garden_accessions = sum(!is.na(GARDEN_CODE) & 
-                                   INSTITUTION == "BG")) %>%
-  mutate(genebank_accessions = sum(!is.na(GARDEN_CODE) & 
-                                   INSTITUTION == "G")) %>%
-  distinct(SPECIES, .keep_all = TRUE)
   
 num_accessions_cwr <- num_accessions %>%
   filter(TIER == 1) %>%
@@ -605,6 +83,7 @@ num_accessions_cwr <- num_accessions %>%
     PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1)) %>%
   group_by(PRIMARY_ASSOCIATED_CROP_COMMON_NAME) %>%
   mutate(mean = mean(total_accessions)) %>%
+  mutate(median = median(total_accessions)) %>%
   mutate(binary = ifelse(total_accessions > 0, 1, 0)) %>%
   group_by(PRIMARY_ASSOCIATED_CROP_COMMON_NAME) %>%
   mutate(total_CWR_taxa = n(), 
@@ -638,13 +117,14 @@ num_accessions_cwr_outliers <- num_accessions_cwr
 num_accessions_cwr_outliers$total_accessions[which(
   num_accessions_cwr_outliers$total_accessions > 1000)] = 1000
 
-F1 <- ggplot(num_accessions_cwr_outliers, 
+FIGURE_1A <- ggplot(num_accessions_cwr_outliers, 
              aes(x = PRIMARY_ASSOCIATED_CROP_COMMON_NAME, 
                  y = total_accessions,
                  color = PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1)) + 
   geom_jitter(shape=16, position=position_jitter(0.3), size = 3, alpha = 0.5) +
   facet_grid(cols = vars(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1), scales = "free_x", space = "free_x") +
-  stat_summary(fun=mean, geom="point", shape='-', size= 8, color="black", fill="black") +
+  stat_summary(fun=median, geom="point", shape='-', size= 8, color="black", fill="black") +
+  # stat_summary(fun=mean, geom="point", shape='+', size= 8, color="black", fill="black") +
   theme_bw() +
   theme(legend.position = 'none',
         axis.title.x = element_blank(),
@@ -665,7 +145,7 @@ F1 <- ggplot(num_accessions_cwr_outliers,
                             "Quinoa" = expression(paste("Quinoa - ", italic('Chenopodium'), " (8/8)")),
                             "Proso-millet" = expression(paste("Proso-millet - ", italic('Panicum'), " (8/14)")),
                             "Strawberry" = expression(paste("Strawberry - ", italic('Fragaria, etc.'), " (7/7)")),
-                            "Filbert" = expression(paste("Hazelnut - ", italic('Corylus'), " (3/3)")),
+                            "Hazelnut" = expression(paste("Hazelnut - ", italic('Corylus'), " (3/3)")),
                             "Carrot" = expression(paste("Carrot - ", italic('Daucus'), " (1/1)")),
                             "Yam" = expression(paste("Yam - ", italic('Dioscorea'), " (1/1)")),
                             "Wheat" = expression(paste("Wheat - ", italic('Elymus, Leymus'), " (21/22)")),
@@ -689,17 +169,7 @@ F1 <- ggplot(num_accessions_cwr_outliers,
                             "Wild-rice" = expression(paste("Wild-rice - ", italic('Zizania'), " (2/2)"))
                             )
   )
-F1
-
-F1_legend <- ggplot(num_accessions_cwr, 
-             aes(x = reorder(PRIMARY_ASSOCIATED_CROP_COMMON_NAME, total_accessions), 
-                 y = total_accessions,
-                 color = PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1)) + 
-  geom_jitter(shape=16, position=position_jitter(0.1)) +
-  theme_bw() +
-  theme(legend.position="bottom")
-F1_legend
-
+FIGURE_1A
 
 
 ###############################
@@ -714,10 +184,10 @@ num_accessions_cwr_long <- gather(num_accessions_cwr, INSTITUTION_TYPE, accessio
     c("Cereals and pseudocereals"="Cereals, pseudo-"))) %>%
   mutate(institution_binary = ifelse(accessions > 0, 1, 0))
 
-F2A <- ggplot(num_accessions_cwr_long, aes(x = INSTITUTION_TYPE, 
+FIGURE_2B <- ggplot(num_accessions_cwr_long, aes(x = INSTITUTION_TYPE, 
                                            y = log(accessions), 
                                            fill = PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1)) + 
-  geom_boxplot() +
+  geom_boxplot(outlier.shape = NA) +
   geom_jitter(shape=16, position=position_jitter(0.2)) +
   facet_grid(. ~ PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1) +
   theme_bw() +
@@ -729,7 +199,7 @@ F2A <- ggplot(num_accessions_cwr_long, aes(x = INSTITUTION_TYPE,
         axis.text.x = element_text(size = 12)) +
   scale_x_discrete(labels = c('BG','G')) +
   ylab("log(Accessions per CWR)")
-F2A
+FIGURE_2B
 
 num_accessions_cwr_long_gardens <- num_accessions_cwr_long %>%
   filter(INSTITUTION_TYPE == "garden_accessions") %>%
@@ -757,7 +227,7 @@ num_accessions_cwr_long_genebank <- num_accessions_cwr_long %>%
 
 #arrange(num_accessions_cwr_long, INSTITUTION_TYPE, institution_binary)
 
-(F2B <- ggplot(num_accessions_cwr_long, 
+(FIGURE_2A <- ggplot(num_accessions_cwr_long, 
        aes(x = INSTITUTION_TYPE, 
            fill = as.factor(institution_binary))) + 
   geom_bar(position = "stack") +
@@ -858,6 +328,15 @@ for(i in 1:8) {
 
 print(wtest_accessions)
 
+# print actual median values
+medians <- num_accessions_cwr %>%
+  filter(TIER == 1) %>%
+  group_by(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1) %>%
+  mutate(median_BG = median(garden_accessions),
+         median_G = median(genebank_accessions)) %>%
+  distinct(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, .keep_all = TRUE) %>%
+  select(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, median_BG, median_G) 
+
 #### need to run proportion tests by group
 category_names <- c("Sugars", "Vegetables", 
                     "Cereals, pseudo-", "Fruits",
@@ -876,10 +355,11 @@ CWR_prop_test <- function(category){
     # just want one row from each group
     distinct(INSTITUTION_TYPE, .keep_all = TRUE)
   
-  res <- prop.test(x = c(as.numeric(num_accessions_cwr_long_filtered[1, 50]),
-                         as.numeric(num_accessions_cwr_long_filtered[2, 50])),
-                   n = c(as.numeric(num_accessions_cwr_long_filtered[1, 51]),
-                         as.numeric(num_accessions_cwr_long_filtered[2, 51]))
+  # x = successes (species yes), n = trials (total species)
+  res <- prop.test(x = c(as.numeric(num_accessions_cwr_long_filtered[1, 45]),
+                         as.numeric(num_accessions_cwr_long_filtered[2, 45])),
+                   n = c(as.numeric(num_accessions_cwr_long_filtered[1, 46]),
+                         as.numeric(num_accessions_cwr_long_filtered[2, 46]))
   )
   
   return(res)
@@ -900,13 +380,14 @@ for(i in 1:8) {
 print(ptest_accessions)
 
 ##############################
-# # FIGURE 4 # # # # # # # ###
+# # FIGURE 3 # # # # # # # ###
 ##############################
 
 # Geographic gaps in accessions versus species distr density
 # total accessions collected from each area, proportion of species in each region that are
 # conserved ex situ via wild-origin accessions collected from that region
 
+# global figure variables
 province_names <- c("British Columbia", "Alberta", "Newfoundland and Labrador",
                     "Northwest Territories", "Nunavut", "Saskatchewan", 
                     "Manitoba", "Quebec", "Nova Scotia", "Ontario",
@@ -915,179 +396,20 @@ province_names <- c("British Columbia", "Alberta", "Newfoundland and Labrador",
 # CRS 
 crs_string = "+proj=lcc +lat_1=49 +lat_2=77 +lon_0=-91.52 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs" # 2
 
-# Figure 2 Supplement # CWR richness by TAXON 
-province_gap_table_fig2 <- province_gap_table %>%
-  filter(!is.na(province)) %>% # filter for those from Canada AND were able to join w a province
-  # essentially is filtering for the wild origins, but may be capturing some garden origin plants?
-  # filter for tier 1 CWR
-  filter(TIER == 1) %>%
-  # join with CWR per province to get all provinces possible
-  full_join(total_CWRs_group_by_province[ , c("PROVINCE", "total_CWRs_in_province")],
-            by = c("province" = "PROVINCE")) %>%
-  # now tally the number of CWR accessions from the province
-  group_by(province) %>%
-  mutate(total_accessions = sum(!is.na(province))) %>%
-  mutate(garden_accessions = sum(!is.na(province) & 
-                                   INSTITUTION == "BG")) %>%
-  mutate(genebank_accessions = sum(!is.na(province) & 
-                                     INSTITUTION == "G")) %>%
-  distinct(province, .keep_all = TRUE) %>%
-  filter(province != "Canada",
-         province %in% province_names) %>%
-  select(province, latitude, longitude, total_CWRs_in_province,
-         total_accessions, garden_accessions, genebank_accessions) %>%
-  full_join(canada_provinces_geojson[ , c("PROVINCE", "geometry")],
-            by = c("province" = "PROVINCE"))
-########### 
-# old version of this figure
-legend_title_CWR = expression("CWR")
-# breaks = c(0, 40, 80, 120, 160, 200)
-CWR_sf_provinces_fig2 <- st_as_sf(province_gap_table_fig2)
-(map_provinces <- tm_shape(CWR_sf_provinces_fig2,
-                           projection = crs_string) +
-    tm_polygons(col = "total_CWRs_in_province",
-                style = "jenks",
-                title = legend_title_CWR) + 
-    tm_bubbles(size="total_accessions", 
-               title.size = "CWR accessions",
-               scale = 3, col = "black", 
-               border.col = "white") +
-    tm_layout(frame = FALSE,
-              legend.outside = TRUE)
-)
-
-# province by SPECIES
-province_species_gaps <- province_gap_table_species %>%
-  filter(!is.na(province),
-         province %in% province_names)%>% # filter for if only want those collections with geo origin
-  # filter for tier 1 CWR
-  filter(TIER == 1) %>%
-  # join with CWR per province to get all provinces possible
-  full_join(total_CWRs_group_by_province[ , c("PROVINCE", "total_CWRs_in_province")],
-            by = c("province" = "PROVINCE")) %>%
-  # now tally the number of CWR accessions from the province
-  group_by(province) %>%
-  mutate(total_accessions = sum(!is.na(INSTITUTION))) %>%
-  # not sure why but having an issue with calculating garden_accessions
-  # works fine if using ecoregion_gap_table df to start with
-  # but produces NAs if using the same script but on the 
-  # ecoregion_gap_table_species df 
-  #mutate(garden_accessions = sum(!is.na(province) & 
-  #                                  INSTITUTION == "BG")) %>%
-  #mutate(genebank_accessions = sum(!is.na(province) & 
-  #                                  INSTITUTION == "G")) %>%
-  group_by(province, SPECIES) %>%
-  # binary 1 = species represented in the region 
-  mutate(in_BG = case_when(
-    INSTITUTION == "BG" ~ 1)) %>%
-  mutate(in_G = case_when(
-    INSTITUTION == "G" ~ 1)) %>%
-  mutate(in_both = case_when(
-    in_BG == 1 && in_G == 1 ~ 1)) %>% # no species are in both; so few G with geolocation
-  # could be better to just do which in each ecoregion are repped at all (w/ or without geo)
-  ungroup() %>%
-  group_by(province) %>%
-  # distinct species # want one line per species
-  # proportion of species in BG, G, both, or any
-  # = sum of all rows (since values are binary) / nrow
-  distinct(SPECIES, .keep_all = TRUE) %>%
-  mutate(proportion_in_BG = 
-           as.numeric(sum(!is.na(in_BG)) / total_CWRs_in_province)) %>%
-  mutate(proportion_in_G = 
-           as.numeric(sum(!is.na(in_G)) / total_CWRs_in_province)) %>%
-  mutate(proportion_in_both = 
-           as.numeric((sum(!is.na(in_both)) / total_CWRs_in_province))) %>%
-  mutate(proportion_in_any = 
-           as.numeric(100 * (sum(!is.na(in_both)) + sum(!is.na(in_BG)) + sum(!is.na(in_G))) 
-                      / total_CWRs_in_province)) %>%
-  mutate(proportion_in_neither = 
-           as.numeric(100 - (proportion_in_any))) %>%
-  mutate(log_accessions = as.numeric(log(total_accessions))) %>%
-  distinct(province, .keep_all = TRUE) %>%
-  filter(province != "Canada") %>%
-  select(province, latitude, longitude, total_CWRs_in_province,
-         total_accessions, log_accessions,
-         in_BG, in_G, in_both,
-         proportion_in_BG, proportion_in_G, proportion_in_both,
-         proportion_in_any, proportion_in_neither) %>%
-  full_join(canada_provinces_geojson[ , c("PROVINCE", "geometry")],
-            by = c("province" = "PROVINCE"))
-
-####################
-# FIG 4 By PROVINCE
-
-
-crs_string = "+proj=lcc +lat_1=49 +lat_2=77 +lon_0=-91.52 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs" # 2
-
+# legend titles
 legend_title_CWR = expression("CWR species richness")
+legend_title_WUS = expression("WUS species richness")
 
-province_species_gaps_sf <- province_species_gaps %>%
-  filter(., !is.na(total_CWRs_in_province)) %>%
-  st_as_sf(.) 
+# Figure 3A - TIER 1 CWR BY ECOREGION
 
-
-(map_provinces <- tm_shape(province_species_gaps_sf,
-                            projection = crs_string) +
-    tm_polygons(col = "total_CWRs_in_province",
-                style = "cont",
-                title = legend_title_CWR) + 
-    tm_symbols(size = "total_accessions", col = "proportion_in_any",
-               title.size = "Accessions from region",
-               title.col = "CWR species conserved (%)",
-               sizes.legend=c(0, 25, 50, 100, 500),
-               scale = 4,
-               palette = rev(RColorBrewer::brewer.pal(5,"Greys")), alpha = 0.9,
-               legend.format = list(text.align="right", text.to.columns = TRUE)) +
-    # tm_bubbles(size="total_accessions", 
-    #         title.size = "CWR accessions",
-    #        scale = 3, col = "black", 
-    #       border.col = "white") +
-    tm_layout(frame = FALSE,
-              legend.outside = TRUE,
-              legend.title.size = 1)
-)
-
-
-# Figure 2A
-# by taxon
-ecoregion_gap_table_fig2 <- ecoregion_gap_table %>%
-  filter(!is.na(ECO_NAME)) %>% # filter for those from Canada AND were able to join w a province
-  # essentially is filtering for the wild origins, but may be capturing some garden origin plants?
-  # filter for tier 1 CWR
-  filter(TIER == 1) %>%
-  # join with CWR per province to get all provinces possible
-  full_join(total_CWRs_group_by_ecoregion[ , c("ECO_NAME", "total_CWRs_in_ecoregion")]) %>%
-  # now tally the number of CWR accessions from the province
-  group_by(ECO_NAME) %>%
-  mutate(total_accessions = sum(!is.na(ECO_NAME))) %>%
-  mutate(garden_accessions = sum(!is.na(ECO_NAME) & 
-                                   INSTITUTION == "BG")) %>%
-  mutate(genebank_accessions = sum(!is.na(ECO_NAME) & 
-                                     INSTITUTION == "G")) %>%
-  distinct(ECO_NAME, .keep_all = TRUE) %>%
-  filter(ECO_NAME != "Canada") %>%
-  select(ECO_NAME, latitude, longitude, total_CWRs_in_ecoregion,
-         total_accessions, garden_accessions, genebank_accessions) %>%
-  full_join(canada_ecoregions_geojson[ , c("ECO_NAME", "geometry")])
-
-# by species
-ecoregion_species_gaps <- ecoregion_gap_table_species %>%
+# transform for plotting
+ecoregion_species_gaps <- ecoregion_gap_table %>%
   filter(!is.na(ECO_NAME)) %>% # filter for if only want those collections with geo origin
   # filter for tier 1 CWR
   filter(TIER == 1) %>%
-  # join with CWR per province to get all provinces possible
-  full_join(total_CWRs_group_by_ecoregion[ , c("ECO_NAME", "total_CWRs_in_ecoregion")]) %>%
   # now tally the number of CWR accessions from the province
   group_by(ECO_NAME) %>%
   mutate(total_accessions = sum(!is.na(INSTITUTION))) %>%
-  # not sure why but having an issue with calculating garden_accessions
-  # works fine if using ecoregion_gap_table df to start with
-  # but produces NAs if using the same script but on the 
-  # ecoregion_gap_table_species df 
-  #mutate(garden_accessions = sum(!is.na(ECO_NAME) & 
-  #                                  INSTITUTION == "BG")) %>%
-  #mutate(genebank_accessions = sum(!is.na(ECO_NAME) & 
-  #                                  INSTITUTION == "G")) %>%
   group_by(ECO_NAME, SPECIES) %>%
   # binary 1 = species represented in the region 
   mutate(in_BG = case_when(
@@ -1123,26 +445,19 @@ ecoregion_species_gaps <- ecoregion_gap_table_species %>%
          proportion_in_any, proportion_in_neither) %>%
   full_join(canada_ecoregions_geojson[ , c("ECO_NAME", "geometry")])
 
-
-crs_string = "+proj=lcc +lat_1=49 +lat_2=77 +lon_0=-91.52 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs" # 2
-
-legend_title_CWR = expression("CWR species richness")
-
 ecoregion_species_gaps_sf <- st_as_sf(ecoregion_species_gaps)
 
-(map_ecoregions <- tm_shape(ecoregion_species_gaps_sf,
+# plot
+(FIGURE_3A <- tm_shape(ecoregion_species_gaps_sf,
                             projection = crs_string) +
     tm_polygons(col = "total_CWRs_in_ecoregion",
                 style = "cont",
                 title = legend_title_CWR) + 
-    tm_symbols(#size = "total_accessions", 
-               size = "proportion_in_any",
-               #title.size = "Accessions from region",
+    tm_symbols(size = "proportion_in_any",
                title.size = "(%) CWR conserved ex situ",
                sizes.legend=c(0, 25, 50, 100),
                scale = 3,
                col = "grey",
-               #palette = rev(RColorBrewer::brewer.pal(5,"Greys")), 
                alpha = 0.7,
                legend.format = list(text.align="right", text.to.columns = TRUE)) +
     tm_layout(frame = FALSE,
@@ -1152,80 +467,14 @@ ecoregion_species_gaps_sf <- st_as_sf(ecoregion_species_gaps)
 )
 
 
-
-
-############################################
-############ FIGURE 2 WUS ##################
-############################################
-
-# note that these figures emphasize taxa NOT species
-
-# Figure 3A
-province_gap_table_fig3 <- province_gap_table %>%
-  filter(!is.na(province)) %>% # filter for those from Canada AND were able to join w a province
-  # essentially is filtering for the wild origins, but may be capturing some garden origin plants?
+# Supplementary Version - Tier 1 CWR by province
+province_species_gaps <- province_gap_table %>%
+  filter(!is.na(PROVINCE),
+         PROVINCE %in% province_names) %>% # filter for if only want those collections with geo origin
   # filter for tier 1 CWR
-  filter(WUS == "Y") %>%
-  # join with CWR per province to get all provinces possible
-  full_join(total_WUS_group_by_province[ , c("PROVINCE", "total_WUS_in_province")],
-            by = c("province" = "PROVINCE")) %>%
-  # now tally the number of CWR accessions from the province
-  group_by(province) %>%
-  mutate(total_accessions = sum(!is.na(province))) %>%
-  mutate(garden_accessions = sum(!is.na(province) & 
-                                   INSTITUTION == "BG")) %>%
-  mutate(genebank_accessions = sum(!is.na(province) & 
-                                     INSTITUTION == "G")) %>%
-  distinct(province, .keep_all = TRUE) %>%
-  filter(province != "Canada") %>%
-  filter(province %in% province_names) %>% # later, filter for - province = NA or any of the Canadian
-  select(province, latitude, longitude, total_WUS_in_province,
-         total_accessions, garden_accessions, genebank_accessions) %>%
-  full_join(canada_provinces_geojson[ , c("PROVINCE", "geometry")],
-            by = c("province" = "PROVINCE"))
-
-legend_title_WUS = expression("WUS")
-# breaks = c(0, 40, 80, 120, 160, 200)
-WUS_sf_provinces_fig3 <- st_as_sf(province_gap_table_fig3)
-(map_provinces <- tm_shape(WUS_sf_provinces_fig3,
-                           projection = crs_string) +
-    tm_polygons(col = "total_WUS_in_province",
-                style = "jenks",
-                title = legend_title_CWR,
-                palette = "Blues") + 
-    tm_bubbles(size="total_accessions", 
-               title.size = "WUS accessions",
-               scale = 3, col = "black", 
-               border.col = "white") +
-    tm_layout(frame = FALSE,
-              legend.outside = TRUE)
-)
-
-# filter for points in provinces
-province_names <- c("British Columbia", "Alberta", "Newfoundland and Labrador",
-                    "Northwest Territories", "Nunavut", "Saskatchewan", 
-                    "Manitoba", "Quebec", "Nova Scotia", "Ontario",
-                    "New Brunswick", "Prince Edward Island", "Yukon")
-
-province_species_gaps_WUS <- province_gap_table_species %>%
-  filter(!is.na(province))%>% # filter for if only want those collections with geo origin
-  # filter for tier 1 CWR
-  filter(WUS == "Y") %>%
-  # join with CWR per province to get all provinces possible
-  full_join(total_WUS_group_by_province[ , c("PROVINCE", "total_WUS_in_province")],
-            by = c("province" = "PROVINCE")) %>%
-  # now tally the number of CWR accessions from the province
-  group_by(province) %>%
+  filter(TIER == 1) %>%
+  group_by(PROVINCE) %>%
   mutate(total_accessions = sum(!is.na(INSTITUTION))) %>%
-  # not sure why but having an issue with calculating garden_accessions
-  # works fine if using ecoregion_gap_table df to start with
-  # but produces NAs if using the same script but on the 
-  # ecoregion_gap_table_species df 
-  #mutate(garden_accessions = sum(!is.na(province) & 
-  #                                  INSTITUTION == "BG")) %>%
-  #mutate(genebank_accessions = sum(!is.na(province) & 
-  #                                  INSTITUTION == "G")) %>%
-  group_by(province, SPECIES) %>%
   # binary 1 = species represented in the region 
   mutate(in_BG = case_when(
     INSTITUTION == "BG" ~ 1)) %>%
@@ -1233,79 +482,70 @@ province_species_gaps_WUS <- province_gap_table_species %>%
     INSTITUTION == "G" ~ 1)) %>%
   mutate(in_both = case_when(
     in_BG == 1 && in_G == 1 ~ 1)) %>% # no species are in both; so few G with geolocation
-  # could be better to just do which in each ecoregion are repped at all (w/ or without geo)
   ungroup() %>%
-  group_by(province) %>%
+  group_by(PROVINCE) %>%
   # distinct species # want one line per species
   # proportion of species in BG, G, both, or any
   # = sum of all rows (since values are binary) / nrow
   distinct(SPECIES, .keep_all = TRUE) %>%
   mutate(proportion_in_BG = 
-           as.numeric(sum(!is.na(in_BG)) / total_WUS_in_province)) %>%
+           as.numeric(sum(!is.na(in_BG)) / total_CWRs_in_province)) %>%
   mutate(proportion_in_G = 
-           as.numeric(sum(!is.na(in_G)) / total_WUS_in_province)) %>%
+           as.numeric(sum(!is.na(in_G)) / total_CWRs_in_province)) %>%
   mutate(proportion_in_both = 
-           as.numeric((sum(!is.na(in_both)) / total_WUS_in_province))) %>%
+           as.numeric((sum(!is.na(in_both)) / total_CWRs_in_province))) %>%
   mutate(proportion_in_any = 
            as.numeric(100 * (sum(!is.na(in_both)) + sum(!is.na(in_BG)) + sum(!is.na(in_G))) 
-                      / total_WUS_in_province)) %>%
+                      / total_CWRs_in_province)) %>%
   mutate(proportion_in_neither = 
            as.numeric(100 - (proportion_in_any))) %>%
   mutate(log_accessions = as.numeric(log(total_accessions))) %>%
-  distinct(province, .keep_all = TRUE) %>%
-  filter(province %in% province_names) %>%
-  select(province, latitude, longitude, total_WUS_in_province,
+  distinct(PROVINCE, .keep_all = TRUE) %>%
+  filter(PROVINCE != "Canada") %>%
+  select(PROVINCE, latitude, longitude, total_CWRs_in_province,
          total_accessions, log_accessions,
          in_BG, in_G, in_both,
          proportion_in_BG, proportion_in_G, proportion_in_both,
          proportion_in_any, proportion_in_neither) %>%
   full_join(canada_provinces_geojson[ , c("PROVINCE", "geometry")],
-            by = c("province" = "PROVINCE"))
+            by = c("PROVINCE" = "PROVINCE"))
 
+province_species_gaps_sf <- st_as_sf(province_species_gaps)
 
-crs_string = "+proj=lcc +lat_1=49 +lat_2=77 +lon_0=-91.52 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs" # 2
-
-legend_title_WUS = expression("WUS species richness")
-
-province_species_gaps_WUS_sf <- st_as_sf(province_species_gaps_WUS)
-
-(map_provinces_WUS <- tm_shape(province_species_gaps_WUS_sf,
+# plot
+(FIGURE_3A_Supp <- tm_shape(province_species_gaps_sf,
                            projection = crs_string) +
-    tm_polygons(col = "total_WUS_in_province",
+    tm_polygons(col = "total_CWRs_in_province",
                 style = "cont",
-                title = legend_title_WUS,
-                palette = "Blues") + 
-    tm_symbols(size = "total_accessions", col = "proportion_in_any",
-               title.size = "Accessions from region",
-               title.col = "WUS species conserved (%)",
-               sizes.legend=c(0, 50, 100, 500, 1000),
-               scale = 4,
-               palette = rev(RColorBrewer::brewer.pal(5,"Greys")), alpha = 0.9,
-               legend.format = list(text.align="right", text.to.columns = TRUE)) +
+                title = legend_title_CWR) + 
+    tm_symbols(size = "proportion_in_any",
+      title.size = "(%) CWR conserved ex situ",
+      sizes.legend=c(0, 25, 50, 100),
+      scale = 3,
+      col = "grey",
+      #palette = rev(RColorBrewer::brewer.pal(5,"Greys")), 
+      alpha = 0.7,
+      legend.format = list(text.align="right", text.to.columns = TRUE)) +
     tm_layout(frame = FALSE,
               legend.outside = TRUE,
               legend.title.size = 1)
 )
 
-# Figure 2B
-# by species
-ecoregion_species_gaps_WUS <- ecoregion_gap_table_species %>%
+
+############################################
+#  FIGURE 3B -  WUS                     ####
+############################################
+
+# ISSUE HERE THAT NEEDS TO BE FIXED - PROPORTION VALUES TOO BIG!
+
+# Figure 3B - WUS By Ecoregion
+ecoregion_species_gaps_WUS <- ecoregion_gap_table %>%
   filter(!is.na(ECO_NAME)) %>% # filter for if only want those collections with geo origin
   # filter for tier 1 CWR
-  filter(TIER == 1) %>%
-  # join with CWR per province to get all provinces possible
-  full_join(total_WUS_group_by_ecoregion[ , c("ECO_NAME", "total_WUS_in_ecoregion")]) %>%
+  filter(WUS == "Y") %>%
   # now tally the number of CWR accessions from the province
   group_by(ECO_NAME) %>%
   mutate(total_accessions = sum(!is.na(INSTITUTION))) %>%
-  # not sure why but having an issue with calculating garden_accessions
-  # works fine if using ecoregion_gap_table df to start with
-  # but produces NAs if using the same script but on the 
-  # ecoregion_gap_table_species df 
-  #mutate(garden_accessions = sum(!is.na(ECO_NAME) & 
-  #                                  INSTITUTION == "BG")) %>%
-  #mutate(genebank_accessions = sum(!is.na(ECO_NAME) & 
-  #                                  INSTITUTION == "G")) %>%
   group_by(ECO_NAME, SPECIES) %>%
   # binary 1 = species represented in the region 
   mutate(in_BG = case_when(
@@ -1314,7 +554,6 @@ ecoregion_species_gaps_WUS <- ecoregion_gap_table_species %>%
     INSTITUTION == "G" ~ 1)) %>%
   mutate(in_both = case_when(
     in_BG == 1 && in_G == 1 ~ 1)) %>% # no species are in both; so few G with geolocation
-  # could be better to just do which in each ecoregion are repped at all (w/ or without geo)
   ungroup() %>%
   group_by(ECO_NAME) %>%
   # distinct species # want one line per species
@@ -1342,27 +581,20 @@ ecoregion_species_gaps_WUS <- ecoregion_gap_table_species %>%
          proportion_in_any, proportion_in_neither) %>%
   full_join(canada_ecoregions_geojson[ , c("ECO_NAME", "geometry")])
 
-
-crs_string = "+proj=lcc +lat_1=49 +lat_2=77 +lon_0=-91.52 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs" # 2
-
-legend_title_WUS = expression("WUS species richness")
-
 ecoregion_species_gaps_WUS_sf <- st_as_sf(ecoregion_species_gaps_WUS)
 
-(map_ecoregions_WUS <- tm_shape(ecoregion_species_gaps_WUS_sf,
-                            projection = crs_string) +
+# plot
+(FIGURE_3B <- tm_shape(ecoregion_species_gaps_WUS_sf,
+                                projection = crs_string) +
     tm_polygons(col = "total_WUS_in_ecoregion",
                 style = "cont",
                 title = legend_title_WUS,
                 palette = "Blues") + 
-tm_symbols(#size = "total_accessions", 
-      size = "proportion_in_any",
-      #title.size = "Accessions from region",
+    tm_symbols(size = "proportion_in_any",
       title.size = "(%) WUS conserved ex situ",
       sizes.legend=c(0, 25, 50, 100),
       scale = 4,
       col = "grey",
-      #palette = rev(RColorBrewer::brewer.pal(5,"Greys")), 
       alpha = 0.7,
       legend.format = list(text.align="right", text.to.columns = TRUE)) +
     tm_layout(frame = FALSE,
@@ -1371,24 +603,404 @@ tm_symbols(#size = "total_accessions",
               legend.text.size = 1 )
 )
 
+# Supplementary Version - WUS by province
+province_species_gaps_WUS <- province_gap_table %>%
+  filter(!is.na(PROVINCE))%>% # filter for if only want those collections with geo origin
+  # filter for WUS
+  filter(WUS == "Y") %>%
+  # now tally the number of CWR accessions from the province
+  group_by(PROVINCE) %>%
+  mutate(total_accessions = sum(!is.na(INSTITUTION))) %>%
+  group_by(PROVINCE, SPECIES) %>%
+  # binary 1 = species represented in the region 
+  mutate(in_BG = case_when(
+    INSTITUTION == "BG" ~ 1)) %>%
+  mutate(in_G = case_when(
+    INSTITUTION == "G" ~ 1)) %>%
+  mutate(in_both = case_when(
+    in_BG == 1 && in_G == 1 ~ 1)) %>% # no species are in both; so few G with geolocation  ungroup() %>%
+  group_by(PROVINCE) %>%
+  # distinct species # want one line per species
+  # proportion of species in BG, G, both, or any
+  # = sum of all rows (since values are binary) / nrow
+  distinct(SPECIES, .keep_all = TRUE) %>%
+  mutate(proportion_in_BG = 
+           as.numeric(sum(!is.na(in_BG)) / total_WUS_in_province)) %>%
+  mutate(proportion_in_G = 
+           as.numeric(sum(!is.na(in_G)) / total_WUS_in_province)) %>%
+  mutate(proportion_in_both = 
+           as.numeric((sum(!is.na(in_both)) / total_WUS_in_province))) %>%
+  mutate(proportion_in_any = 
+           as.numeric(100 * (sum(!is.na(in_both)) + sum(!is.na(in_BG)) + sum(!is.na(in_G))) 
+                      / total_WUS_in_province)) %>%
+  mutate(proportion_in_neither = 
+           as.numeric(100 - (proportion_in_any))) %>%
+  mutate(log_accessions = as.numeric(log(total_accessions))) %>%
+  distinct(PROVINCE, .keep_all = TRUE) %>%
+  filter(PROVINCE %in% province_names) %>%
+  select(PROVINCE, latitude, longitude, total_WUS_in_province,
+         total_accessions, log_accessions,
+         in_BG, in_G, in_both,
+         proportion_in_BG, proportion_in_G, proportion_in_both,
+         proportion_in_any, proportion_in_neither) %>%
+  full_join(canada_provinces_geojson[ , c("PROVINCE", "geometry")],
+            by = c("PROVINCE" = "PROVINCE"))
 
+province_species_gaps_WUS_sf <- st_as_sf(province_species_gaps_WUS)
 
+# plot
+(FIGURE_3B_Supp <- tm_shape(province_species_gaps_WUS_sf,
+                           projection = crs_string) +
+    tm_polygons(col = "total_WUS_in_province",
+                style = "cont",
+                title = legend_title_WUS,
+                palette = "Blues") + 
+    tm_symbols(size = "proportion_in_any",
+      title.size = "(%) WUS conserved ex situ",
+      sizes.legend=c(0, 25, 50, 100),
+      scale = 4,
+      col = "grey",
+      alpha = 0.7,
+      legend.format = list(text.align="right", text.to.columns = TRUE)) +
+    tm_layout(frame = FALSE,
+              legend.outside = TRUE,
+              legend.title.size = 1)
+)
 
-#####################################################
-# Conduct Geographic Conservation Gap Analyses      #
-#####################################################
+# the grobs don't fit well on a single page
+grid.arrange(tmap_grob(FIGURE_3A), tmap_grob(FIGURE_3B), nrow = 2)
+
+FIGURE_3A
+FIGURE_3B
+FIGURE_3A_Supp
+FIGURE_3B_Supp
+
+########################################################################
+# Conduct Geographic Conservation Gap Analyses Figure 1B and Figure 4  #
+########################################################################
 # we determined the proportion of native regions (province or ecoregion) where 
 # each CWR baturally occurs that were represented in garden collections
 
-# note that these figures emphasize species NOT taxa
-# filter inventory to Tier 1 species
-inventory_sp_T1 <- inventory_sp %>%
-filter(TIER == 1)
+# Gap Analysis By Ecoregion
+
+# filter to the garden occurrence points that were in Canada
+ecoregion_gap_table_T1 <- ecoregion_gap_table %>%
+  filter(TIER == 1)  # filter for tier 1 CWR
+
+# define the gap analysis function
+ecoregion_gap_analysis <- function(species) {
+  
+  ecoregionTableData <- ecoregion_gap_table_T1 %>%
+    # filter the table to the selected CWR
+    filter(ecoregion_gap_table_T1$SPECIES == species) %>%
+    
+    # tally the number of rows in each province with an existing accession (garden is not NA)
+    # IMPORTANT: This step drop species without range data
+    group_by(ECO_NAME) %>% 
+    add_tally(!is.na(GARDEN_CODE)) %>%
+    rename("accessions_in_ecoregion" = "n")  %>%
+    ungroup() %>%
+    
+    # count the number of accessions w/ and w/out geographic data
+    mutate(accessions_no_geo_data = sum(is.na(ECO_NAME))) %>%
+    mutate(accessions_with_geo_data = sum(!is.na(ECO_NAME) & !is.na(GARDEN_CODE)))  %>%
+    mutate(total_accessions_for_species = accessions_with_geo_data + accessions_no_geo_data) %>%
+    
+    # convert number of accessions (per province) to a binary "is there or is there not an accession from x region"
+    group_by(ECO_NAME) %>%
+    filter(row_number() == 1) %>%
+    filter(!is.na(ECO_NAME)) %>%
+    mutate(binary = ifelse(
+      accessions_in_ecoregion > 0, 1, 0)) %>%
+    ungroup() %>%
+    
+    # use the binary variable to determine the proportion of native regions with an accession
+    mutate(num_native_ecoregion = sum(!duplicated(ECO_NAME))) %>%
+    mutate(num_covered_ecoregion = sum(binary)) %>%
+    mutate(perc_ecoregion_range_covered = 
+             (num_covered_ecoregion / num_native_ecoregion)) %>%
+    
+    # convert number of accessions (overall) to a binary "is there or is there not an accession from x region"
+    mutate(at_least_one_accession = ifelse(
+      sum(total_accessions_for_species) > 0, 1, 0)) %>%
+    
+    # format the data for the summary table 
+    filter(row_number() == 1) %>% # for now only want one row (could adjust this with row per province)
+    dplyr::select(SPECIES, PRIMARY_ASSOCIATED_CROP_COMMON_NAME,
+                  PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, 
+                  num_native_ecoregion, num_covered_ecoregion, perc_ecoregion_range_covered, 
+                  accessions_with_geo_data, accessions_no_geo_data, 
+                  total_accessions_for_species, at_least_one_accession) %>%
+    mutate(num_covered_ecoregion = as.integer(num_covered_ecoregion)) %>%
+    rename("native ecoregions" = num_native_ecoregion,
+           "covered ecoregions" = num_covered_ecoregion,
+           "accessions with geographic data" = accessions_with_geo_data,
+           "accessions lacking geographic data" = accessions_no_geo_data,
+           "total accessions" = total_accessions_for_species)
+  
+}
+
+# make an empty tibble that will be filled out with species rows
+gap_analysis_df_by_ecoregion <- data.frame("SPECIES" = character(),
+                                           "PRIMARY_ASSOCIATED_CROP_COMMON_NAME"= character(), 
+                                           "PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1" = character(), 
+                                           "native ecoregions" = character(), 
+                                           "covered ecoregions" = character(), 
+                                           "accessions with geographic data" = character(),
+                                           "accessions lacking geographic data" = character(),
+                                           stringsAsFactors=FALSE)
+
+# for each species
+# determine which regions in the range are represented by 1 or more accession
+# and then determine the proportion of native regions with 1 or more accession
+# add that species as a row to the gap analysis df
+for(i in 1:nrow(inventory_sp_T1)) {
+  
+  selected_taxon <- inventory_sp_T1[[i,2]] # column 1 is species ("sci_name")
+  as.data.frame(temp <- ecoregion_gap_analysis(
+    species = selected_taxon)) 
+  gap_analysis_df_by_ecoregion <- rbind(
+    gap_analysis_df_by_ecoregion, temp)
+  
+} 
+
+# 
+### now make the figure
+#
+category_names <- c("Sugars", "Vegetables", 
+                    "Cereals and pseudocereals", "Fruits",
+                    "Nuts", "Oils",
+                    "Herbs and Spices", "Pulses")
+
+gap_analysis_df_by_ecoregion_test <- gap_analysis_df_by_ecoregion %>%
+  mutate(across(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, factor, 
+                levels=category_names)) %>%
+  arrange(., PRIMARY_ASSOCIATED_CROP_COMMON_NAME)
+
+
+FIGURE_1B <- ggplot(gap_analysis_df_by_ecoregion_test, 
+              aes(x = PRIMARY_ASSOCIATED_CROP_COMMON_NAME, 
+                  y = perc_ecoregion_range_covered,
+                  color = PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1)) + 
+  geom_jitter(shape=16, position=position_jitter(0.3), size = 3, alpha = 0.5) +
+  facet_grid(cols = vars(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1), scales = "free_x", space = "free_x") +
+  stat_summary(fun=median, geom="point", shape='-', size= 8, color="black", fill="black") +
+  theme_bw() +
+  theme(legend.position = 'none',
+        axis.title.x = element_blank(),
+        panel.spacing.x = unit(.1, "cm"),
+        strip.text.x = element_blank(),
+        axis.text.y  = element_text(angle=90, vjust = 1, hjust=0.5, size = 12), 
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 10)) +
+  ylab("exGCS") +
+  scale_y_continuous(labels = scales::percent) +
+  # just keep these labels for now to match up and see potential issues
+  scale_x_discrete(labels=c("Sugar Maple" = expression(paste(" ")),
+                            "Onions, Garlic, Leeks" = expression(paste(" ")),
+                            "Amaranth" = expression(paste(" ")),
+                            "Saskatoon" = expression(paste(" ")),
+                            "Spinach" = expression(paste(" ")),
+                            "Pecan, Hickory" = expression(paste(" ")),
+                            "Chestnut" = expression(paste(" ")),
+                            "Quinoa" = expression(paste(" ")),
+                            "Proso-millet" = expression(paste(" ")),
+                            "Strawberry" = expression(paste(" ")),
+                            "Hazelnut" = expression(paste(" ")),
+                            "Carrot" = expression(paste(" ")),
+                            "Yam" = expression(paste(" ")),
+                            "Wheat" = expression(paste(" ")),
+                            "Sunflower" = expression(paste(" ")),
+                            "Barley" = expression(paste(" ")),
+                            "Hops" = expression(paste(" ")),
+                            "Walnut" = expression(paste(" ")),
+                            "Lettuce" = expression(paste(" ")),
+                            "Flax" = expression(paste(" ")),
+                            "Lupin" = expression(paste(" ")),
+                            "Apple" = expression(paste(" ")),
+                            "Mint" = expression(paste(" ")),
+                            "Tomatillo" = expression(paste(" ")),
+                            "Tobacco" = expression(paste(" ")),
+                            "Apricot, Cherry, Peach, Plum" = expression(paste(" ")),
+                            "Currant, Gooseberry" = expression(paste(" ")),
+                            "Blackberry, Raspberry" = expression(paste(" ")),
+                            "Rosinweed" = expression(paste(" ")),
+                            "Blueberry, Cranberry" = expression(paste(" ")),
+                            "Grape" = expression(paste(" ")),
+                            "Wild-rice" = expression(paste(" "))
+  )
+)
+FIGURE_1B
+
+grid.arrange(FIGURE_1B, FIGURE_1A, nrow = 1)
+
+####################################
+######## GAP ANALYSIS CASE STUDY   #
+####################################
+
+# potential figure 5
+# CRS 
+crs_string = "+proj=lcc +lat_1=49 +lat_2=77 +lon_0=-91.52 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs" # 2
+
+# Define the maps' theme -- remove axes, ticks, borders, legends, etc.
+theme_map <- function(base_size=10, base_family="") { # 3
+  require(grid)
+  theme_bw(base_size=base_size, base_family=base_family) %+replace%
+    theme(axis.line=element_blank(),
+          axis.text=element_blank(),
+          axis.ticks=element_blank(),
+          axis.title=element_blank(),
+          panel.background=element_blank(),
+          panel.border=element_blank(),
+          panel.grid=element_blank(),
+          panel.spacing=unit(0, "lines"),
+          plot.background=element_blank(),
+          legend.justification = c(0,0),
+          legend.position = c(0,0)
+    )
+}
+
+##############
+# By Ecoregion
+# saskatoon_cwr_list <- inventory_sp %>%
+#  filter(PRIMARY_ASSOCIATED_CROP_COMMON_NAME == "Saskatoon")
+
+accessions_sf <- st_as_sf(ecoregion_gap_table, 
+                          coords = c("longitude", "latitude"), 
+                          crs = 4326, 
+                          na.fail = FALSE)
+
+accessions_sf_num_wild <- accessions_sf %>%
+  filter(!is.na(GARDEN_CODE))
+
+accessions_sf_num_wild_TIER1 <- accessions_sf_num_wild %>%
+  filter(TIER == 1) %>%
+  group_by(ECO_NAME) %>%
+  count()
+accessions_sf_num_wild_WUS <- accessions_sf_num_wild %>%
+  filter(WUS == "Y")%>%
+  group_by(ECO_NAME) %>%
+  count()
+
+accessions_sf_G <- accessions_sf %>%
+  filter(INSTITUTION == "G")
+
+accessions_sf_BG <- accessions_sf %>%
+  filter(INSTITUTION == "BG")
+
+# Function to get plot data by taxon
+plotData_ecoregion <- function(species){
+  # filter province_gap_table frame and calculate species specific stats
+  ecoregionTableData <- ecoregion_gap_table %>%
+    # filter the table to the selected CWR
+    filter(ecoregion_gap_table$SPECIES == species) %>%
+    
+    # tally the number of rows in each ecoregion with an existing accession (garden is not NA)
+    group_by(ECO_NAME) %>%
+    add_tally(!is.na(GARDEN_CODE)) %>%
+    rename("accessions_in_ecoregion" = "n")  %>%
+    ungroup() %>%
+    
+    # count the number of accessions w/ and w/out geographic data
+    mutate(total_accessions_for_species = sum(!is.na(GARDEN_CODE))) %>%
+    mutate(accessions_no_geo_data = sum(is.na(latitude))) %>%
+    mutate(accessions_with_geo_data = sum(!is.na(latitude))) %>%
+    
+    # convert number of accessions to a binary "is there or is there not an accession from x region"
+    group_by(ECO_NAME) %>%
+    filter(row_number() == 1) %>%
+    filter(!is.na(ECO_NAME)) %>%
+    mutate(binary = ifelse(
+      accessions_in_ecoregion > 0, 1, 0)) %>%
+    ungroup() %>%
+    
+    # use the binary variable to determine the proportion of native regions with an accession
+    mutate(num_native_ecoregion = sum(!duplicated(ECO_NAME))) %>%
+    mutate(num_covered_ecoregion = sum(binary)) %>%
+    mutate(perc_ecoregion_range_covered = 
+             num_covered_ecoregion / num_native_ecoregion) 
+  
+  # join plot data with the spatial data frame necessary for projecting the plot  
+  tigris::geo_join(canada_ecoregions_geojson, ecoregionTableData,  
+                   by_sp = "ECO_NAME", by_df = "ECO_NAME")
+  
+} 
+
+
+make_a_plot_ecoregion <- function(species) {
+  accessions_sf_G_filtered <- accessions_sf_G %>%
+    filter(SPECIES == species) 
+  
+  accessions_sf_BG_filtered <- accessions_sf_BG %>%
+    filter(SPECIES == species) 
+  
+  df <- plotData_ecoregion(species)
+  
+  df$binary[is.na(df$binary)] <- -1
+  
+  plot <- ggplot(df) +
+    geom_sf(fill = "white", color = "gray60", size = 0.1) +
+    geom_sf(aes(fill = as.factor(binary))) +
+    geom_sf(data = accessions_sf_G_filtered, color = 'mediumorchid1', alpha = 0.5, size = 5) +
+    geom_sf(data = accessions_sf_BG_filtered, color = 'goldenrod1', alpha = 0.5, size = 5) +
+    coord_sf(crs = crs_string) +
+    scale_fill_manual(breaks = c("-1", "0", "1"),
+                      values = c("white", "gray60", "gray10"), 
+                      labels = c("Outside range",
+                                 "Not in ex situ collections", 
+                                 "In ex situ collections" 
+                      )) +
+    guides(fill = guide_legend(title = "", 
+                               title.position = "top",
+                               title.theme = element_text(size = 10, face = "bold")
+    )) +
+    theme_map() +
+    ggtitle(species) +
+    theme(panel.grid.major = element_line(color = "white"),
+          plot.title = element_text(color="black",
+                                    size=14, face="bold.italic", hjust = 0.5),
+          plot.margin=unit(c(0.1,-0.2,0.1,-0.2), "cm"),
+          legend.position = "bottom", legend.text = element_text(size=12))
+  
+  return(plot)
+}
+
+test1 <- make_a_plot_ecoregion("Amelanchier alnifolia")
+test1
+
+test2 <- make_a_plot_ecoregion("Helianthus nuttallii")
+test2
+
+test3 <- make_a_plot_ecoregion("Malus coronaria")
+test3
+
+test4 <- make_a_plot_ecoregion("Zizania palustris")
+test4
+
+test5 <- make_a_plot_ecoregion("Fragaria virginiana")
+test5
+
+test6 <- make_a_plot_ecoregion("Vaccinium myrtilloides")
+test6
+
+test3 <- make_a_plot_ecoregion("Malus fusca")
+test3
+
+
+
+
+
+
+
+
+
+
+#######################
+# extra
 
 # Gap Analysis By Province
 
 # filter to the garden occurrence points that were in Canada
-province_gap_table_T1 <- province_gap_table_species %>%
+province_gap_table_T1 <- province_gap_table %>%
   filter(TIER == 1)  # filter for tier 1 CWR
 # filter to the garden occurrence points that were in Canada
 
@@ -1401,26 +1013,26 @@ province_gap_analysis <- function(species) {
     
     # tally the number of rows in each province with an existing accession (garden is not NA)
     # IMPORTANT: This step drop species without range data
-    group_by(province) %>% 
+    group_by(PROVINCE) %>% 
     add_tally(!is.na(GARDEN_CODE)) %>%
     rename("accessions_in_province" = "n")  %>%
     ungroup() %>%
     
     # count the number of accessions w/ and w/out geographic data
-    mutate(accessions_no_geo_data = sum(is.na(province))) %>%
-    mutate(accessions_with_geo_data = sum(!is.na(province) & !is.na(GARDEN_CODE)))  %>%
+    mutate(accessions_no_geo_data = sum(is.na(PROVINCE))) %>%
+    mutate(accessions_with_geo_data = sum(!is.na(PROVINCE) & !is.na(GARDEN_CODE)))  %>%
     mutate(total_accessions_for_species = accessions_with_geo_data + accessions_no_geo_data) %>%
     
     # convert number of accessions (per province) to a binary "is there or is there not an accession from x region"
-    group_by(province) %>%
+    group_by(PROVINCE) %>%
     filter(row_number() == 1) %>%
-    filter(!is.na(province)) %>%
+    filter(!is.na(PROVINCE)) %>%
     mutate(binary = ifelse(
       accessions_in_province > 0, 1, 0)) %>%
     ungroup() %>%
     
     # use the binary variable to determine the proportion of native regions with an accession
-    mutate(num_native_province = sum(!duplicated(province))) %>%
+    mutate(num_native_province = sum(!duplicated(PROVINCE))) %>%
     mutate(num_covered_province = sum(binary)) %>%
     mutate(perc_province_range_covered = 
              (num_covered_province / num_native_province)) %>%
@@ -1864,316 +1476,4 @@ gap_analysis_df_by_province_WUS_f4 <- gap_analysis_df_by_province_WUS %>%
                               "Food" = "WUS - Food"))
 )
 
-
-# Gap Analysis By Ecoregion
-
-# filter to the garden occurrence points that were in Canada
-ecoregion_gap_table_T1 <- ecoregion_gap_table_species %>%
-  filter(TIER == 1)  # filter for tier 1 CWR
-
-# define the gap analysis function
-ecoregion_gap_analysis <- function(species) {
-  
-  ecoregionTableData <- ecoregion_gap_table_T1 %>%
-    # filter the table to the selected CWR
-    filter(ecoregion_gap_table_T1$SPECIES == species) %>%
-    
-    # tally the number of rows in each province with an existing accession (garden is not NA)
-    # IMPORTANT: This step drop species without range data
-    group_by(ECO_NAME) %>% 
-    add_tally(!is.na(GARDEN_CODE)) %>%
-    rename("accessions_in_ecoregion" = "n")  %>%
-    ungroup() %>%
-    
-    # count the number of accessions w/ and w/out geographic data
-    mutate(accessions_no_geo_data = sum(is.na(ECO_NAME))) %>%
-    mutate(accessions_with_geo_data = sum(!is.na(ECO_NAME) & !is.na(GARDEN_CODE)))  %>%
-    mutate(total_accessions_for_species = accessions_with_geo_data + accessions_no_geo_data) %>%
-    
-    # convert number of accessions (per province) to a binary "is there or is there not an accession from x region"
-    group_by(ECO_NAME) %>%
-    filter(row_number() == 1) %>%
-    filter(!is.na(ECO_NAME)) %>%
-    mutate(binary = ifelse(
-      accessions_in_ecoregion > 0, 1, 0)) %>%
-    ungroup() %>%
-    
-    # use the binary variable to determine the proportion of native regions with an accession
-    mutate(num_native_ecoregion = sum(!duplicated(ECO_NAME))) %>%
-    mutate(num_covered_ecoregion = sum(binary)) %>%
-    mutate(perc_ecoregion_range_covered = 
-             (num_covered_ecoregion / num_native_ecoregion)) %>%
-    
-    # convert number of accessions (overall) to a binary "is there or is there not an accession from x region"
-    mutate(at_least_one_accession = ifelse(
-      sum(total_accessions_for_species) > 0, 1, 0)) %>%
-    
-    # format the data for the summary table 
-    filter(row_number() == 1) %>% # for now only want one row (could adjust this with row per province)
-    dplyr::select(SPECIES, PRIMARY_ASSOCIATED_CROP_COMMON_NAME,
-                  PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, 
-                  num_native_ecoregion, num_covered_ecoregion, perc_ecoregion_range_covered, 
-                  accessions_with_geo_data, accessions_no_geo_data, 
-                  total_accessions_for_species, at_least_one_accession) %>%
-    mutate(num_covered_ecoregion = as.integer(num_covered_ecoregion)) %>%
-    rename("native ecoregions" = num_native_ecoregion,
-           "covered ecoregions" = num_covered_ecoregion,
-           "accessions with geographic data" = accessions_with_geo_data,
-           "accessions lacking geographic data" = accessions_no_geo_data,
-           "total accessions" = total_accessions_for_species)
-  
-}
-
-# make an empty tibble that will be filled out with species rows
-gap_analysis_df_by_ecoregion <- data.frame("SPECIES" = character(),
-                                          "PRIMARY_ASSOCIATED_CROP_COMMON_NAME"= character(), 
-                                          "PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1" = character(), 
-                                          "native ecoregions" = character(), 
-                                          "covered ecoregions" = character(), 
-                                          "accessions with geographic data" = character(),
-                                          "accessions lacking geographic data" = character(),
-                                          stringsAsFactors=FALSE)
-
-# for each species
-# determine which regions in the range are represented by 1 or more accession
-# and then determine the proportion of native regions with 1 or more accession
-# add that species as a row to the gap analysis df
-for(i in 1:nrow(inventory_sp_T1)) {
-  
-  selected_taxon <- inventory_sp_T1[[i,2]] # column 1 is species ("sci_name")
-  as.data.frame(temp <- ecoregion_gap_analysis(
-    species = selected_taxon)) 
-  gap_analysis_df_by_ecoregion <- rbind(
-    gap_analysis_df_by_ecoregion, temp)
-  
-} 
-
-# 
-### now make the figure
-#
-category_names <- c("Sugars", "Vegetables", 
-                    "Cereals and pseudocereals", "Fruits",
-                    "Nuts", "Oils",
-                    "Herbs and Spices", "Pulses")
-
-gap_analysis_df_by_ecoregion_test <- gap_analysis_df_by_ecoregion %>%
-  mutate(across(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, factor, 
-                levels=category_names)) %>%
-  arrange(., PRIMARY_ASSOCIATED_CROP_COMMON_NAME)
-
-
-F1B <- ggplot(gap_analysis_df_by_ecoregion_test, 
-               aes(x = PRIMARY_ASSOCIATED_CROP_COMMON_NAME, 
-                   y = perc_ecoregion_range_covered,
-                   color = PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1)) + 
-  geom_jitter(shape=16, position=position_jitter(0.3), size = 3, alpha = 0.5) +
-  facet_grid(cols = vars(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1), scales = "free_x", space = "free_x") +
-  stat_summary(fun=mean, geom="point", shape='-', size= 8, color="black", fill="black") +
-  theme_bw() +
-  theme(legend.position = 'none',
-        axis.title.x = element_blank(),
-        panel.spacing.x = unit(.1, "cm"),
-        strip.text.x = element_blank(),
-        axis.text.y  = element_text(angle=90, vjust = 1, hjust=0.5, size = 12), 
-        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 10)) +
-  ylab("exGCS") +
-  scale_y_continuous(labels = scales::percent) +
-  # just keep these labels for now to match up and see potential issues
-  scale_x_discrete(labels=c("Sugar Maple" = expression(paste("Sugar Maple - ", italic('Acer'), " (10/10)")),
-                            "Onions, Garlic, Leeks" = expression(paste("Onion, etc. - ", italic('Allium'), " (10/10)")),
-                            "Amaranth" = expression(paste("Amaranth - ", italic('Amaranthus'), " (4/5)")),
-                            "Saskatoon" = expression(paste("Saskatoon - ", italic('Amelanchier'), " (10/11)")),
-                            "Spinach" = expression(paste("Spinach - ", italic('Blitum'), " (2/2)")),
-                            "Pecan, Hickory" = expression(paste("Pecan, Hickory - ", italic('Carya'), " (5/5)")),
-                            "Chestnut" = expression(paste("Chestnut - ", italic('Castanea'), " (1/1)")),
-                            "Quinoa" = expression(paste("Quinoa - ", italic('Chenopodium'), " (4/8)")),
-                            "Proso-millet" = expression(paste("Proso-millet - ", italic('Panicum'), " (1/16)")),
-                            "Strawberry" = expression(paste("Strawberry - ", italic('Fragaria, etc.'), " (7/7)")),
-                            "Filbert" = expression(paste("Filbert - ", italic('Corylus'), " (2/2)")),
-                            "Carrot" = expression(paste("Carrot - ", italic('Daucus'), " (1/1)")),
-                            "Yam" = expression(paste("Yam - ", italic('Dioscorea'), " (0/1)")),
-                            "Wheat" = expression(paste("Wheat - ", italic('Elymus, Leymus'), " (15/23)")),
-                            "Sunflower" = expression(paste("Sunflower - ", italic('Helianthus'), " (12/12)")),
-                            "Barley" = expression(paste("Barley - ", italic('Hordeum'), " (3/6)")),
-                            "Hop" = expression(paste("Hop - ", italic('Humulus'), " (1/1)")),
-                            "Walnut" = expression(paste("Walnut - ", italic('Juglans'), " (2/2)")),
-                            "Lettuce" = expression(paste("Lettuce - ", italic('Lactuca'), " (0/1)")),
-                            "Flax" = expression(paste("Flax - ", italic('Linum'), " (3/6)")),
-                            "Lupin" = expression(paste("Lupin - ", italic('Lupinus'), " (3/4)")),
-                            "Apple" = expression(paste("Apple - ", italic('Malus'), " (2/2)")),
-                            "Mint" = expression(paste("Mint - ", italic('Mentha'), " (1/1)")),
-                            "Tobacco" = expression(paste("Tobacco - ", italic('Nicotiana'), " (1/1)")),
-                            "Tomatillo" = expression(paste("Tomatillo - ", italic('Physalis'), " (1/2)")),
-                            "Apricot, Cherry, Peach, Plum" = expression(paste("Apricot, Cherry, etc. - ", italic('Prunus'), " (7/9)")),
-                            "Currant, Gooseberry" = expression(paste("Currant, Gooseberry - ", italic('Ribes'), " (16/16)")),
-                            "Blackberry, Raspberry" = expression(paste("Black-, Raspberry - ", italic('Rubus'), " (14/20)")),
-                            "Rosinweed" = expression(paste("Rosinweed - ", italic('Silphium'), " (2/2)")),
-                            "Blueberry, Cranberry" = expression(paste("Blue-, Cranberry - ", italic('Vaccinium'), " (17/20)")),
-                            "Grape" = expression(paste("Grape - ", italic('Vitis'), " (2/2)")),
-                            "Wild-rice" = expression(paste("Wild-rice - ", italic('Zizania'), " (2/2)"))
-  )
-  )
-F1B
-
-
-gap_analysis_df_by_ecoregion_f4b <- gap_analysis_df_by_ecoregion %>%
-  transform(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1 = plyr::revalue(
-    PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, 
-    c("Cereals and pseudocereals"="Cereals, pseudo-")))
-
-fig4b <- ggplot(gap_analysis_df_by_ecoregion_f4b, 
-               aes(x = perc_ecoregion_range_covered, 
-                   y = PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, 
-                   fill = PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1,
-                   height = ..density..)) +
-  geom_density_ridges(alpha = 0.6,
-                      stat = "density", trim = TRUE,
-                      scale = 4.5, size = 0.5) +
-  theme_ridges() + 
-xlab(expression(paste(
-    "Proportion of native ecoregions of Tier 1 CWR \n represented in ex situ conservation systems"))) +
-  theme(legend.position = "none",
-        axis.title.y = element_blank(),
-        axis.title.x = element_text(size = 14, 
-                                    margin = margin(t = 20, r = 50))) +
-  scale_x_continuous(labels = function(x) paste0(x*100, "%"))
-
-fig4b
-
-####################################
-######## GAP ANALYSIS CASE STUDY   #
-####################################
-
-# potential figure 5
-# CRS 
-crs_string = "+proj=lcc +lat_1=49 +lat_2=77 +lon_0=-91.52 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs" # 2
-
-# Define the maps' theme -- remove axes, ticks, borders, legends, etc.
-theme_map <- function(base_size=10, base_family="") { # 3
-  require(grid)
-  theme_bw(base_size=base_size, base_family=base_family) %+replace%
-    theme(axis.line=element_blank(),
-          axis.text=element_blank(),
-          axis.ticks=element_blank(),
-          axis.title=element_blank(),
-          panel.background=element_blank(),
-          panel.border=element_blank(),
-          panel.grid=element_blank(),
-          panel.spacing=unit(0, "lines"),
-          plot.background=element_blank(),
-          legend.justification = c(0,0),
-          legend.position = c(0,0)
-    )
-}
-
-##############
-# By Ecoregion
-# saskatoon_cwr_list <- inventory_sp %>%
-#  filter(PRIMARY_ASSOCIATED_CROP_COMMON_NAME == "Saskatoon")
-
-accessions_sf <- st_as_sf(ecoregion_gap_table_species, 
-         coords = c("longitude", "latitude"), 
-         crs = 4326, 
-         na.fail = FALSE)
-
-accessions_sf_G <- accessions_sf %>%
-  filter(INSTITUTION == "G")
-
-accessions_sf_BG <- accessions_sf %>%
-  filter(INSTITUTION == "BG")
-
-# Function to get plot data by taxon
-plotData_ecoregion <- function(species){
-  # filter province_gap_table frame and calculate species specific stats
-  ecoregionTableData <- ecoregion_gap_table_species %>%
-    # filter the table to the selected CWR
-    filter(ecoregion_gap_table_species$SPECIES == species) %>%
-    
-    # tally the number of rows in each ecoregion with an existing accession (garden is not NA)
-    group_by(ECO_NAME) %>%
-    add_tally(!is.na(GARDEN_CODE)) %>%
-    rename("accessions_in_ecoregion" = "n")  %>%
-    ungroup() %>%
-    
-    # count the number of accessions w/ and w/out geographic data
-    mutate(total_accessions_for_species = sum(!is.na(GARDEN_CODE))) %>%
-    mutate(accessions_no_geo_data = sum(is.na(ECO_NAME))) %>%
-    mutate(accessions_with_geo_data = sum(!is.na(ECO_NAME))) %>%
-    
-    # convert number of accessions to a binary "is there or is there not an accession from x region"
-    group_by(ECO_NAME) %>%
-    filter(row_number() == 1) %>%
-    filter(!is.na(ECO_NAME)) %>%
-    mutate(binary = ifelse(
-      accessions_in_ecoregion > 0, 1, 0)) %>%
-    ungroup() %>%
-    
-    # use the binary variable to determine the proportion of native regions with an accession
-    mutate(num_native_ecoregion = sum(!duplicated(ECO_NAME))) %>%
-    mutate(num_covered_ecoregion = sum(binary)) %>%
-    mutate(perc_ecoregion_range_covered = 
-             num_covered_ecoregion / num_native_ecoregion) 
-  
-  # join plot data with the spatial data frame necessary for projecting the plot  
-  tigris::geo_join(canada_ecoregions_geojson, ecoregionTableData,  
-                   by_sp = "ECO_NAME", by_df = "ECO_NAME")
-  
-} 
-
-
-make_a_plot_ecoregion <- function(species) {
-  accessions_sf_G_filtered <- accessions_sf_G %>%
-    filter(SPECIES == species) %>%
-    filter(is.na(LOCALITY))
-  
-  accessions_sf_BG_filtered <- accessions_sf_BG %>%
-    filter(SPECIES == species) 
-  
-  df <- plotData_ecoregion(species)
-  
-  df$binary[is.na(df$binary)] <- -1
-  
-  plot <- ggplot(df) +
-    geom_sf(fill = "white", color = "gray60", size = 0.1) +
-    geom_sf(aes(fill = as.factor(binary))) +
-    geom_sf(data = accessions_sf_G_filtered, color = 'mediumorchid1', alpha = 0.5, size = 5) +
-    geom_sf(data = accessions_sf_BG_filtered, color = 'goldenrod1', alpha = 0.5, size = 5) +
-    coord_sf(crs = crs_string) +
-    scale_fill_manual(values = c("white", "gray60", "gray10"), 
-                      labels = c("Outside range",
-                                 "Not in ex situ collections", 
-                                 "In ex situ collections" 
-                                 )) +
-     guides(fill = guide_legend(title = "", 
-                                title.position = "top",
-                              title.theme = element_text(size = 10, face = "bold")
-    )) +
-    theme_map() +
-    ggtitle(species) +
-    theme(panel.grid.major = element_line(color = "white"),
-          plot.title = element_text(color="black",
-                                    size=14, face="bold.italic", hjust = 0.5),
-          plot.margin=unit(c(0.1,-0.2,0.1,-0.2), "cm"),
-          legend.position = "bottom", legend.text = element_text(size=12))
-  
-  return(plot)
-}
-
-test <- make_a_plot_ecoregion("Amelanchier alnifolia")
-test
-
-test1 <- make_a_plot_ecoregion("Zizania palustris")
-test1
-
-test2 <- make_a_plot_ecoregion("Helianthus nuttallii")
-test2
-
-test3 <- make_a_plot_ecoregion("Malus coronaria")
-test3
-
-test4 <- make_a_plot_ecoregion("Fragaria virginiana")
-test4
-
-test5 <- make_a_plot_ecoregion("Vaccinium myrtilloides")
-test5
 

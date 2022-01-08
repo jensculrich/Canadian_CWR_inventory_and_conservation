@@ -108,14 +108,14 @@ canada_eco_subset <- st_intersection(canada_eco, canada)
 # if any species and ecoregion combo from out of bounds is found in 
 # ecoregion distribution, then remove that row
 out_of_bounds <- read.csv("./Geo_Data/out_of_bound_ranges_ecoregions.csv")
-sp_distr_eco <- read.csv("./GBIF_download_outputs/species_distributions_ecoregion.csv")
+sp_distr_eco <- read.csv("./GBIF_download_outputs/species_distributions_ecoregion_new.csv")
 
 sp_distr_eco <- anti_join(sp_distr_eco, out_of_bounds, by = c('SPECIES', 'ECO_NAME'))
 write.csv(sp_distr_eco, "./GBIF_download_outputs/species_distributions_ecoregion_trimmed.csv")
 
 # repeat by province
 out_of_bounds <- read.csv("./Geo_Data/out_of_bound_ranges_provincial.csv")
-sp_distr_province <- read.csv("./GBIF_download_outputs/species_distributions_province.csv")
+sp_distr_province <- read.csv("./GBIF_download_outputs/species_distributions_province_new.csv")
 
 sp_distr_province <- anti_join(sp_distr_province, out_of_bounds, by = c('SPECIES', 'PROVINCE'))
 write.csv(sp_distr_province, "./GBIF_download_outputs/species_distributions_province_trimmed.csv")

@@ -1,26 +1,224 @@
-RANK,TAXON,Associated Crop,Priority Category,Total Accessions,Garden Accessions,Genebank Accessions,Growth Form
-1,Helianthus annuus,Sunflower,1A,842,2,840,Herb
-2,Fragaria chiloensis,Strawberry,1A,286,14,272,Herb
-3,Fragaria ananassa,Strawberry,1A,282,4,278,Herb
-4,Leymus cinereus,Wheat,1C,280,1,279,Herb
-5,Rubus idaeus,"Blackberry, Raspberry",1A,271,38,233,Shrub
-6,Castanea dentata,Chestnut,1A,263,258,5,Tree
-7,Acer rubrum,Sugar Maple,1C,248,240,8,Tree
-8,Prunus serotina,"Apricot, Cherry, Peach, Plum",1C,182,179,3,Tree/Shrub
-9,Vaccinium corymbosum,"Blueberry, Cranberry",1A,158,32,126,Shrub
-10,Amelanchier alnifolia,Saskatoon,1A,148,122,26,Shrub
-11,Fragaria virginiana,Strawberry,1A,139,8,131,Herb
-12,Juglans nigra,Walnut,1A,128,123,5,Tree
-13,Acer saccharinum,Sugar Maple,1C,125,125,0,Tree
-14,Elymus elymoides,Wheat,1C,111,0,111,Herb
-15,Vaccinium macrocarpon,"Blueberry, Cranberry",1A,110,0,110,Herb
-16,Prunus virginiana,"Apricot, Cherry, Peach, Plum",1C,104,90,14,Tree/Shrub
-17,Elymus glaucus,Wheat,1C,102,6,96,Herb
-18,Dasiphora fruticosa,Strawberry,1C,93,89,4,Herb
-19,Prunus americana,"Apricot, Cherry, Peach, Plum",1A,86,81,5,Tree/Shrub
-20,Rubus occidentalis,"Blackberry, Raspberry",1A,86,3,83,Herb
-21,Corylus americana,Filbert,1B,85,50,35,Tree/Shrub
-22,Fragaria vesca,Strawberry,1C,80,11,69,Herb
-23,Hordeum brachyantherum,Barley,1C,72,0,72,Herb
-24,Prunus pensylvanica,"Apricot, Cherry, Peach, Plum",1A,72,69,3,Tree
-25,Malus coronaria,Apple,1C,67,8,59,Tree
+TAXON,PRIMARY_ASSOCIATED_CROP_COMMON_NAME,CATEGORY,GRAFTSTOCK,total_accessions,garden_accessions,genebank_accessions
+Amelanchier pumila,Saskatoon,1C,,0,0,0
+Coleataenia longifolia,Proso-millet,1C,,0,0,0
+Dichanthelium boreale,Proso-millet,1C,,0,0,0
+Dichanthelium wilcoxianum,Proso-millet,1C,,0,0,0
+Dichanthelium xanthophysum,Proso-millet,1C,,0,0,0
+Elymus hirsutus,Wheat,1C,,0,0,0
+Hordeum depressum,Barley,1C,,0,0,0
+Linum compactum,Flax,1C,,0,0,0
+Linum medium,Flax,1C,,0,0,0
+Linum striatum,Flax,1C,,0,0,0
+Linum virginianum,Flax,1C,,0,0,0
+Lupinus depressus,Lupin,1C,,0,0,0
+Lupinus kuschei,Lupin,1C,,0,0,0
+Lupinus oreganus,Lupin,1C,,0,0,0
+Panicum philadelphicum,Proso-millet,1C,,0,0,0
+Panicum sphaerocarpon,Proso-millet,1C,,0,0,0
+Physalis longifolia,Tomatillo,1C,,0,0,0
+Rubus paracaulis,"Blackberry, Raspberry",1C,,0,0,0
+Rubus recurvicaulis,"Blackberry, Raspberry",1C,,0,0,0
+Vaccinium nubigenum,"Blueberry, Cranberry",1C,,0,0,0
+Vaccinium microcarpum,"Blueberry, Cranberry",1A,,0,0,0
+Amelanchier bartramiana,Saskatoon,1C,,1,1,0
+Amelanchier interior,Saskatoon,1C,,1,1,0
+Zizania palustris,Wild-rice,1A,,1,1,0
+Allium crenulatum,"Onions, Garlic, Leeks",1C,,1,1,0
+Allium burdickii,"Onions, Garlic, Leeks",1C,,1,0,1
+Amaranthus californicus,Amaranth,1C,,1,0,1
+Dichanthelium depauperatum,Proso-millet,1C,,1,0,1
+Dichanthelium dichotomum subsp. dichotomum,Proso-millet,1C,,1,0,1
+Dichanthelium linearifolium,Proso-millet,1C,,1,0,1
+Dioscorea villosa,Yam,1C,,1,0,1
+Elymus albicans,Wheat,1C,,1,0,1
+Lactuca tatarica subsp. pulchella,Lettuce,1C,,1,0,1
+Oxybasis rubra,Quinoa,1C,,1,0,1
+Panicum capillare,Proso-millet,1A,,1,0,1
+Physalis virginiana,Tomatillo,1C,,1,0,1
+Physalis heterophylla,Tomatillo,1C,,2,1,1
+Elymus scribneri,Wheat,1C,,2,0,2
+Chenopodiastrum simplex,Quinoa,1C,,2,0,2
+Dichanthelium latifolium,Proso-millet,1C,,2,0,2
+Dichanthelium leibergii,Proso-millet,1C,,2,0,2
+Elymus curvatus,Wheat,1C,,2,0,2
+Lupinus lepidus,Lupin,1C,,2,0,2
+Panicum dichotomiflorum,Proso-millet,1C,,2,0,2
+Ribes hirtellum,"Currant, Gooseberry",1A,,2,0,2
+Rubus nivalis,"Blackberry, Raspberry",1C,,2,0,2
+Rubus setosus,"Blackberry, Raspberry",1C,,2,0,2
+Linum rigidum,Flax,1C,,3,0,3
+Chenopodium fremontii,Quinoa,1C,,3,0,3
+Elymus riparius,Wheat,1C,,3,0,3
+Linum sulcatum,Flax,1C,,3,0,3
+Allium stellatum,"Onions, Garlic, Leeks",1C,,4,4,0
+Blitum capitatum,Spinach,1C,,4,1,3
+Allium canadense,"Onions, Garlic, Leeks",1C,,4,2,2
+Chenopodium desiccatum,Quinoa,1C,,4,0,4
+Elymus alaskanus,Wheat,1C,,4,0,4
+Rubus pensilvanicus,"Blackberry, Raspberry",1C,,4,0,4
+Silphium integrifolium,Rosinweed,1A,,5,1,4
+Zizania aquatica,Wild-rice,1B,,5,4,1
+Ribes divaricatum,"Currant, Gooseberry",1A,Graftstock,5,2,3
+Lupinus arcticus,Lupin,1C,,5,2,3
+Amelanchier sanguinea,Saskatoon,1C,,6,2,4
+Carya ovalis,"Pecan, Hickory",1B,,6,0,6
+Elymus macrourus,Wheat,1C,,6,0,6
+Lupinus pusillus,Lupin,1C,,6,0,6
+Allium amplectens,"Onions, Garlic, Leeks",1C,,7,1,6
+Allium geyeri,"Onions, Garlic, Leeks",1C,,7,1,6
+Lupinus microcarpus,Lupin,1C,,7,0,7
+Blitum nuttallianum,Spinach,1C,,7,0,7
+Ribes laxiflorum,"Currant, Gooseberry",1C,,7,0,7
+Amaranthus albus,Amaranth,1C,,8,0,8
+Hordeum pusillum,Barley,1C,,8,0,8
+Lupinus latifolius,Lupin,1C,,8,0,8
+Ribes oxyacanthoides,"Currant, Gooseberry",1A,,9,1,8
+Elymus villosus,Wheat,1C,,9,2,7
+Lupinus littoralis,Lupin,1C,,9,2,7
+Chenopodium hians,Quinoa,1C,,9,0,9
+Vaccinium boreale,"Blueberry, Cranberry",1B,,9,0,9
+Elymus hystrix,Wheat,1C,,10,1,9
+Ribes lobbii,"Currant, Gooseberry",1C,,10,3,7
+Chenopodium leptophyllum,Quinoa,1C,,10,0,10
+Rubus lasiococcus,"Blackberry, Raspberry",1C,,10,0,10
+Lupinus perennis,Lupin,1C,,11,0,11
+Amelanchier intermedia,Saskatoon,1C,,12,11,1
+Prunus nigra,"Apricot, Cherry, Peach, Plum",1B,,12,11,1
+Ribes cynosbati,"Currant, Gooseberry",1B,,12,6,6
+Helianthus laetiflorus,Sunflower,1C,,12,0,12
+Chenopodium watsonii,Quinoa,1C,,12,0,12
+Lupinus rivularis,Lupin,1C,,12,1,11
+Lupinus sulphureus,Lupin,1C,,12,0,12
+Acer macrophyllum,Sugar Maple,1C,,13,2,11
+Vaccinium deliciosum,"Blueberry, Cranberry",1B,,13,2,11
+Leymus innovatus,Wheat,1C,,13,0,13
+Rubus flagellaris,"Blackberry, Raspberry",1B,,14,1,13
+Allium tricoccum,"Onions, Garlic, Leeks",1C,,14,11,3
+Amelanchier spicata,Saskatoon,1C,,14,0,14
+Helianthus hirsutus,Sunflower,1A,,14,0,14
+Amelanchier humilis,Saskatoon,1C,,15,15,0
+Comarum palustre,Strawberry,1C,,15,6,9
+Ribes hudsonianum,"Currant, Gooseberry",1B,,15,1,14
+Ribes inerme,"Currant, Gooseberry",1B,,15,0,15
+Lupinus arbustus,Lupin,1C,,16,0,16
+Ribes triste,"Currant, Gooseberry",1C,,17,2,15
+Vaccinium cespitosum,"Blueberry, Cranberry",1A,,17,4,13
+Ribes viscosissimum,"Currant, Gooseberry",1C,,18,0,18
+Linum perenne,Flax,1C,,20,2,18
+Elymus violaceus,Wheat,1C,,20,0,20
+Leymus triticoides,Wheat,1C,,20,0,20
+Vaccinium scoparium,"Blueberry, Cranberry",1B,,20,0,20
+Vaccinium myrtilloides,"Blueberry, Cranberry",1A,,21,8,13
+Amelanchier arborea,Saskatoon,1C,,22,12,10
+Lupinus nootkatensis,Lupin,1C,,22,1,21
+Chenopodium berlandieri,Quinoa,1B,,22,0,22
+Helianthus nuttallii,Sunflower,1C,,22,0,22
+Ribes americanum,"Currant, Gooseberry",1B,,23,12,11
+Acer glabrum var. douglasii,Sugar Maple,1C,,23,13,10
+Rubus pedatus,"Blackberry, Raspberry",1C,,23,7,16
+Lupinus bicolor,Lupin,1C,,24,0,24
+Vaccinium stamineum,"Blueberry, Cranberry",1C,,25,5,20
+Prunus emarginata,"Apricot, Cherry, Peach, Plum",1A,Graftstock,25,4,21
+Acer negundo,Sugar Maple,1C,,25,5,20
+Hordeum jubatum,Barley,1C,,26,0,26
+Ribes lacustre,"Currant, Gooseberry",1C,,28,7,21
+Rubus arcticus,"Blackberry, Raspberry",1C,,28,11,17
+Helianthus giganteus,Sunflower,1C,,28,1,27
+Rubus canadensis,"Blackberry, Raspberry",1A,,29,6,23
+Amaranthus retroflexus,Amaranth,1B,,29,0,29
+Dichanthelium clandestinum,Proso-millet,1C,,29,0,29
+Ribes bracteosum,"Currant, Gooseberry",1B,,30,9,21
+Helianthus strumosus,Sunflower,1C,,30,1,29
+Helianthus decapetalus,Sunflower,1C,,30,1,29
+Helianthus divaricatus,Sunflower,1C,,31,6,25
+Rubus chamaemorus,"Blackberry, Raspberry",1C,,31,2,29
+Allium acuminatum,"Onions, Garlic, Leeks",1C,,31,2,29
+Drymocallis glandulosa,Strawberry,1C,,31,0,31
+Prunus pumila var. pumila,"Apricot, Cherry, Peach, Plum",1A,Graftstock,32,26,6
+Silphium perfoliatum,Rosinweed,1B,,33,8,25
+Allium textile,"Onions, Garlic, Leeks",1C,,33,0,33
+Vaccinium pallidum,"Blueberry, Cranberry",1B,,36,0,36
+Rubus odoratus,"Blackberry, Raspberry",1B,,37,22,15
+Nicotiana attenuata,Tobacco,1C,,37,0,37
+Amelanchier canadensis,Saskatoon,1C,,39,34,5
+Corylus cornuta,Hazelnut,1C,,43,28,15
+Rubus allegheniensis,"Blackberry, Raspberry",1A,,43,4,39
+Daucus pusillus,Carrot,1C,,43,0,43
+Acer circinatum,Sugar Maple,1C,,45,40,5
+Allium cernuum,"Onions, Garlic, Leeks",1C,,45,25,20
+Rubus nutkanus,"Blackberry, Raspberry",1B,,45,0,45
+Vaccinium myrtillus,"Blueberry, Cranberry",1A,,46,1,45
+Amelanchier laevis,Saskatoon,1C,,47,42,5
+Allium schoenoprasum,"Onions, Garlic, Leeks",1C,,49,16,33
+Mentha canadensis,Mint,1B,,49,2,47
+Ribes cereum,"Currant, Gooseberry",1C,,50,3,47
+Carya glabra,"Pecan, Hickory",1B,,51,22,29
+Vaccinium parvifolium,"Blueberry, Cranberry",1B,,51,10,41
+Lupinus argenteus,Lupin,1C,,51,0,51
+Corylus californica,Hazelnut,1B,,52,5,47
+Helianthus pauciflorus,Sunflower,1C,,52,1,51
+Amaranthus tuberculatus,Amaranth,1C,,52,0,52
+Carya cordiformis,"Pecan, Hickory",1A,,56,25,31
+Rubus leucodermis,"Blackberry, Raspberry",1A,,58,1,57
+Lupinus leucophyllus,Lupin,1C,,58,0,58
+Vitis aestivalis,Grape,1A,Graftstock,61,13,48
+Ribes aureum,"Currant, Gooseberry",1A,Graftstock,61,27,34
+Lupinus sericeus,Lupin,1C,,63,0,63
+Vaccinium ovatum,"Blueberry, Cranberry",1C,,66,26,40
+Linum lewisii,Flax,1C,,68,5,63
+Elymus lanceolatus,Wheat,1C,,71,0,71
+Carya laciniosa,"Pecan, Hickory",1A,,73,35,38
+Ribes sanguineum var. sanguineum,"Currant, Gooseberry",1B,,73,43,30
+Helianthus maximiliani,Sunflower,1C,,77,0,77
+Acer pensylvanicum,Sugar Maple,1C,,81,43,38
+Rubus spectabilis,"Blackberry, Raspberry",1A,,81,15,66
+Vaccinium angustifolium,"Blueberry, Cranberry",1A,,82,20,62
+Vaccinium membranaceum,"Blueberry, Cranberry",1B,,82,8,74
+Juglans cinerea,Walnut,1C,,85,47,38
+Rubus ursinus,"Blackberry, Raspberry",1A,,85,0,85
+Carya ovata,"Pecan, Hickory",1A,,88,29,59
+Pascopyrum smithii,Wheat,1C,,90,0,90
+Vaccinium oxycoccos,"Blueberry, Cranberry",1B,,92,3,89
+Elymus canadensis,Wheat,1C,,92,2,90
+Corylus americana,Hazelnut,1B,,93,50,43
+Hordeum brachyantherum,Barley,1C,,93,0,93
+Prunus americana,"Apricot, Cherry, Peach, Plum",1A,Graftstock,95,81,14
+Helianthus tuberosus,Sunflower,1A,,95,0,95
+Acer spicatum,Sugar Maple,1C,,96,37,59
+Dasiphora fruticosa,Strawberry,1C,,100,89,11
+Acer saccharum,Sugar Maple,1A,,107,62,45
+Vaccinium ovalifolium,"Blueberry, Cranberry",1B,,107,11,96
+Lupinus polyphyllus,Lupin,1A,,109,10,99
+Vaccinium vitis-idaea,"Blueberry, Cranberry",1A,,114,10,104
+Prunus pensylvanica,"Apricot, Cherry, Peach, Plum",1A,Graftstock,123,69,54
+Acer saccharinum,Sugar Maple,1C,,126,125,1
+Vaccinium uliginosum,"Blueberry, Cranberry",1B,,128,8,120
+Juglans nigra,Walnut,1A,,134,123,11
+Amaranthus hybridus,Amaranth,1A,,142,0,142
+Elymus glaucus subsp. glaucus,Wheat,1C,,148,6,142
+Vaccinium macrocarpon,"Blueberry, Cranberry",1A,,155,0,155
+Malus coronaria,Apple,1C,,159,8,151
+Humulus lupulus,Hops,1A,,164,10,154
+Helianthus petiolaris,Sunflower,1B,,164,1,163
+Elymus virginicus,Wheat,1C,,177,0,177
+Elymus sibiricus,Wheat,1C,,188,0,188
+Amelanchier alnifolia var. alnifolia,Saskatoon,1A,,193,122,71
+Fragaria vesca,Strawberry,1C,,223,11,212
+Prunus serotina,"Apricot, Cherry, Peach, Plum",1C,,231,179,52
+Rubus occidentalis,"Blackberry, Raspberry",1A,,241,3,238
+Malus fusca,Apple,1A,Graftstock,253,10,243
+Vitis riparia,Grape,1A,Graftstock,255,21,234
+Castanea dentata,Chestnut,1A,,267,258,9
+Pseudoroegneria spicata,Wheat,1C,,274,0,274
+Elymus elymoides,Wheat,1C,,287,0,287
+Fragaria chiloensis subsp. pacifica,Strawberry,1A,,334,14,320
+Prunus virginiana,"Apricot, Cherry, Peach, Plum",1C,,340,90,250
+Vaccinium corymbosum,"Blueberry, Cranberry",1A,,342,32,310
+Leymus mollis,Wheat,1C,,346,1,345
+Leymus cinereus,Wheat,1C,,379,1,378
+Fragaria virginiana,Strawberry,1A,,440,8,432
+Acer rubrum,Sugar Maple,1C,,468,240,228
+Rubus idaeus subsp. strigosus,"Blackberry, Raspberry",1A,,659,38,621
+Fragaria ananassa,Strawberry,1A,,890,4,886
+Helianthus annuus,Sunflower,1A,,4297,2,4295
+Linum usitatissimum,Flax,1C,,6337,0,6337

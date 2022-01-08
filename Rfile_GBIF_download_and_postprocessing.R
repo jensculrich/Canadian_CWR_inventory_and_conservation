@@ -9,15 +9,15 @@ library(rgbif)
 # I will delete this before pushing this file to protect my account privacy
 # must be rewritten every time running this script
 user="jensj27" 
-pwd="Ceratina_1802" 
-email="jensj27@gmail.com"
+pwd="" 
+email=""
 
 # load separate lists of taxon names. GBIF has a limit 100 000 observations that it's able to
 #download at once, which is well under the number for the species combined
 # I partitioned into groups of 100 taxon names
-csvlist = c("part1.csv","part2.csv","part3.csv","part4.csv","part5.csv", 
-            "part6.csv", "part7.csv", "part8.csv", "part9.csv")
-# csvlist = "speciesKeys_extra_taxa.csv"
+# csvlist = c("part1.csv","part2.csv","part3.csv","part4.csv","part5.csv", 
+#             "part6.csv", "part7.csv", "part8.csv", "part9.csv")
+csvlist = "speciesKeys_missed.csv"
 # note, had to re-enter these without the "x" character in hybrid taxa, because GBIF cannot
 # match the name for these and moves the speciesKey to the genus,
 # e.g. Fragaria "x"ananassa becomes Fragaria sp.
@@ -31,7 +31,7 @@ setwd("GBIF_download_inputs/")
 for (i in csvlist){
   print(i)
   df = read.csv(i) 
-  keys = unique(df$speciesKey, na.last = TRUE)
+  keys = unique(df$key, na.last = TRUE)
   keys = keys[!is.na(keys)]
   down_code = occ_download(
     pred_in("taxonKey", keys),
@@ -75,13 +75,14 @@ df8 <- read.csv("part8.csv")
 df9 <- read.csv("part9.csv")
 df10 <- read.csv("problemTaxa.csv")
 df11 <- read.csv("problemTaxa_manual.csv")
+df12 <- read.csv("missed_species.csv")
 
 # replace NAs with "" in df11
 df11 <- df11 %>%
   mutate(taxonRank = replace_na(taxonRank, "")) %>%
   mutate(infraspecificEpithet = replace_na(infraspecificEpithet, ""))
 
-df <- rbind(df1, df2, df3, df4, df5, df6, df7, df8, df9, df10, df11)
+df <- rbind(df1, df2, df3, df4, df5, df6, df7, df8, df9, df10, df11, df12)
 df <- df %>%
   select(taxonKey, genus, species, infraspecificEpithet, taxonRank, scientificName, 
          verbatimScientificName, stateProvince, decimalLatitude, decimalLongitude
@@ -90,11 +91,9 @@ df <- df %>%
 # issues with problem species that need to be fixed to match the inventory
 df <- within(df, infraspecificEpithet[species == 'Amelanchier pumila'] <- '')
 df <- within(df, taxonRank[species == 'Amelanchier pumila'] <- 'species')
-df <- within(df, infraspecificEpithet[species == 'Leymus villosissimus'] <- '')
-df <- within(df, taxonRank[species == 'Leymus villosissimus'] <- 'species')
 df[nrow(df) + 1,] = c("NA","Zizania", "Zizania aquatica", "interior", "var.",
                             "Zizania aquatica var. interior", "Zizania aquatica var. interior", 
-                            "Manitoba", "49.6", "-95.3")
+                            "Manitoba", "49.6", "-95.3") # not sure why this point from GBIF doesn't show up
 df$decimalLatitude <- as.numeric(df$decimalLatitude)
 df$decimalLongitude <- as.numeric(df$decimalLongitude)
 
@@ -139,7 +138,9 @@ GBIF_province <- output_df_provinces %>%
   mutate(taxonRank = str_replace(taxonRank, "species", "")) %>%
   mutate(TAXON = paste(species, taxonRank, infraspecificEpithet, sep=' ')) %>%
   distinct(TAXON, name, .keep_all = TRUE) %>%
-  select(TAXON, genus, species, taxonRank, infraspecificEpithet, name) %>%
+  select(TAXON, genus, species, taxonRank,
+         verbatimScientificName,
+         infraspecificEpithet, name) %>%
   rename("GENUS" = "genus",
          "SPECIES" = "species",
          "RANK" = "taxonRank",
@@ -149,36 +150,40 @@ GBIF_province <- output_df_provinces %>%
 
 
 GBIF_province$TAXON <- trimws(GBIF_province$TAXON, which = c("right"))
+GBIF_province$verbatimScientificName <- trimws(GBIF_province$verbatimScientificName, which = c("right"))
 GBIF_province_2 <- GBIF_province[!is.na(GBIF_province$PROVINCE),] 
 
 # join with inventory to remove taxa with incorrect names 
 # This should be the one we want
-GBIF_province_filtered_2 <- semi_join(GBIF_province_2, inventory, by="TAXON", all.x = TRUE)
+GBIF_province_filtered_2 <- semi_join(
+  GBIF_province_2, inventory, by="TAXON", all.x = TRUE)
+test <- GBIF_province_filtered_2 %>%
+  distinct(TAXON)
 
 # is it possible to match and update the taxon names that don't match those in the inventory?
-anti_join <- anti_join(GBIF_province_2, inventory, by="TAXON", all.x = TRUE)
+anti_join_province <- anti_join(GBIF_province_2, inventory, by="TAXON", all.x = TRUE)
 # these are names where the GBIF name at the time of submission was incorrect, mostly
 # where the subsp. or variety is synonymous. Just coerce them back to plain speces,
-# then rebind with the GBIF_province_filtered_2
+# then rebind with the GBIF_ecoregion_filtered_2
 # then filter eagain to remove any more potential mismatches
-anti_join_prepped <- anti_join %>%
+anti_join_prepped_province <- anti_join_province %>%
   mutate(TAXON = SPECIES) %>%
   mutate(RANK = "") %>%
   mutate(INFRASPECIFIC = "")
 
-GBIF_province_filtered_3 <- rbind(GBIF_province_filtered_2, anti_join_prepped)
+GBIF_province_filtered_3 <- rbind(GBIF_province_filtered_2, anti_join_prepped_province)
 GBIF_province_filtered_4 <- semi_join(GBIF_province_filtered_3, inventory, by="TAXON", all.x = TRUE)
 
 # those taxa with incorrect names that were reverted back to species level
 # may now have multiple rows for unique TAXON x region, use distinct again 
 # to get just one per unique combination
-GBIF_province_filtered_4 <- GBIF_province_filtered_4 %>%
+GBIF_province_filtered_4 <- GBIF_province_filtered_2 %>%
   distinct(TAXON, PROVINCE, .keep_all = TRUE)
 
 # need to figure out a way to add all infraspecific range information that might be missing at the species level
 # for the species themselves (in case any are missing)
 
-# test to see length (should be 790)
+# test to see length (should be 910)
 test <- GBIF_province_filtered_4 %>%
   distinct(TAXON)
 # so which taxa are missing?
@@ -247,7 +252,7 @@ GBIF_ecoregion_filtered_4 <- semi_join(GBIF_ecoregion_filtered_3, inventory, by=
 GBIF_ecoregion_filtered_4 <- GBIF_ecoregion_filtered_4 %>%
   distinct(TAXON, ECO_NAME, .keep_all = TRUE)
 
-write.csv(GBIF_province_filtered_4, "./GBIF_download_outputs/species_distributions_province.csv")
-write.csv(GBIF_ecoregion_filtered_4, "./GBIF_download_outputs/species_distributions_ecoregion.csv")
+# write.csv(GBIF_province_filtered_4, "./GBIF_download_outputs/species_distributions_province_new.csv")
+# write.csv(GBIF_ecoregion_filtered_4, "./GBIF_download_outputs/species_distributions_ecoregion_new.csv")
 
 
