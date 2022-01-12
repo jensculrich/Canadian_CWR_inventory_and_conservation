@@ -289,3 +289,23 @@ total_split <- total %>%
 
 write.csv(total_split, "Garden_PGRC_Data/GRIN_PGRC/PGRC_full_cleaned.csv")  
 
+#####################################################
+# ADD NATURE SERVE DATA TO INVENTORY                #
+#####################################################
+inventory <- read.csv("Input_Data_and_Files/inventory.csv")
+NSC <- read.csv("Input_Data_and_Files/nsc_biotics_output.csv")
+
+NSC <- NSC %>% 
+  select(NATIONAL_SCIENTIFIC_NAME,
+         ROUNDED_G_RANK,
+         ROUNDED_N_RANK,
+         CURRENT_US_DISTRIBUTION,
+         CURRENT_CA_DISTRIBUTION,
+         COSEWIC_DESC)
+
+df <- left_join(inventory, NSC, by=c("TAXON" = "NATIONAL_SCIENTIFIC_NAME"))
+
+df <- df %>%
+  distinct(TAXON, .keep_all = TRUE)
+
+write.csv(df, "Input_Data_and_Files/inventory_w_NCS.csv")

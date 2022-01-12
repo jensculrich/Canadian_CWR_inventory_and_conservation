@@ -661,9 +661,7 @@ Bluegrass,Poa gaspensis,Poa,Poa gaspensis,NA,NA,Y,Y,N,,Y,Food,,NA,Forage and Fee
 Bluegrass,Poa glauca,Poa,Poa glauca,NA,NA,N,Y,N,,Y,Food,,NA,Forage and Feed,,,NA,2,NA,2,,,,,,,,,,,Davidson 1995,,
 Bluegrass,Poa glauca subsp. glauca,Poa,Poa glauca,subsp.,glauca,Y,Y,N,,Y,Food,,NA,Forage and Feed,,,NA,2,NA,2,,,,,,,,,,,Davidson 1995,,
 Bluegrass,Poa glauca subsp. rupicola,Poa,Poa glauca,subsp.,rupicola,Y,Y,N,,Y,Food,,NA,Forage and Feed,,,NA,2,NA,2,,,,,,,,,,,Davidson 1995,,
-Bluegrass,Poa hartzii,Poa,Poa hartzii,NA,NA,N,Y,N,,Y,Food,,NA,Forage and Feed,,,NA,2,NA,2,,,,,,,,,,,Davidson 1995,,
-Bluegrass,Poa hartzii subsp. hartzii,Poa,Poa hartzii,subsp.,hartzii,Y,Y,N,,Y,Food,,NA,Forage and Feed,,,NA,2,NA,2,,,,,,,,,,,Davidson 1995,,
-Bluegrass,Poa hartzii subsp. vrangelica,Poa,Poa hartzii,subsp.,vrangelica,Y,Y,N,,Y,Food,,NA,Forage and Feed,,,NA,2,NA,2,,,,,,,,,,,Davidson 1995,,
+Bluegrass,Poa hartzii,Poa,Poa hartzii,NA,NA,Y,Y,N,,Y,Food,,NA,Forage and Feed,,,NA,2,NA,2,,,,,,,,,,,Davidson 1995,,
 Bluegrass,Poa howellii,Poa,Poa howellii,NA,NA,Y,Y,N,,Y,Food,,NA,Forage and Feed,,,NA,2,NA,2,,,,,,,,,,,Davidson 1995,,
 Bluegrass,Poa humilis,Poa,Poa humilis,NA,NA,Y,Y,N,,Y,Food,,NA,Forage and Feed,,,NA,2,NA,2,,,,,,,,,,,Davidson 1995,,
 Bluegrass,Poa juncifolia,Poa,Poa juncifolia,NA,NA,Y,Y,N,,Y,Food,,NA,Forage and Feed,,,NA,2,NA,2,,,,,,,,,,,Davidson 1995,,
@@ -739,6 +737,7 @@ Sumac,Rhus copallinum,Rhus,Rhus copallinum,NA,NA,N,Y,N,,Y,Ornamentals,Forest Res
 Sumac,Rhus copallinum var. copallinum,Rhus,Rhus copallinum,var.,copallinum,Y,Y,N,,Y,Ornamentals,Forest Resources,NA,Ornamentals,Forest Resources,,NA,2,NA,2,,,,,,,,,,,CANADENSYS 2021,,
 Sumac,Rhus glabra,Rhus,Rhus glabra,NA,NA,Y,Y,N,,Y,Ornamentals,Forest Resources,NA,Ornamentals,Forest Resources,,NA,2,NA,2,,,,,,,,,,,CANADENSYS 2021,,
 Sumac,Rhus typhina,Rhus,Rhus typhina,NA,NA,Y,Y,N,,Y,Ornamentals,Forest Resources,NA,Ornamentals,Forest Resources,,NA,2,NA,2,,,,,,,,,,,CANADENSYS 2021,,
+"Currant, Gooseberry",Ribes acerifolium,Ribes,Ribes acerifolium,NA,NA,Y,Y,Y,fruit,Y,,Food,NA,Fruits,,,NA,1,Assume distant,1C,,,,,,,,,,,CANADENSYS 2021,,
 "Currant, Gooseberry",Ribes americanum,Ribes,Ribes americanum,NA,NA,Y,Y,Y,fruit,Y,,Food,NA,Fruits,,,NA,1,Secondary,1B,,,,Disease Resistance (B),,,,,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
 "Currant, Gooseberry",Ribes aureum,Ribes,Ribes aureum,NA,NA,N,Y,Y,fruit,Y,,Food,NA,Fruits,,,NA,1,Tertiary,1A,Graftstock,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
 "Currant, Gooseberry",Ribes aureum var. aureum,Ribes,Ribes aureum,var.,aureum,Y,Y,Y,fruit,Y,,Food,NA,Fruits,,,NA,1,Tertiary,1A,Graftstock,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
@@ -766,11 +765,13 @@ Sumac,Rhus typhina,Rhus,Rhus typhina,NA,NA,Y,Y,N,,Y,Ornamentals,Forest Resources
 "Currant, Gooseberry",Ribes sanguineum,Ribes,Ribes sanguineum,NA,NA,N,Y,Y,fruit,Y,,Food,NA,Fruits,,,NA,1,Secondary,1B,,,,,,,Growth Habit (AG),,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
 "Currant, Gooseberry",Ribes sanguineum var. sanguineum,Ribes,Ribes sanguineum,var.,sanguineum,Y,Y,Y,fruit,Y,,Food,NA,Fruits,,,NA,1,Secondary,1B,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
 "Currant, Gooseberry",Ribes triste,Ribes,Ribes triste,NA,NA,Y,Y,Y,fruit,Y,,Food,NA,Fruits,,,NA,1,Tertiary,1C,,,,Cold Tolerance (AB),,,,,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
+"Currant, Gooseberry",Ribes uva-crispa,Ribes,Ribes uva-crispa,NA,NA,Y,Y,Y,fruit,N,,Food,NA,Fruits,,,NA,1,Progenitor,1A,,,,,,,,,,,CANADENSYS 2021,,
 "Currant, Gooseberry",Ribes viscosissimum,Ribes,Ribes viscosissimum,NA,NA,Y,Y,Y,fruit,Y,,Food,NA,Fruits,,,NA,1,Assume distant,1C,,,,,,,,,,,Davidson 1995,,Kuhnlein and Turner 2020
 Horseradish,Rorippa aquatica,Rorippa,Rorippa aquatica,NA,NA,Y,N,Y,horseradish; condiment,Y,,Food,NA,Herbs and Spices,,,NA,2,NA,NA,,,,,,,,,,,Davidson 1995,,Kuhnlein and Turner 2020
 Rose,Rosa acicularis,Rosa,Rosa acicularis,NA,NA,N,Y,Y,fruit,Y,Ornamentals,Food,NA,Ornamentals,Fruits,,NA,2,NA,2,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
 Rose,Rosa acicularis subsp. sayi,Rosa,Rosa acicularis,subsp.,sayi,Y,Y,Y,fruit,Y,Ornamentals,Food,NA,Ornamentals,Fruits,,NA,2,NA,2,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
-Rose,Rosa arkansana,Rosa,Rosa arkansana,NA,NA,Y,Y,Y,fruit,Y,Ornamentals,Food,NA,Ornamentals,Fruits,,NA,2,NA,2,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
+Rose,Rosa arkansana,Rosa,Rosa arkansana,NA,NA,N,Y,Y,fruit,Y,Ornamentals,Food,NA,Ornamentals,Fruits,,NA,2,NA,2,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
+Rose,Rosa arkansana var. arkansana,Rosa,Rosa arkansana,NA,NA,Y,Y,Y,fruit,Y,Ornamentals,Food,NA,Ornamentals,Fruits,,NA,2,NA,2,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
 Rose,Rosa blanda,Rosa,Rosa blanda,NA,NA,Y,Y,Y,fruit,Y,Ornamentals,Food,NA,Ornamentals,Fruits,,NA,2,NA,2,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
 Rose,Rosa carolina,Rosa,Rosa carolina,NA,NA,N,Y,Y,fruit,Y,Ornamentals,Food,NA,Ornamentals,Fruits,,NA,2,NA,2,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
 Rose,Rosa carolina subsp. carolina,Rosa,Rosa carolina,subsp.,carolina,Y,Y,Y,fruit,Y,Ornamentals,Food,NA,Ornamentals,Fruits,,NA,2,NA,2,,,,,,,,,,,Kuhnlein and Turner 2020,,Kuhnlein and Turner 2020
@@ -901,7 +902,6 @@ Nettle,Urtica dioica subsp. dioica,Urtica,Urtica dioica,subsp.,dioica,Y,N,Y,,N,F
 "Blueberry, Cranberry",Vaccinium deliciosum,Vaccinium,Vaccinium deliciosum,NA,NA,Y,Y,Y,"fruit, leaves and fruit as tea",Y,Food,,NA,Fruits,,,NA,1,Secondary,1B,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
 "Blueberry, Cranberry",Vaccinium macrocarpon,Vaccinium,Vaccinium macrocarpon,NA,NA,Y,Y,Y,"fruit, leaves and fruit as tea",Y,Food,,NA,Fruits,,,NA,1,Primary,1A,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
 "Blueberry, Cranberry",Vaccinium membranaceum,Vaccinium,Vaccinium membranaceum,NA,NA,Y,Y,Y,"fruit, leaves and fruit as tea",Y,Food,,NA,Fruits,,,NA,1,Secondary,1B,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
-"Blueberry, Cranberry",Vaccinium microcarpum,Vaccinium,Vaccinium microcarpum,NA,NA,Y,Y,Y,"fruit, leaves and fruit as tea",Y,Food,,NA,Fruits,,,NA,1,Primary,1A,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
 "Blueberry, Cranberry",Vaccinium myrtilloides,Vaccinium,Vaccinium myrtilloides,NA,NA,Y,Y,Y,"fruit, leaves and fruit as tea",Y,Food,,NA,Fruits,,,NA,1,Primary,1A,,,,,,,Crop Quality (AG),,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
 "Blueberry, Cranberry",Vaccinium myrtillus,Vaccinium,Vaccinium myrtillus,NA,NA,Y,Y,Y,"fruit, leaves and fruit as tea",Y,Food,,Food,Fruits,,,Fruits,1,Primary,1A,,,,,,,,,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
 "Blueberry, Cranberry",Vaccinium ovalifolium,Vaccinium,Vaccinium ovalifolium,NA,NA,Y,Y,Y,"fruit, leaves and fruit as tea",Y,Food,,NA,Fruits,,,NA,1,Secondary,1B,,,,,,,Crop Quality (AG),,,,GRIN-Global 2021,GRIN-Global 2021,Kuhnlein and Turner 2020
