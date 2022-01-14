@@ -26,8 +26,10 @@ canada_provinces_geojson <- canada_provinces_geojson %>%
 ######################################################################
 # Reformat (add taxon info) and Project Species Distribution Tables  #
 
-sp_distr_ecoregion <- as_tibble(read.csv("./GBIF_download_outputs/species_distributions_ecoregion_trimmed.csv"))
-sp_distr_province <- as_tibble(read.csv("./GBIF_download_outputs/species_distributions_province_trimmed.csv"))
+sp_distr_ecoregion <- as_tibble(read.csv(
+  "./GBIF_download_outputs/final_processed_outputs/species_distributions_ecoregion_trimmed.csv"))
+sp_distr_province <- as_tibble(read.csv(
+  "./GBIF_download_outputs/final_processed_outputs/species_distributions_province_trimmed.csv"))
 
 # add geometry to the species distribution table
 sp_distr_province_sf <- merge(x = sp_distr_province, 
@@ -297,8 +299,12 @@ garden_accessions <- garden_accessions %>% # format columns
          longitude = as.numeric(LONGITUDE)) %>% 
   mutate(TAXON = str_replace(TAXON, "×", "")) # R can't match this symbol in joins
 
+# made a file and manually entered infraspecific
+# designations where able, "TAXON_INFRA"
+garden_accessions2 <- read.csv("all_accessions.csv")
+
 # Transform garden data into a projected shape file
-sf_garden_accessions <- garden_accessions %>%
+sf_garden_accessions <- garden_accessions2 %>%
   # na.fail = FALSE to keep all of the accessions (about 80% don't have lat long,
   # but many of these have province at least)
   st_as_sf(coords = c("longitude", "latitude"), crs = 4326, na.fail = FALSE)
@@ -310,7 +316,8 @@ sf_garden_accessions <- garden_accessions %>%
 
 # sf_garden_accessions needs to be joined with inventory
 sf_garden_accessions_all <- sf_garden_accessions %>% 
-  left_join(inventory[,c("TAXON", "SPECIES", "TIER", "CWR", "WUS")])
+  left_join(inventory[,c("TAXON", "SPECIES", "TIER", "CWR", "WUS")]) %>%
+  filter(!is.na(SPECIES))
 
 ## summary of accessions
 # how many for each category
@@ -451,11 +458,34 @@ left2_TIER1 <- anti_join(NPGS_distinct_1, PGRC_distinct_1)
 left3_TIER1 <- anti_join(G_distinct_1, BG_distinct_1)
 left4_TIER1 <- anti_join(BG_distinct_1, G_distinct_1)
 
+# group by species (or taxon), calc number of rows where GARDEN_CODE !(is.na)
+# GARDEN_CODE !(is.na) reduces the gap table to just the garden accessions 
+# then group by INSTITUTION (within species or taxon)
+
+# get total accessions at species level (wild and cultivated, canada and abroad)
+# later this info will be joined with the taxon level, wild and in canada only
+num_accessions <- garden_accessions2 %>%
+  full_join(inventory) %>%
+  group_by(SPECIES) %>%
+  mutate(total_accessions = sum(!is.na(GARDEN_CODE))) %>%
+  mutate(garden_accessions = sum(!is.na(GARDEN_CODE) & 
+                                   INSTITUTION == "BG")) %>%
+  mutate(genebank_accessions = sum(!is.na(GARDEN_CODE) & 
+                                     INSTITUTION == "G")) %>%
+  distinct(SPECIES, .keep_all = TRUE) %>%
+  select(-GARDEN_CODE, -INSTITUTION, -PROVENANCE, -COUNTRY,
+         -LOCALITY, -LATITUDE, -LONGITUDE, -PROVINCE, -QUANTITY,
+         -latitude, -longitude)
+
+# write.csv(num_accessions, "Garden_PGRC_Data/summary_accessions_all_species.csv")
+
 
 ##################################################################
 # Join with species distributions to get province and ecoregion, #
 # and add inventory data, e.g. TIER, G versus BG, etc.           #
 ##################################################################
+
+# delete this section
 
 # first, group by species and add column with total accessions (will need this data later)
 # then add accessions in each type of institution
@@ -485,6 +515,8 @@ sf_garden_accessions_counts <- sf_garden_accessions_counts %>%
   rename(total_accessions = n, 
          total_accessions_BG_or_G = nn)
 
+# then add total 
+
 # THEN
 # remove points from outside of Canada 
 # code here
@@ -501,7 +533,7 @@ plot <- ggplot(canada_buff) +
 plot
 
 # project points to same as canada shapefile
-sp <- st_transform(sf_garden_accessions_counts, proj4string=CRS(proj4string(canada)))
+sp <- st_transform(sf_garden_accessions_all, proj4string=CRS(proj4string(canada)))
 # and then clip to the layer (the buffered layer)
 sp_subset <- sp[canada_buff, ]
 
@@ -540,14 +572,16 @@ summary_all_garden_accessions_wild <- points_polygon_wild_2 %>%
                 PROVENANCE, COUNTRY, LOCALITY,
                 PROVINCE.x, PROVINCE.y, ECO_NAME,
                 latitude, longitude,
-                GARDEN_CODE, INSTITUTION,
-                total_accessions, 
-                total_accessions_BG_or_G) %>%
+                GARDEN_CODE, INSTITUTION) %>%
   # IUCNRedList/conservation_status) %>%
   # take province from cd_canada unless was already provided by garden (just want one column)
   mutate(province = ifelse(is.na(PROVINCE.x), PROVINCE.y, PROVINCE.x)) %>%
   dplyr::select(-PROVINCE.y, - PROVINCE.x) %>%
-  left_join(inventory[,c("TAXON", "SPECIES", "TIER", "CWR", "WUS")])
+  left_join(inventory[,c("TAXON", "SPECIES", "TIER", "CWR", "WUS",
+                         "INFRASPECIFIC_COLLECTIONS_ASSIGNED",
+                         "ROUNDED_G_RANK", "ROUNDED_N_RANK", "COSEWIC_DESC")]) %>%
+  full_join(num_accessions[,c("SPECIES", "total_accessions", 
+                              "garden_accessions", "genebank_accessions")])
 
 ############################################################################
 # TABLE 3 - SUMMARY OF THE Wild-ORIGIN CANADIAN ACCESSIONS (W/ Provenance) #
@@ -717,32 +751,8 @@ ecoregion_gap_table_species_out <- ecoregion_gap_table_species %>%
 
 
 # GOING TO NEED TO MAKE ANOTHER ONE FOR ALL ACCESSIONS (FOR FIG 1)
-# can be by province, just need all accessions
-province_gap_table_species_all_accessions <- sp_distr_province_sp[ , c("SPECIES", "PROVINCE")] %>%
-  merge(x = ., y = sf_garden_accessions_all,
-        by = c("SPECIES", "PROVINCE"),
-        all = TRUE) %>%
-  dplyr::select(-COUNTRY, -TAXON) %>%
-  full_join(inventory_sp) 
 
 
-# group by species (or taxon), calc number of rows where GARDEN_CODE !(is.na)
-# GARDEN_CODE !(is.na) reduces the gap table to just the garden accessions 
-# then group by INSTITUTION (within species or taxon)
-num_accessions <- garden_accessions %>%
-  full_join(inventory) %>%
-  group_by(SPECIES) %>%
-  mutate(total_accessions = sum(!is.na(GARDEN_CODE))) %>%
-  mutate(garden_accessions = sum(!is.na(GARDEN_CODE) & 
-                                   INSTITUTION == "BG")) %>%
-  mutate(genebank_accessions = sum(!is.na(GARDEN_CODE) & 
-                                     INSTITUTION == "G")) %>%
-  distinct(SPECIES, .keep_all = TRUE) %>%
-  select(-GARDEN_CODE, -INSTITUTION, -PROVENANCE, -COUNTRY,
-         -LOCALITY, -LATITUDE, -LONGITUDE, -PROVINCE, -QUANTITY,
-         -latitude, -longitude)
-
-# write.csv(num_accessions, "Garden_PGRC_Data/summary_accessions_all_species.csv")
 
 ##################################################
 # TABLE 4 - SPECIES WITH MOST ACCESSIONS         #
@@ -751,3 +761,22 @@ num_accessions <- garden_accessions %>%
 table_4 <- num_accessions %>%
   filter(TIER == 1)
 # write.csv(table_4, "accessions_tier1_CWR.csv")
+table_4_supp1 <- num_accessions %>%
+  filter(TIER == 2)
+# write.csv(table_4_supp1, "accessions_tier2_CWR.csv")
+table_4_supp2 <- num_accessions %>%
+  filter(WUS == "Y")
+# write.csv(table_4_supp2, "accessions_WUS.csv")
+
+forage_and_feed <- table_4_supp1 %>%
+  filter(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1 == "Forage and Feed" |
+         PRIMARY_CROP_OR_WUS_USE_SPECIFIC_2 == "Forage and Feed" |
+         PRIMARY_CROP_OR_WUS_USE_SPECIFIC_3 == "Forage and Feed")
+
+sum(forage_and_feed$total_accessions)
+
+sum(forage_and_feed$garden_accessions)
+median(forage_and_feed$garden_accessions)
+
+sum(forage_and_feed$genebank_accessions)
+median(forage_and_feed$genebank_accessions)
