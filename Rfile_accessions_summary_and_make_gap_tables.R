@@ -272,35 +272,36 @@ S
 
 # load data from garden collections (already filtered to only CWRs)
 # update and add new gardens as we receive additional datasets
-cwr_BG1 <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG1.csv", na.strings=c("","NA"))
-cwr_BG2 <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG2.csv", na.strings=c("","NA"))
-cwr_BG3 <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG3.csv", na.strings=c("","NA"))
-cwr_BG4 <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG4.csv", na.strings=c("","NA"))
-cwr_BG5 <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG5.csv", na.strings=c("","NA"))
-cwr_BG6 <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG6.csv", na.strings=c("","NA"))
-cwr_BG7 <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG7.csv", na.strings=c("","NA")) 
-cwr_BG8 <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG8.csv", na.strings=c("","NA"))
-cwr_PGRC <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_PGRC.csv", na.strings=c("","NA"))
-cwr_NTSC <- read.csv("./Garden_PGRC_Data/filtered_data/cwr_NTSC.csv", na.strings=c("","NA"))
-cwr_NPGS <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_NPGS.csv", na.strings=c("","NA"))
-cwr_missed <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_missed_taxa.csv", na.strings=c("","NA"))
+# cwr_BG1 <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG1.csv", na.strings=c("","NA"))
+# cwr_BG2 <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG2.csv", na.strings=c("","NA"))
+# cwr_BG3 <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG3.csv", na.strings=c("","NA"))
+# cwr_BG4 <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG4.csv", na.strings=c("","NA"))
+# cwr_BG5 <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG5.csv", na.strings=c("","NA"))
+# cwr_BG6 <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG6.csv", na.strings=c("","NA"))
+# cwr_BG7 <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG7.csv", na.strings=c("","NA")) 
+# cwr_BG8 <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG8.csv", na.strings=c("","NA"))
+# cwr_PGRC <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_PGRC.csv", na.strings=c("","NA"))
+# cwr_NTSC <- read.csv("./Garden_PGRC_Data/filtered_data/cwr_NTSC.csv", na.strings=c("","NA"))
+# cwr_NPGS <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_NPGS.csv", na.strings=c("","NA"))
+# cwr_missed <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_missed_taxa.csv", na.strings=c("","NA"))
 
 
 # join all garden data into one long table
 # update and add new gardens as we receive additional datasets
-garden_accessions <- rbind(cwr_BG1, cwr_BG2, cwr_BG3, cwr_BG4, 
-                           cwr_BG5, cwr_BG6, cwr_BG7, cwr_BG8, 
-                           cwr_PGRC, cwr_NTSC,
-                           cwr_NPGS,
-                           cwr_missed)
+# garden_accessions <- rbind(cwr_BG1, cwr_BG2, cwr_BG3, cwr_BG4, 
+                           # cwr_BG5, cwr_BG6, cwr_BG7, cwr_BG8, 
+                           # cwr_PGRC, cwr_NTSC,
+                           # cwr_NPGS,
+                           # cwr_missed)
 
-garden_accessions <- garden_accessions %>% # format columns
-  mutate(latitude = as.numeric(LATITUDE), 
-         longitude = as.numeric(LONGITUDE)) %>% 
-  mutate(TAXON = str_replace(TAXON, "×", "")) # R can't match this symbol in joins
+# garden_accessions <- garden_accessions %>% # format columns
+  # mutate(latitude = as.numeric(LATITUDE), 
+  #        longitude = as.numeric(LONGITUDE)) %>% 
+  # mutate(TAXON = str_replace(TAXON, "×", "")) # R can't match this symbol in joins
 
 # made a file and manually entered infraspecific
 # designations where able, "TAXON_INFRA"
+# this file contains all garden accessions compiled
 garden_accessions2 <- read.csv("all_accessions.csv")
 
 # Transform garden data into a projected shape file
@@ -315,69 +316,69 @@ sf_garden_accessions <- garden_accessions2 %>%
 # below, this is repeated for only the Candian wild-origin accessions
 
 # sf_garden_accessions needs to be joined with inventory
-sf_garden_accessions_all <- sf_garden_accessions %>% 
+garden_accessions_all <- garden_accessions2 %>% 
   left_join(inventory[,c("TAXON", "SPECIES", "TIER", "CWR", "WUS")]) %>%
   filter(!is.na(SPECIES))
 
 ## summary of accessions
 # how many for each category
-all_distinct <- sf_garden_accessions_all %>%
+all_distinct <- garden_accessions_all %>%
   distinct(SPECIES)
 
-TIER1 <- sf_garden_accessions_all %>%
+TIER1 <- garden_accessions_all %>%
   filter(TIER == 1)
 TIER1_distinct <- TIER1 %>%
   distinct(SPECIES)
-TIER2 <- sf_garden_accessions_all %>%
+TIER2 <- garden_accessions_all %>%
   filter(TIER == 2)
 TIER2_distinct <- TIER2 %>%
   distinct(SPECIES)
-WUS <- sf_garden_accessions_all %>%
+WUS <- garden_accessions_all %>%
   filter(WUS == "Y")
 WUS_distinct <- WUS %>%
   distinct(SPECIES)
 
 # and broken down by those in gardens, those in genebanks (and within the two genebanks types)
-BG_accessions <- sf_garden_accessions_all %>%
+BG_accessions <- garden_accessions_all %>%
   filter(INSTITUTION == "BG") # %>%
 
 # accessions in individual gardens (>10,000 in garden 1)
-BG <- sf_garden_accessions_all %>%
+BG <- garden_accessions_all %>%
   filter(INSTITUTION == "BG") %>%
   group_by(GARDEN_CODE, TIER) %>%
   count()
 
-BG_WUS <- sf_garden_accessions_all %>%
+BG_WUS <- garden_accessions_all %>%
   filter(INSTITUTION == "BG",
          WUS == "Y") %>%
   group_by(GARDEN_CODE) %>%
   count()
 
-BG_distinct <- sf_garden_accessions_all %>%
+BG_distinct <- garden_accessions_all %>%
   filter(INSTITUTION == "BG") %>%
   distinct(SPECIES)
 
-BG_distinct_1 <- sf_garden_accessions_all %>%
+BG_distinct_1 <- garden_accessions_all %>%
   filter(INSTITUTION == "BG",
          TIER == 1) %>%
   distinct(SPECIES)
 
 # TIER2 in each BG
-BG_WUS <- sf_garden_accessions_all %>%
+BG_WUS <- garden_accessions_all %>%
   filter(INSTITUTION == "BG",
          TIER == 2) %>%
   group_by(GARDEN_CODE) %>%
   count()
 
 # WUS in each BG
-BG_WUS <- sf_garden_accessions_all %>%
+BG_WUS <- garden_accessions_all %>%
   filter(INSTITUTION == "BG",
          WUS == "Y") %>%
   group_by(GARDEN_CODE) %>%
   count()
 
 # count accessions in G
-G <- sf_garden_accessions_all %>%
+G <- garden_accessions_all %>%
   filter(INSTITUTION == "G") # %>%
 
 # G species Tier 1
@@ -437,12 +438,12 @@ NPGS_distinct_WUS <- NPGS_accessions %>%
   distinct(SPECIES)
 
 # TIER2 in genebanks
-G_TIER2 <- sf_garden_accessions_all %>%
+G_TIER2 <- garden_accessions_all %>%
   filter(INSTITUTION == "G",
          TIER == 2)
 
 # WUS in genebanks
-G_WUS <- sf_garden_accessions_all %>%
+G_WUS <- garden_accessions_all %>%
   filter(INSTITUTION == "G",
          WUS == "Y")
 
@@ -458,62 +459,47 @@ left2_TIER1 <- anti_join(NPGS_distinct_1, PGRC_distinct_1)
 left3_TIER1 <- anti_join(G_distinct_1, BG_distinct_1)
 left4_TIER1 <- anti_join(BG_distinct_1, G_distinct_1)
 
+########################################################
 # group by species (or taxon), calc number of rows where GARDEN_CODE !(is.na)
 # GARDEN_CODE !(is.na) reduces the gap table to just the garden accessions 
 # then group by INSTITUTION (within species or taxon)
 
 # get total accessions at species level (wild and cultivated, canada and abroad)
 # later this info will be joined with the taxon level, wild and in canada only
+inventory_taxon_adjustment <- inventory %>%
+  mutate(TAXON = ifelse(INFRASPECIFIC_COLLECTIONS_ASSIGNED == "Y", 
+                              TAXON, 
+                              SPECIES)
+  ) %>%
+  filter(FINEST_TAXON_RESOLUTION == "Y") %>%
+  distinct(TAXON, .keep_all = TRUE)
+
 num_accessions <- garden_accessions2 %>%
-  full_join(inventory) %>%
+  mutate_all(na_if,"") %>%
+  mutate(TAXON_INFRA = ifelse(is.na(TAXON_INFRA), 
+                                 TAXON, 
+                                 TAXON_INFRA)
+  ) %>%
+  full_join(inventory, by=c("TAXON_INFRA" = "TAXON")) %>% 
   group_by(SPECIES) %>%
-  mutate(total_accessions = sum(!is.na(GARDEN_CODE))) %>%
-  mutate(garden_accessions = sum(!is.na(GARDEN_CODE) & 
+  mutate(total_accessions_sp = sum(!is.na(GARDEN_CODE))) %>%
+  mutate(garden_accessions_sp = sum(!is.na(GARDEN_CODE) & 
                                    INSTITUTION == "BG")) %>%
-  mutate(genebank_accessions = sum(!is.na(GARDEN_CODE) & 
+  mutate(genebank_accessions_sp = sum(!is.na(GARDEN_CODE) & 
                                      INSTITUTION == "G")) %>%
   distinct(SPECIES, .keep_all = TRUE) %>%
-  select(-GARDEN_CODE, -INSTITUTION, -PROVENANCE, -COUNTRY,
+  select(-TAXON, -GARDEN_CODE, -INSTITUTION, -PROVENANCE, -COUNTRY,
          -LOCALITY, -LATITUDE, -LONGITUDE, -PROVINCE, -QUANTITY,
-         -latitude, -longitude)
+         -latitude, -longitude, -TAXON_INFRA, -RANK, -INFRASPECIFIC)
 
 # write.csv(num_accessions, "Garden_PGRC_Data/summary_accessions_all_species.csv")
-
 
 ##################################################################
 # Join with species distributions to get province and ecoregion, #
 # and add inventory data, e.g. TIER, G versus BG, etc.           #
 ##################################################################
 
-# delete this section
 
-# first, group by species and add column with total accessions (will need this data later)
-# then add accessions in each type of institution
-# then bind the two dfs back together
-BG_accessions <- sf_garden_accessions %>%
-  left_join(inventory[,c("TAXON", "SPECIES")]) %>%
-  # total accessions by species
-  group_by(SPECIES) %>%
-  add_tally() %>%
-  # accessions by species in genebanks and gardens
-  filter(INSTITUTION == "BG") %>%
-  add_tally()
-
-G_accessions <- sf_garden_accessions %>%
-  left_join(inventory[,c("TAXON", "SPECIES")]) %>%
-  # total accessions by species
-  group_by(SPECIES) %>%
-  add_tally() %>%
-  # accessions by species in genebanks and gardens
-  filter(INSTITUTION == "G") %>%
-  add_tally()
-
-sf_garden_accessions_counts <- rbind(
-  BG_accessions, G_accessions) 
-
-sf_garden_accessions_counts <- sf_garden_accessions_counts %>%
-  rename(total_accessions = n, 
-         total_accessions_BG_or_G = nn)
 
 # then add total 
 
@@ -549,6 +535,7 @@ points_polygon_wild_2 <- st_join(points_polygon_wild, canada_ecoregions_geojson,
 
 
 # break out new latitude and longitude columns and reformat
+points_polygon_wild_2$TAXON_INFRA[points_polygon_wild_2$TAXON_INFRA == ""] <- NA
 summary_all_garden_accessions_wild <- points_polygon_wild_2 %>%
   # break coordinates into lat/long
   mutate(longitude=gsub("\\,.*","", geometry)) %>%
@@ -558,7 +545,7 @@ summary_all_garden_accessions_wild <- points_polygon_wild_2 %>%
   mutate(latitude = as.numeric(str_remove(latitude, "[)]"))) %>% 
   
   # select columns that match garden accessions
-  dplyr::select(TAXON, 
+  dplyr::select(TAXON_INFRA, TAXON, 
                 #GENUS, SPECIES, RANK, INFRASPECIFIC, 
                 #PRIMARY_ASSOCIATED_CROP_COMMON_NAME, 
                 #SECONDARY_ASSOCIATED_CROP_COMMON_NAME,
@@ -577,11 +564,52 @@ summary_all_garden_accessions_wild <- points_polygon_wild_2 %>%
   # take province from cd_canada unless was already provided by garden (just want one column)
   mutate(province = ifelse(is.na(PROVINCE.x), PROVINCE.y, PROVINCE.x)) %>%
   dplyr::select(-PROVINCE.y, - PROVINCE.x) %>%
-  left_join(inventory[,c("TAXON", "SPECIES", "TIER", "CWR", "WUS",
-                         "INFRASPECIFIC_COLLECTIONS_ASSIGNED",
+  full_join(inventory[,c("TAXON", "SPECIES", "TIER", "CWR", "WUS",
+                         "INFRASPECIFIC_COLLECTIONS_ASSIGNED", "FINEST_TAXON_RESOLUTION",
                          "ROUNDED_G_RANK", "ROUNDED_N_RANK", "COSEWIC_DESC")]) %>%
-  full_join(num_accessions[,c("SPECIES", "total_accessions", 
-                              "garden_accessions", "genebank_accessions")])
+  full_join(num_accessions[,c("SPECIES", "total_accessions_sp", 
+                              "garden_accessions_sp", "genebank_accessions_sp")])%>%
+  mutate(TAXON_INFRA = ifelse(is.na(TAXON_INFRA), 
+                              TAXON, 
+                              TAXON_INFRA))
+
+# now calculate INFRASPECIFIC accessions counts for WILD-CANADIAN accessions only
+# then rejoin those counts with summary_all_garden_accessions_wild
+# and with num_accessions
+summary_all_garden_accessions_wild_infra_counts <- summary_all_garden_accessions_wild %>%
+  filter(INFRASPECIFIC_COLLECTIONS_ASSIGNED == "Y") %>%
+  group_by(TAXON_INFRA) %>%
+  mutate(total_accessions_w_finest_taxon_res = sum(!is.na(GARDEN_CODE))) %>%
+  mutate(garden_accessions_w_finest_taxon_res = sum(!is.na(GARDEN_CODE) & 
+                                      INSTITUTION == "BG")) %>%
+  mutate(genebank_accessions_w_finest_taxon_res = sum(!is.na(GARDEN_CODE) & 
+                                        INSTITUTION == "G"))
+summary_all_garden_accessions_wild_counts <- summary_all_garden_accessions_wild %>%
+  filter(INFRASPECIFIC_COLLECTIONS_ASSIGNED != "Y") %>%
+  group_by(TAXON_INFRA) %>%
+  mutate(total_accessions_w_finest_taxon_res = sum(!is.na(GARDEN_CODE))) %>%
+  mutate(garden_accessions_w_finest_taxon_res = sum(!is.na(GARDEN_CODE) & 
+                                           INSTITUTION == "BG")) %>%
+  mutate(genebank_accessions_w_finest_taxon_res = sum(!is.na(GARDEN_CODE) & 
+                                             INSTITUTION == "G"))
+
+summary_all_garden_accessions_wild_counts <- rbind(
+  summary_all_garden_accessions_wild_infra_counts,
+  summary_all_garden_accessions_wild_counts
+)
+
+summary_all_garden_accessions_wild_counts_df <- as.data.frame(summary_all_garden_accessions_wild_counts)
+
+num_accessions_w_wild_counts <- summary_all_garden_accessions_wild_counts_df %>%
+  distinct(TAXON, .keep_all = TRUE) %>%
+  select(-GARDEN_CODE, -INSTITUTION, -PROVENANCE, -COUNTRY,
+         -LOCALITY, -ECO_NAME, -province,
+         -latitude, -longitude, -geometry) 
+  
+write.csv(num_accessions_w_wild_counts, "Garden_PGRC_Data/summary_accessions_all_species.csv")
+
+# edited manually, but if need to do again,
+# if infraspecific taxa assigned == y AND taxon_infra == taxon, then delete row 
 
 ############################################################################
 # TABLE 3 - SUMMARY OF THE Wild-ORIGIN CANADIAN ACCESSIONS (W/ Provenance) #
@@ -589,21 +617,21 @@ summary_all_garden_accessions_wild <- points_polygon_wild_2 %>%
 
 ## summary of accessions
 # how many for each category
-TIER1_W <- summary_all_garden_accessions_wild %>%
+TIER1_W <- summary_all_garden_accessions_wild_counts %>%
   filter(TIER == 1)
 TIER1_W_distinct <- TIER1 %>%
   distinct(SPECIES)
-TIER2_W <- summary_all_garden_accessions_wild %>%
+TIER2_W <- summary_all_garden_accessions_wild_counts %>%
   filter(TIER == 2)
 TIER2_W_distinct <- TIER2_W %>%
   distinct(SPECIES)
-WUS_W <- summary_all_garden_accessions_wild %>%
+WUS_W <- summary_all_garden_accessions_wild_counts %>%
   filter(WUS == "Y")
 WUS_W_distinct <- WUS_W %>%
   distinct(SPECIES)
 
 # and broken down by those in gardens, those in genebanks (and within the two genebanks types)
-BG_accessions_W <- summary_all_garden_accessions_wild %>%
+BG_accessions_W <- summary_all_garden_accessions_wild_counts %>%
   filter(INSTITUTION == "BG") # %>%
 
 # accessions in individual gardens (>10,000 in garden 1)
