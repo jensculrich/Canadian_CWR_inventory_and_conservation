@@ -279,7 +279,7 @@ S
 # cwr_BG5 <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG5.csv", na.strings=c("","NA"))
 # cwr_BG6 <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG6.csv", na.strings=c("","NA"))
 # cwr_BG7 <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG7.csv", na.strings=c("","NA")) 
-# cwr_BG8 <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG8.csv", na.strings=c("","NA"))
+# cwr_prairie_fruit_genebank <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_of_BG8.csv", na.strings=c("","NA"))
 # cwr_PGRC <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_PGRC.csv", na.strings=c("","NA"))
 # cwr_NTSC <- read.csv("./Garden_PGRC_Data/filtered_data/cwr_NTSC.csv", na.strings=c("","NA"))
 # cwr_NPGS <- read.csv("./Garden_PGRC_Data/filtered_data/CWR_NPGS.csv", na.strings=c("","NA"))
@@ -289,7 +289,7 @@ S
 # join all garden data into one long table
 # update and add new gardens as we receive additional datasets
 # garden_accessions <- rbind(cwr_BG1, cwr_BG2, cwr_BG3, cwr_BG4, 
-                           # cwr_BG5, cwr_BG6, cwr_BG7, cwr_BG8, 
+                           # cwr_BG5, cwr_BG6, cwr_BG7, cwr_prairie_fruit_genebank, 
                            # cwr_PGRC, cwr_NTSC,
                            # cwr_NPGS,
                            # cwr_missed)

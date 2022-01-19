@@ -293,7 +293,7 @@ write.csv(total_split, "Garden_PGRC_Data/GRIN_PGRC/PGRC_full_cleaned.csv")
 # ADD NATURE SERVE DATA TO INVENTORY                #
 #####################################################
 inventory <- read.csv("Input_Data_and_Files/inventory.csv")
-NSC <- read.csv("Input_Data_and_Files/nsc_biotics_output.csv")
+NSC <- read.csv("Input_Data_and_Files/nsc_biotics_output_2.csv")
 
 NSC <- NSC %>% 
   select(NATIONAL_SCIENTIFIC_NAME,
@@ -301,9 +301,21 @@ NSC <- NSC %>%
          ROUNDED_N_RANK,
          CURRENT_US_DISTRIBUTION,
          CURRENT_CA_DISTRIBUTION,
-         COSEWIC_DESC)
+         COSEWIC_DESC) %>%
+  rename("TAXON" = "NATIONAL_SCIENTIFIC_NAME")
 
-df <- left_join(inventory, NSC, by=c("TAXON" = "NATIONAL_SCIENTIFIC_NAME"))
+df <- left_join(inventory, NSC, by = ("TAXON"))  %>%
+               mutate(ROUNDED_G_RANK = coalesce(ROUNDED_G_RANK.x, ROUNDED_G_RANK.y),
+                      ROUNDED_N_RANK = coalesce(ROUNDED_N_RANK.x, ROUNDED_N_RANK.y),
+                      CURRENT_US_DISTRIBUTION = coalesce(CURRENT_US_DISTRIBUTION.x, CURRENT_US_DISTRIBUTION.y),
+                      CURRENT_CA_DISTRIBUTION = coalesce(CURRENT_CA_DISTRIBUTION.x, CURRENT_CA_DISTRIBUTION.y),
+                      COSEWIC_DESC = coalesce(COSEWIC_DESC.x, COSEWIC_DESC.y)) %>% 
+                  select(-ROUNDED_G_RANK.x, -ROUNDED_G_RANK.y, 
+                         -ROUNDED_N_RANK.x, -ROUNDED_N_RANK.y,
+                         -CURRENT_US_DISTRIBUTION.x, -CURRENT_US_DISTRIBUTION.y,
+                         -CURRENT_CA_DISTRIBUTION.x, -CURRENT_CA_DISTRIBUTION.y,
+                         -COSEWIC_DESC.x, -COSEWIC_DESC.y)
+
 
 df <- df %>%
   distinct(TAXON, .keep_all = TRUE)
