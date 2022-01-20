@@ -66,7 +66,7 @@ province_gap_table <- read.csv("Garden_PGRC_Data/province_gap_table_species.csv"
 ecoregion_gap_table <- read.csv("Garden_PGRC_Data/ecoregion_gap_table_species.csv")
 
 # read in accessions summary
-num_accessions <- read.csv("Garden_PGRC_Data/summary_accessions_all_species.csv")
+num_accessions <- read.csv("Garden_PGRC_Data/summary_accessions_all_species_2.csv")
 
 need_range_maps <- province_gap_table %>% 
   filter(is.na(PROVINCE)) %>%
@@ -78,13 +78,14 @@ need_range_maps <- province_gap_table %>%
 
   
 num_accessions_cwr <- num_accessions %>%
+  distinct(SPECIES, .keep_all=TRUE) %>%
   filter(TIER == 1) %>%
   mutate(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1 = as.factor(
     PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1)) %>%
   group_by(PRIMARY_ASSOCIATED_CROP_COMMON_NAME) %>%
-  mutate(mean = mean(total_accessions)) %>%
-  mutate(median = median(total_accessions)) %>%
-  mutate(binary = ifelse(total_accessions > 0, 1, 0)) %>%
+  mutate(mean = mean(total_accessions_sp)) %>%
+  mutate(median = median(total_accessions_sp)) %>%
+  mutate(binary = ifelse(total_accessions_sp > 0, 1, 0)) %>%
   group_by(PRIMARY_ASSOCIATED_CROP_COMMON_NAME) %>%
   mutate(total_CWR_taxa = n(), 
          total_in_ex_situ = sum(binary),
@@ -114,12 +115,12 @@ num_accessions_cwr <- num_accessions_cwr %>%
 
 num_accessions_cwr_outliers <- num_accessions_cwr
   
-num_accessions_cwr_outliers$total_accessions[which(
-  num_accessions_cwr_outliers$total_accessions > 1000)] = 1000
+num_accessions_cwr_outliers$total_accessions_sp[which(
+  num_accessions_cwr_outliers$total_accessions_sp > 1000)] = 1000
 
 FIGURE_1A <- ggplot(num_accessions_cwr_outliers, 
              aes(x = PRIMARY_ASSOCIATED_CROP_COMMON_NAME, 
-                 y = total_accessions,
+                 y = total_accessions_sp,
                  color = PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1)) + 
   geom_jitter(shape=16, position=position_jitter(0.3), size = 3, alpha = 0.5) +
   facet_grid(cols = vars(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1), scales = "free_x", space = "free_x") +
