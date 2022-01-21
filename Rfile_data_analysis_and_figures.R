@@ -68,15 +68,10 @@ ecoregion_gap_table <- read.csv("Garden_PGRC_Data/ecoregion_gap_table_species.cs
 # read in accessions summary
 num_accessions <- read.csv("Garden_PGRC_Data/summary_accessions_all_species_2.csv")
 
-need_range_maps <- province_gap_table %>% 
-  filter(is.na(PROVINCE)) %>%
-  select(SPECIES)
-
 ##################################################################
 # # FIGURE 1 # # # # # # # # # # # # # # #
 ##################################################################
 
-  
 num_accessions_cwr <- num_accessions %>%
   distinct(SPECIES, .keep_all=TRUE) %>%
   filter(TIER == 1) %>%
@@ -178,7 +173,7 @@ FIGURE_1A
 ###############################
 
 num_accessions_cwr_long <- gather(num_accessions_cwr, INSTITUTION_TYPE, accessions,
-                                  garden_accessions,genebank_accessions, 
+                                  garden_accessions_sp, genebank_accessions_sp, 
                                   factor_key=TRUE) %>%
   transform(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1 = plyr::revalue(
     PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, 
@@ -333,8 +328,8 @@ print(wtest_accessions)
 medians <- num_accessions_cwr %>%
   filter(TIER == 1) %>%
   group_by(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1) %>%
-  mutate(median_BG = median(garden_accessions),
-         median_G = median(genebank_accessions)) %>%
+  mutate(median_BG = median(garden_accessions_sp),
+         median_G = median(genebank_accessions_sp)) %>%
   distinct(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, .keep_all = TRUE) %>%
   select(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, median_BG, median_G) 
 
