@@ -58,8 +58,51 @@ CWR_inventory_summary <- inventory_finest_taxon_resolution %>%
     PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1=plyr::revalue(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, 
                                                      c("Cereals and pseudocereals"="Cereals, Pseudocereals")))
 
+
 par(mar=c(4,15,4,4))
 barplot(CWR_inventory_summary$n, #main = "Native CWR Taxa in Broad Crop Categories",
         names.arg = CWR_inventory_summary$PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, xlab = "", ylab = "",
         cex.names=1.5, cex.axis=1.5, horiz=T, las=1, xlim = c(0,140))
 
+CWR_inventory_summary_long <- CWR_inventory_summary %>%
+  gather(type, count, n:nn) %>%
+  transform(
+    type=plyr::revalue(type, c("n"="taxa", "nn" = "distinct species"))) %>%
+  arrange(desc("taxa"))
+
+cbp1 <- c("#44AA99", # Cereals
+          "#117733", # Fruits
+          "#332288", # Herbs and Spices
+          "#882255", # Nuts
+          "#88CCEE", # Oils
+          "#AA4499", # Pulses
+          "#CC6677", # Sugars
+          "#DDCC77") # Vegetables
+  
+(ggplot(CWR_inventory_summary_long, aes(
+  x = reorder(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, -count),
+  y = count,
+  fill = as.factor(type))) +
+  #color = as.factor(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1))) +
+  #)) + 
+  geom_bar(position="dodge", stat="identity", lwd=1) +
+  scale_fill_manual(values = c("gray93", "gray71")) +
+  #scale_color_manual(values = cbp1) +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 12),
+        axis.text.y = element_text(size = 12),
+        panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank(),
+        panel.border = element_blank(),
+        axis.line = element_line(colour = "black"),
+        legend.position = c(0.8, 0.8),
+        #legend.position = "none",
+        legend.text=element_text(size=12)) +
+  labs(y="", x="") + 
+  guides(fill=guide_legend(title="")) + 
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 10))
+  
+  
+  #, subtitle="Taxon counts for Tier 1 CWR food crop functional categories"
+)

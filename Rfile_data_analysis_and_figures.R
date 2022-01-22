@@ -72,6 +72,15 @@ num_accessions <- read.csv("Garden_PGRC_Data/summary_accessions_all_species_2.cs
 # # FIGURE 1 # # # # # # # # # # # # # # #
 ##################################################################
 
+cbp1 <- c("#44AA99", # Cereals
+          "#117733", # Fruits
+          "#332288", # Herbs and Spices
+          "#882255", # Nuts
+          "#88CCEE", # Oils
+          "#AA4499", # Pulses
+          "#CC6677", # Sugars
+          "#DDCC77") # Vegetables
+
 num_accessions_cwr <- num_accessions %>%
   distinct(SPECIES, .keep_all=TRUE) %>%
   filter(TIER == 1) %>%
