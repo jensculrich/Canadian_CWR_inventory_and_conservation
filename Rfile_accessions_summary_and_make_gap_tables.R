@@ -184,7 +184,6 @@ total_and_endemic_WUS_ecoregion <- sp_distr_ecoregion_sf %>%
   # count total WUS (unique TAXON in each province) - only tier 1?
   # want the rows where CWR is Y (just the WUS)
   filter(WUS == "Y") %>%
-  filter(TIER == "1") %>%
   # group by ecoregion
   group_by(ECO_NAME) %>%
   # tally the number of unique CWR TAXA
@@ -225,7 +224,6 @@ total_and_endemic_WUS_province <- sp_distr_province_sf %>%
   # count total WUS (unique TAXON in each province) - only tier 1?
   # want the rows where WUS is Y (just the WUS)
   filter(WUS == "Y") %>%
-  filter(TIER == "1") %>%
   # group by province
   group_by(PROVINCE) %>%
   # tally the number of unique WUS species
@@ -805,8 +803,8 @@ ecoregion_gap_table_species_out <- ecoregion_gap_table_species %>%
   left_join(summary_accessions)
 
 
-# write.csv(province_gap_table_species_out, "Garden_PGRC_Data/province_gap_table_species.csv")
-# write.csv(ecoregion_gap_table_species_out, "Garden_PGRC_Data/ecoregion_gap_table_species.csv")
+# write.csv(province_gap_table_species_out, "Garden_PGRC_Data/province_gap_table_species_jan26.csv")
+# write.csv(ecoregion_gap_table_species_out, "Garden_PGRC_Data/ecoregion_gap_table_species_jan26.csv")
 
 
 

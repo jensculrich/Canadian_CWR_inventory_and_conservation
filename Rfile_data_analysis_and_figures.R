@@ -62,8 +62,8 @@ canada_provinces_geojson <- canada_provinces_geojson %>%
   rename("PROVINCE" = "name")
 
 # read in gap tables
-province_gap_table <- read.csv("Garden_PGRC_Data/province_gap_table_species.csv")
-ecoregion_gap_table <- read.csv("Garden_PGRC_Data/ecoregion_gap_table_species.csv")
+province_gap_table <- read.csv("Garden_PGRC_Data/province_gap_table_species_jan26.csv")
+ecoregion_gap_table <- read.csv("Garden_PGRC_Data/ecoregion_gap_table_species_jan26.csv")
 
 # read in accessions summary
 num_accessions <- read.csv("Garden_PGRC_Data/summary_accessions_all_species_2.csv")
@@ -72,14 +72,6 @@ num_accessions <- read.csv("Garden_PGRC_Data/summary_accessions_all_species_2.cs
 # # FIGURE 1 # # # # # # # # # # # # # # #
 ##################################################################
 
-cbp1 <- c("#44AA99", # Cereals
-          "#117733", # Fruits
-          "#332288", # Herbs and Spices
-          "#882255", # Nuts
-          "#88CCEE", # Oils
-          "#AA4499", # Pulses
-          "#CC6677", # Sugars
-          "#DDCC77") # Vegetables
 
 num_accessions_cwr <- num_accessions %>%
   distinct(SPECIES, .keep_all=TRUE) %>%
@@ -107,10 +99,10 @@ lims <- num_accessions_cwr %>%
   distinct(PRIMARY_ASSOCIATED_CROP_COMMON_NAME, .keep_all = TRUE) %>%
   select(label) 
   
-category_names <- c("Sugars", "Vegetables", 
-                    "Cereals and pseudocereals", "Fruits",
-                    "Nuts", "Oils",
-                    "Herbs and Spices", "Pulses")
+category_names <- c("Fruits", "Cereals and pseudocereals",
+                    "Oils", "Pulses",
+                    "Vegetables", "Sugars", 
+                    "Nuts", "Herbs and Spices")
 
 num_accessions_cwr <- num_accessions_cwr %>%
   mutate(across(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, factor, 
@@ -122,7 +114,17 @@ num_accessions_cwr_outliers <- num_accessions_cwr
 num_accessions_cwr_outliers$total_accessions_sp[which(
   num_accessions_cwr_outliers$total_accessions_sp > 1000)] = 1000
 
-FIGURE_1A <- ggplot(num_accessions_cwr_outliers, 
+cbp1 <- c("#117733", # Cereals
+          "#44AA99", # Fruits
+          "#88CCEE", # Oils
+          "#AA4499", # Pulses
+          "#DDCC77", # Vegetables
+          "#CC6677", # Sugars
+          "#882255", # Nuts
+          "#332288") # Herbs and Spices
+
+
+FIGURE_1B <- ggplot(num_accessions_cwr_outliers, 
              aes(x = PRIMARY_ASSOCIATED_CROP_COMMON_NAME, 
                  y = total_accessions_sp,
                  color = PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1)) + 
@@ -130,6 +132,7 @@ FIGURE_1A <- ggplot(num_accessions_cwr_outliers,
   facet_grid(cols = vars(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1), scales = "free_x", space = "free_x") +
   stat_summary(fun=median, geom="point", shape='-', size= 8, color="black", fill="black") +
   # stat_summary(fun=mean, geom="point", shape='+', size= 8, color="black", fill="black") +
+  scale_color_manual(values = cbp1) +
   theme_bw() +
   theme(legend.position = 'none',
         axis.title.x = element_blank(),
@@ -166,7 +169,7 @@ FIGURE_1A <- ggplot(num_accessions_cwr_outliers,
                             "Tobacco" = expression(paste("Tobacco - ", italic('Nicotiana'), " (1/1)")),
                             "Tomatillo" = expression(paste("Tomatillo - ", italic('Physalis'), " (2/3)")),
                             "Apricot, Cherry, Peach, Plum" = expression(paste("Apricot, Cherry, etc. - ", italic('Prunus'), " (7/7)")),
-                            "Currant, Gooseberry" = expression(paste("Currant, Gooseberry - ", italic('Ribes'), " (16/16)")),
+                            "Currant, Gooseberry" = expression(paste("Currant, Gooseberry - ", italic('Ribes'), " (18/18)")),
                             "Blackberry, Raspberry" = expression(paste("Black-, Raspberry - ", italic('Rubus'), " (17/19)")),
                             "Rosinweed" = expression(paste("Rosinweed - ", italic('Silphium'), " (2/2)")),
                             "Blueberry, Cranberry" = expression(paste("Blue-, Cranberry - ", italic('Vaccinium'), " (18/20)")),
@@ -174,8 +177,9 @@ FIGURE_1A <- ggplot(num_accessions_cwr_outliers,
                             "Wild-rice" = expression(paste("Wild-rice - ", italic('Zizania'), " (2/2)"))
                             )
   )
-FIGURE_1A
+FIGURE_1B
 
+# Figure 1C requires gap analysis below
 
 ###############################
 # Figure 2 ####################
@@ -193,6 +197,7 @@ FIGURE_2B <- ggplot(num_accessions_cwr_long, aes(x = INSTITUTION_TYPE,
                                            y = log(accessions), 
                                            fill = PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1)) + 
   geom_boxplot(outlier.shape = NA) +
+  scale_fill_manual(values = cbp1) +
   geom_jitter(shape=16, position=position_jitter(0.2)) +
   facet_grid(. ~ PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1) +
   theme_bw() +
@@ -201,36 +206,15 @@ FIGURE_2B <- ggplot(num_accessions_cwr_long, aes(x = INSTITUTION_TYPE,
         strip.text.x = element_text(margin = margin(.4, 0, .1, 0, "cm")),
         strip.text = element_text(size = 12),
         axis.text.y  = element_text(size = 12), 
+        axis.title.y  = element_text(size = 14),
         axis.text.x = element_text(size = 12)) +
   scale_x_discrete(labels = c('BG','G')) +
   ylab("log(Accessions per CWR)")
 FIGURE_2B
 
-num_accessions_cwr_long_gardens <- num_accessions_cwr_long %>%
-  filter(INSTITUTION_TYPE == "garden_accessions") %>%
-  select(institution_binary) %>%
-  mutate(sum = sum(institution_binary)) 
-  
-
-num_accessions_cwr_long_genebank <- num_accessions_cwr_long %>%
-  filter(INSTITUTION_TYPE == "genebank_accessions") %>%
-  select(institution_binary) %>%
-  mutate(sum = sum(institution_binary))
 
 ######## 
 # now look at proportions
-
-# num_accessions_cwr_long_test <- num_accessions_cwr_long %>%
-#  group_by(INSTITUTION_TYPE) %>%
-#  with(., reorder(
-#      SPECIES, institution_binary))
-
-
-# num_accessions_cwr_long$SPECIES = 
-#  with(num_accessions_cwr_long, reorder(
-#    SPECIES, as.factor(INSTITUTION_TYPE)))
-
-#arrange(num_accessions_cwr_long, INSTITUTION_TYPE, institution_binary)
 
 (FIGURE_2A <- ggplot(num_accessions_cwr_long, 
        aes(x = INSTITUTION_TYPE, 
@@ -246,7 +230,7 @@ num_accessions_cwr_long_genebank <- num_accessions_cwr_long %>%
          axis.title.x = element_blank(),
          strip.text.x = element_text(margin = margin(.4, 0, .1, 0, "cm")),
          strip.text = element_text(size = 12),
-         #axis.text.y  = element_blank(), 
+         axis.title.y = element_text(size = 14), 
          axis.text.x = element_text(size = 12),
          legend.text=element_text(size = 12)) +
    scale_x_discrete(labels = c('BG','G')) +
@@ -277,12 +261,12 @@ grid.arrange(p1, p2, nrow = 2)
 # not do a t-test at all, given the pretty enormous right-skew of the data distributions
 # non-parametric test?
 
-
-category_names <- c("Sugars", "Vegetables", 
-                    "Cereals, pseudo-", "Fruits",
-                    "Nuts", "Oils",
-                    "Herbs and Spices", "Pulses")
-
+category_names_2 <- c("Fruits", "Cereals, pseudo-",
+                    "Oils", "Pulses",
+                    "Vegetables", "Sugars", 
+                    "Nuts", "Herbs and Spices")
+  
+  
 ttest_accessions_by_category <- function(category){
   num_accessions_cwr_long_filtered <- num_accessions_cwr_long %>%
     filter(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1 == category) %>%
@@ -298,7 +282,7 @@ ttest_accessions = list()
 q = 1 # specify a list element position
 for(i in 1:8) {
   
-  selected_category <- category_names[i] # make a vector of cat names
+  selected_category <- category_names_2[i] # make a vector of cat names
   ttest_accessions[[q]] <- ttest_accessions_by_category(selected_category)
   
   q = q+1
@@ -324,7 +308,7 @@ wtest_accessions = list()
 q = 1 # specify a list element position
 for(i in 1:8) {
   
-  selected_category <- category_names[i] # make a vector of cat names
+  selected_category <- category_names_2[i] # make a vector of cat names
   wtest_accessions[[q]] <- wtest_accessions_by_category(selected_category)
   
   q = q+1
@@ -342,11 +326,9 @@ medians <- num_accessions_cwr %>%
   distinct(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, .keep_all = TRUE) %>%
   select(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, median_BG, median_G) 
 
+# get median values for genepools too?
+
 #### need to run proportion tests by group
-category_names <- c("Sugars", "Vegetables", 
-                    "Cereals, pseudo-", "Fruits",
-                    "Nuts", "Oils",
-                    "Herbs and Spices", "Pulses")
 
 CWR_prop_test <- function(category){
   num_accessions_cwr_long_filtered <- num_accessions_cwr_long %>%
@@ -360,11 +342,12 @@ CWR_prop_test <- function(category){
     # just want one row from each group
     distinct(INSTITUTION_TYPE, .keep_all = TRUE)
   
-  # x = successes (species yes), n = trials (total species)
-  res <- prop.test(x = c(as.numeric(num_accessions_cwr_long_filtered[1, 45]),
-                         as.numeric(num_accessions_cwr_long_filtered[2, 45])),
-                   n = c(as.numeric(num_accessions_cwr_long_filtered[1, 46]),
-                         as.numeric(num_accessions_cwr_long_filtered[2, 46]))
+  # x = successes (species yes) column 40, n = trials (total species) column 41
+  # row 1 is gardens, row 2 is genebanks
+  res <- prop.test(x = c(as.numeric(num_accessions_cwr_long_filtered[1, 40]),
+                         as.numeric(num_accessions_cwr_long_filtered[2, 40])),
+                   n = c(as.numeric(num_accessions_cwr_long_filtered[1, 41]),
+                         as.numeric(num_accessions_cwr_long_filtered[2, 41]))
   )
   
   return(res)
@@ -375,7 +358,7 @@ ptest_accessions = list()
 q = 1 # specify a list element position
 for(i in 1:8) {
   
-  selected_category <- category_names[i] # make a vector of cat names
+  selected_category <- category_names_2[i] # make a vector of cat names
   ptest_accessions[[q]] <- CWR_prop_test(selected_category)
   
   q = q+1
@@ -406,10 +389,12 @@ legend_title_CWR = expression("CWR species richness")
 legend_title_WUS = expression("WUS species richness")
 
 # Figure 3A - TIER 1 CWR BY ECOREGION
-
+ecoregion_counts <- ecoregion_gap_table %>%
+  distinct(ECO_NAME, .keep_all = TRUE) %>%
+  select(ECO_NAME, total_CWRs_in_ecoregion, total_WUS_in_ecoregion)
 # transform for plotting
 ecoregion_species_gaps <- ecoregion_gap_table %>%
-  filter(!is.na(ECO_NAME)) %>% # filter for if only want those collections with geo origin
+  filter(!is.na(INSTITUTION)) %>% # filter for if only want those collections with geo origin
   # filter for tier 1 CWR
   filter(TIER == 1) %>%
   # now tally the number of CWR accessions from the province
@@ -448,7 +433,9 @@ ecoregion_species_gaps <- ecoregion_gap_table %>%
          in_BG, in_G, in_any,
          proportion_in_BG, proportion_in_G,
          proportion_in_any, proportion_in_neither) %>%
-  full_join(canada_ecoregions_geojson[ , c("ECO_NAME", "geometry")])
+  full_join(canada_ecoregions_geojson[ , c("ECO_NAME", "geometry")]) %>%
+  select(-total_CWRs_in_ecoregion) %>%
+  left_join(ecoregion_counts[ , c("ECO_NAME", "total_CWRs_in_ecoregion")])
 
 ecoregion_species_gaps_sf <- st_as_sf(ecoregion_species_gaps)
 
@@ -461,7 +448,7 @@ ecoregion_species_gaps_sf <- st_as_sf(ecoregion_species_gaps)
     tm_symbols(size = "proportion_in_any",
                title.size = "(%) CWR conserved ex situ",
                sizes.legend=c(0, 25, 50, 100),
-               scale = 3,
+               scale = 2.5,
                col = "grey",
                alpha = 0.7,
                legend.format = list(text.align="right", text.to.columns = TRUE)) +
@@ -526,7 +513,7 @@ province_species_gaps_sf <- st_as_sf(province_species_gaps)
     tm_symbols(size = "proportion_in_any",
       title.size = "(%) CWR conserved ex situ",
       sizes.legend=c(0, 25, 50, 100),
-      scale = 3,
+      scale = 2.5,
       col = "grey",
       #palette = rev(RColorBrewer::brewer.pal(5,"Greys")), 
       alpha = 0.7,
@@ -545,7 +532,7 @@ province_species_gaps_sf <- st_as_sf(province_species_gaps)
 
 # Figure 3B - WUS By Ecoregion
 ecoregion_species_gaps_WUS <- ecoregion_gap_table %>%
-  filter(!is.na(ECO_NAME)) %>% # filter for if only want those collections with geo origin
+  filter(!is.na(INSTITUTION)) %>% # filter for if only want those collections with geo origin
   # filter for tier 1 CWR
   filter(WUS == "Y") %>%
   # now tally the number of CWR accessions from the province
@@ -557,8 +544,8 @@ ecoregion_species_gaps_WUS <- ecoregion_gap_table %>%
     INSTITUTION == "BG" ~ 1)) %>%
   mutate(in_G = case_when(
     INSTITUTION == "G" ~ 1)) %>%
-  mutate(in_both = case_when(
-    in_BG == 1 && in_G == 1 ~ 1)) %>% # no species are in both; so few G with geolocation
+  mutate(in_any = case_when(
+    INSTITUTION == "G" | INSTITUTION == "BG" ~ 1)) %>%
   ungroup() %>%
   group_by(ECO_NAME) %>%
   # distinct species # want one line per species
@@ -569,10 +556,8 @@ ecoregion_species_gaps_WUS <- ecoregion_gap_table %>%
            as.numeric(sum(!is.na(in_BG)) / total_WUS_in_ecoregion)) %>%
   mutate(proportion_in_G = 
            as.numeric(sum(!is.na(in_G)) / total_WUS_in_ecoregion)) %>%
-  mutate(proportion_in_both = 
-           as.numeric((sum(!is.na(in_both)) / total_WUS_in_ecoregion))) %>%
   mutate(proportion_in_any = 
-           as.numeric(100 * (sum(!is.na(in_both)) + sum(!is.na(in_BG)) + sum(!is.na(in_G))) 
+           as.numeric(100 * (sum(!is.na(in_any))) 
                       / total_WUS_in_ecoregion)) %>%
   mutate(proportion_in_neither = 
            as.numeric(100 - (proportion_in_any))) %>%
@@ -581,10 +566,12 @@ ecoregion_species_gaps_WUS <- ecoregion_gap_table %>%
   filter(ECO_NAME != "Canada") %>%
   select(ECO_NAME, latitude, longitude, total_WUS_in_ecoregion,
          total_accessions, log_accessions,
-         in_BG, in_G, in_both,
-         proportion_in_BG, proportion_in_G, proportion_in_both,
+         in_BG, in_G,
+         proportion_in_BG, proportion_in_G,
          proportion_in_any, proportion_in_neither) %>%
-  full_join(canada_ecoregions_geojson[ , c("ECO_NAME", "geometry")])
+  full_join(canada_ecoregions_geojson[ , c("ECO_NAME", "geometry")]) %>%
+  select(-total_WUS_in_ecoregion) %>%
+  left_join(ecoregion_counts[ , c("ECO_NAME", "total_WUS_in_ecoregion")])
 
 ecoregion_species_gaps_WUS_sf <- st_as_sf(ecoregion_species_gaps_WUS)
 
@@ -598,7 +585,7 @@ ecoregion_species_gaps_WUS_sf <- st_as_sf(ecoregion_species_gaps_WUS)
     tm_symbols(size = "proportion_in_any",
       title.size = "(%) WUS conserved ex situ",
       sizes.legend=c(0, 25, 50, 100),
-      scale = 4,
+      scale = 2.5,
       col = "grey",
       alpha = 0.7,
       legend.format = list(text.align="right", text.to.columns = TRUE)) +
@@ -677,6 +664,7 @@ grid.arrange(tmap_grob(FIGURE_3A), tmap_grob(FIGURE_3B), nrow = 2)
 
 FIGURE_3A
 FIGURE_3B
+# these may need work
 FIGURE_3A_Supp
 FIGURE_3B_Supp
 

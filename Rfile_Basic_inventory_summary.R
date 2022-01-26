@@ -53,6 +53,7 @@ CWR_inventory_summary <- inventory_finest_taxon_resolution %>%
   distinct(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, .keep_all = TRUE ) %>%
   arrange(desc(n)) %>%
   dplyr::select(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, n, nn) %>%
+  mutate(difference = n - nn) %>%
   # change level name to fit on the figure page better
   transform(
     PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1=plyr::revalue(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, 
@@ -65,10 +66,11 @@ barplot(CWR_inventory_summary$n, #main = "Native CWR Taxa in Broad Crop Categori
         cex.names=1.5, cex.axis=1.5, horiz=T, las=1, xlim = c(0,140))
 
 CWR_inventory_summary_long <- CWR_inventory_summary %>%
-  gather(type, count, n:nn) %>%
+  select(-n) %>%
+  gather(type, count, difference:nn) %>%
   transform(
-    type=plyr::revalue(type, c("n"="taxa", "nn" = "distinct species"))) %>%
-  arrange(desc("taxa"))
+    type=plyr::revalue(type, c("difference"="taxa", "nn" = "distinct species"))) %>%
+  arrange(desc("taxa")) 
 
 cbp1 <- c("#44AA99", # Cereals
           "#117733", # Fruits
@@ -80,24 +82,26 @@ cbp1 <- c("#44AA99", # Cereals
           "#DDCC77") # Vegetables
   
 (ggplot(CWR_inventory_summary_long, aes(
-  x = reorder(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, -count),
+  x = reorder(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, count),
   y = count,
-  fill = as.factor(type))) +
-  #color = as.factor(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1))) +
-  #)) + 
-  geom_bar(position="dodge", stat="identity", lwd=1) +
-  scale_fill_manual(values = c("gray93", "gray71")) +
+  fill = as.factor(desc(type))))
+  #color = as.factor(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1))) 
+  +
+  geom_bar(position="stack", stat="identity", lwd=1) +
+  scale_fill_manual(values = c("gray93", "gray71"), 
+                    labels = c("total taxa", "distinct species")) +
   #scale_color_manual(values = cbp1) +
   theme_bw() +
-  theme(axis.text.x = element_text(size = 12),
-        axis.text.y = element_text(size = 12),
+  coord_flip() +
+  theme(axis.text.x = element_text(size = 14),
+        axis.text.y = element_text(size = 14, vjust = 0.5),
         panel.grid.major = element_blank(), 
         panel.grid.minor = element_blank(),
         panel.background = element_blank(),
         panel.border = element_blank(),
         axis.line = element_line(colour = "black"),
-        legend.position = c(0.8, 0.8),
-        #legend.position = "none",
+        legend.position = c(0.7, 0.2),
+        #legend.position = "none") +
         legend.text=element_text(size=12)) +
   labs(y="", x="") + 
   guides(fill=guide_legend(title="")) + 
