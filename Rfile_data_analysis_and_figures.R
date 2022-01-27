@@ -749,7 +749,7 @@ gap_analysis_df_by_ecoregion <- data.frame("SPECIES" = character(),
 # add that species as a row to the gap analysis df
 for(i in 1:nrow(inventory_sp_T1)) {
   
-  selected_taxon <- inventory_sp_T1[[i,2]] # column 1 is species ("sci_name")
+  selected_taxon <- inventory_sp_T1[[i,1]] # column 1 is species
   as.data.frame(temp <- ecoregion_gap_analysis(
     species = selected_taxon)) 
   gap_analysis_df_by_ecoregion <- rbind(
@@ -757,13 +757,19 @@ for(i in 1:nrow(inventory_sp_T1)) {
   
 } 
 
+
+###
+# some summary statistics
+median <- median(gap_analysis_df_by_ecoregion$perc_ecoregion_range_covered)
+mean <- mean(gap_analysis_df_by_ecoregion$perc_ecoregion_range_covered)
+sd <- sd(gap_analysis_df_by_ecoregion$perc_ecoregion_range_covered)
 # 
 ### now make the figure
 #
-category_names <- c("Sugars", "Vegetables", 
-                    "Cereals and pseudocereals", "Fruits",
-                    "Nuts", "Oils",
-                    "Herbs and Spices", "Pulses")
+category_names <- c("Fruits", "Cereals and pseudocereals",
+                    "Oils", "Pulses",
+                    "Vegetables", "Sugars", 
+                    "Nuts", "Herbs and Spices")
 
 gap_analysis_df_by_ecoregion_test <- gap_analysis_df_by_ecoregion %>%
   mutate(across(PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1, factor, 
@@ -771,7 +777,8 @@ gap_analysis_df_by_ecoregion_test <- gap_analysis_df_by_ecoregion %>%
   arrange(., PRIMARY_ASSOCIATED_CROP_COMMON_NAME)
 
 
-FIGURE_1B <- ggplot(gap_analysis_df_by_ecoregion_test, 
+
+FIGURE_1C <- ggplot(gap_analysis_df_by_ecoregion_test, 
               aes(x = PRIMARY_ASSOCIATED_CROP_COMMON_NAME, 
                   y = perc_ecoregion_range_covered,
                   color = PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1)) + 
@@ -785,9 +792,10 @@ FIGURE_1B <- ggplot(gap_analysis_df_by_ecoregion_test,
         strip.text.x = element_blank(),
         axis.text.y  = element_text(angle=90, vjust = 1, hjust=0.5, size = 12), 
         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 10)) +
-  ylab("exGCS") +
+  ylab("Canadian within-species diversity in ex situ collections") +
   scale_y_continuous(labels = scales::percent) +
   # just keep these labels for now to match up and see potential issues
+  scale_color_manual(values = cbp1) +
   scale_x_discrete(labels=c("Sugar Maple" = expression(paste(" ")),
                             "Onions, Garlic, Leeks" = expression(paste(" ")),
                             "Amaranth" = expression(paste(" ")),
@@ -822,9 +830,9 @@ FIGURE_1B <- ggplot(gap_analysis_df_by_ecoregion_test,
                             "Wild-rice" = expression(paste(" "))
   )
 )
-FIGURE_1B
+FIGURE_1C
 
-grid.arrange(FIGURE_1B, FIGURE_1A, nrow = 1)
+grid.arrange(FIGURE_1B, FIGURE_1C, nrow = 1)
 
 ####################################
 ######## GAP ANALYSIS CASE STUDY   #

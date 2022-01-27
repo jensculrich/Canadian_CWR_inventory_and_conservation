@@ -320,4 +320,35 @@ df <- left_join(inventory, NSC, by = ("TAXON"))  %>%
 df <- df %>%
   distinct(TAXON, .keep_all = TRUE)
 
-write.csv(df, "Input_Data_and_Files/inventory_w_NCS.csv")
+# write.csv(df, "Input_Data_and_Files/inventory_w_NCS.csv")
+
+
+######################
+# ADD SCI NAMES ######
+######################
+inventory <- read.csv("./Input_Data_and_Files/inventory.csv") %>% 
+  mutate(TAXON = str_replace(TAXON, "×", ""))
+sci_names <- read.csv("Input_Data_and_Files/normalized.csv")
+
+df <- inventory %>%
+  left_join(sci_names)
+
+# write.csv(df, "Input_Data_and_Files/inventory_w_sci_names.csv")
+
+accessions <- read.csv("Garden_PGRC_Data/summary_accessions_all_species_2.csv")
+
+df <- accessions %>%
+  left_join(sci_names)
+
+# write.csv(df, "Garden_PGRC_Data/summary_accessions_all_species_sci_names.csv")
+eco <- read.csv("Garden_PGRC_Data/ecoregion_gap_table_species_jan26.csv")
+province <- read.csv("Garden_PGRC_Data/province_gap_table_species_jan26.csv")
+
+df <- eco %>%
+  left_join(sci_names, by=c("SPECIES" = "TAXON"))
+df2 <- province %>%
+  left_join(sci_names, by=c("SPECIES" = "TAXON"))
+
+# write.csv(df, "Garden_PGRC_Data/ecoregion_gap_table_by_species.csv")
+# write.csv(df2, "Garden_PGRC_Data/province_gap_table_by_species.csv")
+
