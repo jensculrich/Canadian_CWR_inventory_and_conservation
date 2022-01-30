@@ -62,11 +62,11 @@ canada_provinces_geojson <- canada_provinces_geojson %>%
   rename("PROVINCE" = "name")
 
 # read in gap tables
-province_gap_table <- read.csv("Garden_PGRC_Data/province_gap_table_species_jan26.csv")
-ecoregion_gap_table <- read.csv("Garden_PGRC_Data/ecoregion_gap_table_species_jan26.csv")
+province_gap_table <- read.csv("Garden_PGRC_Data/province_gap_table_by_species.csv")
+ecoregion_gap_table <- read.csv("Garden_PGRC_Data/ecoregion_gap_table_by_species.csv")
 
 # read in accessions summary
-num_accessions <- read.csv("Garden_PGRC_Data/summary_accessions_all_species_2.csv")
+num_accessions <- read.csv("Garden_PGRC_Data/summary_accessions_all_species.csv")
 
 ##################################################################
 # # FIGURE 1 # # # # # # # # # # # # # # #

@@ -630,6 +630,14 @@ WUS_W <- summary_all_garden_accessions_wild_counts %>%
 WUS_W_distinct <- WUS_W %>%
   distinct(SPECIES)
 
+# Tier 1 in gardens
+TIER1_W_BG <- TIER1_W %>%
+  filter(INSTITUTION == "BG")
+
+# Tier 1 in genebanks
+TIER1_W_G <- TIER1_W %>%
+  filter(INSTITUTION == "G")
+
 # and broken down by those in gardens, those in genebanks (and within the two genebanks types)
 BG_accessions_W <- summary_all_garden_accessions_wild_counts %>%
   filter(INSTITUTION == "BG") # %>%
