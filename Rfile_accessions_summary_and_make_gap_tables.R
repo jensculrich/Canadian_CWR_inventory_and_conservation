@@ -724,34 +724,20 @@ only_PGRC_or_gardens <- only_PGRC_or_gardens %>%
 # now join the garden data with the sp distributions by province
 # to expand each row where a taxon/ species occurs
 # for taxon level use these:
-summary_all_garden_accessions_wild_for_gaps <- summary_all_garden_accessions_wild %>%
-  rename("NOT_NEEDED" = "TAXON") %>%
-  rename("TAXON" = "TAXON_INFRA")
+#summary_all_garden_accessions_wild_for_gaps <- summary_all_garden_accessions_wild %>%
+#  rename("NOT_NEEDED" = "TAXON") %>%
+#  rename("TAXON" = "TAXON_INFRA")
 
-province_gap_table <- sp_distr_province[ , c("TAXON", "PROVINCE")] %>%
-  rename("province" = "PROVINCE") %>%
-  merge(x = ., y = summary_all_garden_accessions_wild_for_gaps,
-        by = c("TAXON", "province"),
-        all = TRUE) %>%
-  dplyr::select(-ECO_NAME, -COUNTRY) %>%
-  full_join(inventory) %>%
-  left_join(num_accessions_w_wild_counts[, c("TAXON",
-                                             "total_accessions_w_finest_taxon_res",
-                                             "garden_accessions_w_finest_taxon_res",
-                                             "genebank_accessions_w_finest_taxon_res")]) %>%
-  filter(!is.na(province))
+sp_distr_ecoregion_taxon <- sp_distr_ecoregion %>%
+  # remove duplicates at ecoregion within taxon
+  distinct(TAXON, ECO_NAME, .keep_all=TRUE)
 
-ecoregion_gap_table <- sp_distr_ecoregion[ , c("TAXON", "ECO_NAME")] %>%
+ecoregion_gap_table_taxon <- sp_distr_ecoregion_taxon[ , c("TAXON", "ECO_NAME")] %>%
   merge(x = ., y = summary_all_garden_accessions_wild,
         by = c("TAXON", "ECO_NAME"),
         all = TRUE) %>%
-  dplyr::select(-province, -COUNTRY) %>%
-  full_join(inventory) %>%
-  left_join(num_accessions_w_wild_counts[, c("TAXON",
-                                             "total_accessions_w_finest_taxon_res",
-                                             "garden_accessions_w_finest_taxon_res",
-                                             "genebank_accessions_w_finest_taxon_res")]) %>%
-  filter(!is.na(ECO_NAME))
+  dplyr::select(-province, -PROVENANCE, -COUNTRY, -LOCALITY, -TIER, -CWR, -WUS) %>%
+  full_join(inventory, by = "TAXON") 
 
 # for species level use these:
 inventory_sp <- inventory %>%
@@ -784,11 +770,17 @@ ecoregion_gap_table_species <- sp_distr_ecoregion_sp[ , c("SPECIES", "ECO_NAME")
 
 # Last, join with total and endemic CWR per ecoregion/province
 # and total and endemic WUS per ecoregion/province
-summary_accessions <- read.csv("./Garden_PGRC_Data/summary_accessions_all_species_2.csv") %>%
+summary_accessions <- read.csv("./Garden_PGRC_Data/summary_accessions_all_species.csv") %>%
   distinct(SPECIES, .keep_all = TRUE) %>%
   select(SPECIES, total_accessions_w_finest_taxon_res, 
          garden_accessions_w_finest_taxon_res, genebank_accessions_w_finest_taxon_res)
-  
+
+summary_accessions_taxon <- read.csv("./Garden_PGRC_Data/summary_accessions_all_species.csv") %>%
+  distinct(TAXON, .keep_all = TRUE) %>%
+  select(TAXON, SPECIES, total_accessions_w_finest_taxon_res, 
+         garden_accessions_w_finest_taxon_res, genebank_accessions_w_finest_taxon_res)
+
+
 province_gap_table_species_out <- province_gap_table_species %>%
   full_join(total_CWRs_group_by_province[, c(
     "PROVINCE", "total_CWRs_in_province", "endemic_CWRs_in_province")]) %>%
@@ -811,9 +803,20 @@ ecoregion_gap_table_species_out <- ecoregion_gap_table_species %>%
   left_join(summary_accessions)
 
 
+ecoregion_gap_table_taxon_out <- ecoregion_gap_table_taxon %>%
+  full_join(total_CWRs_group_by_ecoregion[, c(
+    "ECO_NAME", "total_CWRs_in_ecoregion", "endemic_CWRs_in_ecoregion")]) %>%
+  full_join(total_WUS_group_by_ecoregion[, c(
+    "ECO_NAME", "total_WUS_in_ecoregion", "endemic_WUS_in_ecoregion")]) %>%
+  select(-TAXON_INFRA) %>%
+  filter(!is.na(ECO_NAME)) %>%
+  left_join(summary_accessions_taxon)
+
+
 # write.csv(province_gap_table_species_out, "Garden_PGRC_Data/province_gap_table_species_jan26.csv")
 # write.csv(ecoregion_gap_table_species_out, "Garden_PGRC_Data/ecoregion_gap_table_species_jan26.csv")
 
+# write.csv(ecoregion_gap_table_taxon_out, "Garden_PGRC_Data/ecoregion_gap_table_taxon.csv")
 
 
 
