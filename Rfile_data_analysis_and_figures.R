@@ -947,8 +947,8 @@ make_a_plot_ecoregion <- function(species) {
     scale_fill_manual(breaks = c("-1", "0", "1"),
                       values = c("white", "gray60", "gray10"), 
                       labels = c("Outside range",
-                                 "ex situ collections from region", 
-                                 "no ex situ collections from region" 
+                                 "no ex situ collections from region", 
+                                 "ex situ collections from region" 
                       )) +
     guides(fill = guide_legend(title = "", 
                                title.position = "top",
