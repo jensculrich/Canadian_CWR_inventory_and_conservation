@@ -954,6 +954,10 @@ make_a_plot_ecoregion <- function(species) {
                                title.position = "top",
                                title.theme = element_text(size = 10, face = "bold")
     )) +
+    guides(color = guide_legend(title = "", 
+                               title.position = "top",
+                               title.theme = element_text(size = 10, face = "bold")
+    )) +
     theme_map() +
     ggtitle(species) +
     theme(panel.grid.major = element_line(color = "white"),
@@ -985,3 +989,33 @@ test6
 
 test3 <- make_a_plot_ecoregion("Malus fusca")
 test3
+
+
+accessions_sf_G_filtered <- accessions_sf_G %>%
+  filter(SPECIES == "Amelanchier alnifolia") 
+
+accessions_sf_BG_filtered <- accessions_sf_BG %>%
+  filter(SPECIES == "Amelanchier alnifolia")
+
+df_legend <- plotData_ecoregion("Amelanchier alnifolia")
+(plot_legend <- ggplot(df_legend) +
+  geom_sf(data = accessions_sf_G_filtered, color = 'mediumorchid1', alpha = 0.5, size = 5) +
+  geom_sf(data = accessions_sf_BG_filtered, color = 'goldenrod1', alpha = 0.5, size = 5) +
+  coord_sf(crs = crs_string) +
+  guides(fill = guide_legend(title = "", 
+                             title.position = "top",
+                             title.theme = element_text(size = 10, face = "bold")
+  )) +
+  guides(color = guide_legend(title = "", 
+                              title.position = "top",
+                              title.theme = element_text(size = 10, face = "bold")
+  )) +
+  theme_map() +
+  ggtitle("Amelanchier alnifolia") +
+  theme(panel.grid.major = element_line(color = "white"),
+        plot.title = element_text(color="black",
+                                  size=14, face="bold.italic", hjust = 0.5),
+        plot.margin=unit(c(0.1,-0.2,0.1,-0.2), "cm"),
+        legend.position = "bottom", legend.text = element_text(size=12))
+)
+

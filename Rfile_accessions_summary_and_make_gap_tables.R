@@ -739,6 +739,21 @@ ecoregion_gap_table_taxon <- sp_distr_ecoregion_taxon[ , c("TAXON", "ECO_NAME")]
   dplyr::select(-province, -PROVENANCE, -COUNTRY, -LOCALITY, -TIER, -CWR, -WUS) %>%
   full_join(inventory, by = "TAXON") 
 
+sp_distr_province_taxon <- sp_distr_province %>%
+  # remove duplicates at ecoregion within taxon
+  distinct(TAXON, PROVINCE, .keep_all=TRUE)
+
+summary_all_garden_accessions_wild <- summary_all_garden_accessions_wild %>%
+  rename("PROVINCE" = "province")
+
+province_gap_table_taxon <- sp_distr_province_taxon[ , c("TAXON", "PROVINCE")] %>%
+  merge(x = ., y = summary_all_garden_accessions_wild,
+        by = c("TAXON", "PROVINCE"),
+        all = TRUE) %>%
+  dplyr::select(-ECO_NAME, -PROVENANCE, -COUNTRY, -LOCALITY, -TIER, -CWR, -WUS) %>%
+  full_join(inventory, by = "TAXON") 
+
+
 # for species level use these:
 inventory_sp <- inventory %>%
   dplyr::select(-TAXON, -RANK, -INFRASPECIFIC) %>%
@@ -812,11 +827,20 @@ ecoregion_gap_table_taxon_out <- ecoregion_gap_table_taxon %>%
   filter(!is.na(ECO_NAME)) %>%
   left_join(summary_accessions_taxon)
 
+province_gap_table_taxon_out <- province_gap_table_taxon %>%
+  full_join(total_CWRs_group_by_province[, c(
+    "PROVINCE", "total_CWRs_in_province", "endemic_CWRs_in_province")]) %>%
+  full_join(total_WUS_group_by_province[, c(
+    "PROVINCE", "total_WUS_in_province", "endemic_WUS_in_province")]) %>%
+  select(-TAXON_INFRA) %>%
+  filter(!is.na(PROVINCE)) %>%
+  left_join(summary_accessions_taxon)
 
 # write.csv(province_gap_table_species_out, "Garden_PGRC_Data/province_gap_table_species_jan26.csv")
 # write.csv(ecoregion_gap_table_species_out, "Garden_PGRC_Data/ecoregion_gap_table_species_jan26.csv")
 
 # write.csv(ecoregion_gap_table_taxon_out, "Garden_PGRC_Data/ecoregion_gap_table_taxon.csv")
+# write.csv(province_gap_table_taxon_out, "Garden_PGRC_Data/province_gap_table_taxon.csv")
 
 
 
