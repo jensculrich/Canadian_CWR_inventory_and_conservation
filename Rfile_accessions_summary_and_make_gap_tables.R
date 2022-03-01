@@ -3,6 +3,8 @@ library(tidyverse)
 library(ggplot2)
 library(sf) # the base package manipulating shapes
 
+# Jens Ulrich
+# Updated Feb 28, 2022
 
 ################################################################################
 # # 1 - Load inventory and spatial data     

@@ -1,5 +1,8 @@
 library(tidyverse)
 
+# Jens Ulrich
+# Updated Feb 28, 2022
+
 ########################################################
 # DATA TIDYING FILE FOR MULTIPLE DATA MANAGEMENT TASKS #
 ########################################################
@@ -10,8 +13,10 @@ library(tidyverse)
 # 3 - CONVERT TO DECIMAL DEGREES
 # 4 - FORMAT SHAPEFILES
 # 5 - TRIM OUT OF BOUNDS SPECIES DISTRIBUTIONS
-# 6 - TIDY SOME GARDEN DATA
-# 7 - COMBINE GARDEN DATA
+# 6 - TIDY ACCESSION DATA
+# 7 - ADD NATURE SERVE DATA TO INVENTORY 
+# 8 - ADD SCINETIFC NAMES TO INVENTORY
+# 9 - FILTER DATA TO ONLY THOSE TAXA IN THE INVENTORY
 
 ##################################################
 # COMBINE TAXON LISTS FOR THE INVENTORY BACKBONE #
@@ -352,3 +357,50 @@ df2 <- province %>%
 # write.csv(df, "Garden_PGRC_Data/ecoregion_gap_table_by_species.csv")
 # write.csv(df2, "Garden_PGRC_Data/province_gap_table_by_species.csv")
 
+##################################################################
+# Filter data from a garden or genebank to include only the CWR ##
+##################################################################
+############ USDA NPGS FULL COLLECTIONS #################
+
+#Read data for whichever garden you want to compare
+NPGS <- read.csv("Garden_PGRC_Data/GRIN/GRIN_full_clean.csv") #Note that there are no repeat names, instead they have a count column!
+
+# format for join
+NPGS <- NPGS %>% 
+  mutate(Taxon = str_replace(Taxon, "×", "")) #removing 'x' and symbol from hybrids for filtering simplicity - will be added back later!
+NPGS$Taxon <- trimws(NPGS$Taxon, which = c("both"))
+
+# split ORIGIN and COORDINATES
+NPGS_split <- NPGS %>%
+  extract(ORIGIN, c("PROVINCE", "COUNTRY"), "([^,]+), ([^)]+)") %>%
+  extract(COORDINATES, c("LATITUDE", "LONGITUDE"), "([^,]+), ([^)]+)")
+
+# load inventory
+inventory <- read.csv("Input_Data_and_Files/inventory.csv") #Note that there are no repeat names, instead they have a count column!
+inventory <- inventory %>% 
+  mutate(TAXON = str_replace(TAXON, "×", "")) #removing 'x' and symbol from hybrids for filtering simplicity - will be added back later!
+
+CWR_of_NPGS_filtered <- merge(inventory, NPGS_split, by.x = "TAXON", by.y = "Taxon") #Finally, cross-reference usda_usa list with Master list
+#getting a list of all CWR plants in usda_usa
+
+write.csv(CWR_of_NPGS_filtered, "Garden_PGRC_Data/filtered_data/CWR_NPGS.csv")  
+
+############ PGRC CANADA FULL #################
+
+#Read data for whichever garden you want to compare
+PGRC <- read.csv("Garden_PGRC_Data/GRIN_PGRC/PGRC_full_cleaned.csv") #Note that there are no repeat names, instead they have a count column!
+PGRC <- PGRC %>% 
+  mutate(Taxon = str_replace(Taxon, "×", "")) #removing 'x' and symbol from hybrids for filtering simplicity - will be added back later!
+
+PGRC$Taxon <- trimws(PGRC$Taxon, which = c("both"))  #remove trailing white space on species names
+
+# load inventory
+inventory <- read.csv("Input_Data_and_Files/inventory.csv") #Note that there are no repeat names, instead they have a count column!
+inventory <- inventory %>% 
+  mutate(TAXON = str_replace(TAXON, "×", "")) #removing 'x' and symbol from hybrids for filtering simplicity - will be added back later!
+
+#Now that the garden dataset is cleaned in the same way as the master list, we can filter them against eachother
+CWR_of_PGRC <- merge(inventory, PGRC, by.x = "TAXON", by.y = "Taxon") #Finally, cross-reference pgrc_cad list with Master list
+#getting a list of all CWR plants in pgrc_cad
+
+write.csv(CWR_of_PGRC, "Garden_PGRC_Data/filtered_data/CWR_PGRC.csv")  

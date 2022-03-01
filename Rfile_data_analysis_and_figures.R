@@ -1,4 +1,6 @@
-# INTRO 
+# Jens Ulrich
+# Updated Feb 28, 2022
+
 # Use the species distribution data and the garden/genebank accession data
 # to explore CWR and WUS diversity
 # and more particularly
@@ -18,21 +20,13 @@ library(gridExtra) # panelling figures
 # CONTENTS #
 ############
 
-# 1 - Load inventory and spatial data; species distribution and garden accessions 
-# 2 - Compute some basic summary stats about the inventory   
-# 3 - Determine patterns of species distributions  
-# 4 - Load garden data format for gap analyses
-# Figure 1: Ex situ conservation of each crop group, and in gardens v genebanks
-# Figure 2: National geographic gaps of wild-orgin accessions; A = CWR, B = WUS
-            # (wild origin accessions per region versus species distr density per region)
-# Supplementary Figure: Figure 2 but by province (or ecoregion, whichever is not used)
-# Figure 3: Geographic gap analysis: proportion of range conserved in different groups
+# Figure 1: Taxon richness in food crop subcategories,
+            # ex situ conservation of each crop group by counts, and exGCS scores
+# Figure 2: Comparison of conservation in genebanks and botanical gardens
+# Figure 3: Geographic distribution of taxonomic richness + species in each region conserved 
             # A: CWR Tier 1
-            # B: CWR Tier 2
-            # C: WUS
-# Supplementary Figure: Figure 3 but by province (or ecoregion, whichever is not used) 
-# Figure 4: Case Study
-# Figure 5: ? Or maybe we add a table of some sort?
+            # B: WUS
+# Figure 4: Case Study and app demo
 
 ################################################################################
 # # 1 - Load inventory and spatial data     
@@ -969,6 +963,7 @@ make_a_plot_ecoregion <- function(species) {
   return(plot)
 }
 
+# visualize for some test species
 test1 <- make_a_plot_ecoregion("Amelanchier alnifolia")
 test1
 

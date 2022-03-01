@@ -2,6 +2,8 @@
 library(tidyverse)
 library(ggplot2)
 
+# Jens Ulrich
+# Updated Feb 28, 2022
 
 ################################################################################
 # # 1 - Load inventory

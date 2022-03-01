@@ -2,6 +2,9 @@ library(tidyverse)
 library(readr)
 library(rgbif)
 
+# Jens Ulrich
+# Updated Feb 28, 2022
+
 # Enter your GBIF user info here before proceeding
 # user=user 
 # pwd=pwd 
