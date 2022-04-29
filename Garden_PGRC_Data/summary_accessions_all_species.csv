@@ -54,7 +54,7 @@ Alnus incana,Alnus incana subsp. tenuifolia,Alnus incana subsp. tenuifolia (Nutt
 Alnus rubra,Alnus rubra,Alnus rubra Bong.,Alder,2,2,Y,N5,G5,,Y,44,6,38,33,0,33,,Y,Alnus,NA,NA,inner bark and catkins,Y,Forest Resources,,NA,Forest Resources,,,NA,NA
 Alnus serrulata,Alnus serrulata,Alnus serrulata (Aiton) Willd.,Alder,2,2,Y,N3,G5,,Y,5,0,5,5,0,5,,Y,Alnus,NA,NA,inner bark and catkins,Y,Forest Resources,,NA,Forest Resources,,,NA,NA
 Amaranthus albus,Amaranthus albus,Amaranthus albus L.,Amaranth,1C,1,Y,NNA,GNR,,Y,8,0,8,1,0,1,,Y,Amaranthus,NA,NA,greens and seeds used,N,Food,Ornamentals,NA,Cereals and pseudocereals,Ornamentals,,NA,Assume distant
-Castanea dentata,Castanea dentata,Castanea dentata (Marshall) Borkh.,Chestnut,1A,1,Y,N1,G3,E - Endangered (E) / En voie de disparition (VD),Y,267,258,9,106,101,5,,Y,Castanea,NA,NA,american chestnut'; nuts,Y,Food,Ornamentals,NA,Nuts,Ornamentals,,NA,Primary
+Amaranthus californicus,Amaranthus californicus,Amaranthus californicus (Moq.) S.Watson,Amaranth,1C,1,Y,N2,G4,,Y,1,0,1,0,0,0,,Y,Amaranthus,NA,NA,greens and seeds used,Y,Food,Ornamentals,NA,Cereals and pseudocereals,Ornamentals,,NA,Assume distant
 Amaranthus hybridus,Amaranthus hybridus,Amaranthus hybridus L.,Amaranth,1A,1,Y,NNA,G5,,Y,142,0,142,0,0,0,,Y,Amaranthus,NA,NA,greens and seeds used,N,Food,Ornamentals,NA,Cereals and pseudocereals,Ornamentals,,NA,Progenitor
 Amaranthus retroflexus,Amaranthus retroflexus,Amaranthus retroflexus L.,Amaranth,1B,1,Y,N5,G5,,Y,29,0,29,2,0,2,,Y,Amaranthus,NA,NA,greens and seeds used,N,Food,Ornamentals,NA,Cereals and pseudocereals,Ornamentals,,NA,Secondary
 Amaranthus tuberculatus,Amaranthus tuberculatus,Amaranthus tuberculatus (Moq.) Sauer,Amaranth,1C,1,N,N4,GNR,,Y,52,0,52,0,0,0,,Y,Amaranthus,NA,NA,,Y,Food,Ornamentals,NA,Cereals and pseudocereals,Ornamentals,,NA,Assume distant
@@ -190,7 +190,7 @@ Carya glabra,Carya glabra,Carya glabra (Mill.) Sweet,"Pecan, Hickory",1B,1,Y,N3,
 Carya laciniosa,Carya laciniosa,Carya laciniosa (F.Michx.) Loudon,"Pecan, Hickory",1A,1,N,N3,G5,,Y,73,35,38,34,34,0,,Y,Carya,NA,NA,,Y,Food,Materials,NA,Nuts,Materials,,NA,Primary
 Carya ovalis,Carya ovalis,Carya ovalis (Wangenh.) Sarg.,"Pecan, Hickory",1B,1,Y,NNA,G5,,Y,6,0,6,0,0,0,,Y,Carya,NA,NA,false shagbark hickory; nuts,Y,Food,Materials,NA,Nuts,Materials,,NA,Secondary
 Carya ovata,Carya ovata,Carya ovata (Mill.) K.Koch,"Pecan, Hickory",1A,1,Y,N5,G5,,Y,88,29,59,13,13,0,,N,Carya,NA,NA,shagbark hickory; nuts,Y,Food,Materials,NA,Nuts,Materials,,NA,Primary
-Chenopodium berlandieri,Chenopodium berlandieri var. bushianum,Chenopodium berlandieri var. bushianum (Aellen) Cronquist,Quinoa,1B,1,Y,N1,T4,,Y,22,0,22,0,0,0,Y,Y,Chenopodium,var.,bushianum,lambsquarters; greens and seeds,Y,Food,,NA,Cereals and pseudocereals,,,NA,Secondary
+Castanea dentata,Castanea dentata,Castanea dentata (Marshall) Borkh.,Chestnut,1A,1,Y,N1,G3,E - Endangered (E) / En voie de disparition (VD),Y,267,258,9,106,101,5,,Y,Castanea,NA,NA,american chestnut'; nuts,Y,Food,Ornamentals,NA,Nuts,Ornamentals,,NA,Primary
 Celtis occidentalis,Celtis occidentalis,Celtis occidentalis L.,Hackberry,2,2,Y,N4,G5,,Y,62,46,16,17,16,1,,Y,Celtis,NA,NA,hackberry; fruit,Y,Ornamentals,Forest Resources,NA,Ornamentals,Forest Resources,,NA,NA
 Cephalanthus occidentalis,Cephalanthus occidentalis,Cephalanthus occidentalis L.,Buttonbush,2,2,N,N5,G5,,Y,34,31,3,24,21,3,,Y,Cephalanthus,NA,NA,,Y,Ornamentals,Forest Resources,NA,Ornamentals,Forest Resources,,NA,NA
 Chamaenerion angustifolium,Chamaenerion angustifolium,Chamaenerion angustifolium (L.) Scop.,Fireweed,NA,NA,Y,N5,G5,,N,70,10,60,6,3,3,N,N,Chamaenerion,NA,NA,greens food; honey plant,Y,Food,,NA,Vegetables,,,NA,NA
@@ -198,7 +198,7 @@ Chamaenerion angustifolium,Chamaenerion angustifolium subsp. angustifolium,Chama
 Chamaenerion angustifolium,Chamaenerion angustifolium subsp. circumvagum,Chamaenerion angustifolium subsp. circumvagum (Mosquin) Moldenke,Fireweed,NA,NA,Y,N5,T5,,N,70,10,60,NA,NA,NA,N,Y,Chamaenerion,subsp.,circumvagum,,Y,Food,,NA,Vegetables,,,NA,NA
 Chenopodiastrum simplex,Chenopodiastrum simplex,"Chenopodiastrum simplex (Torr.) S.Fuentes, Uotila & Borsch",Quinoa,1C,1,N,N5,G5,,Y,2,0,2,0,0,0,,Y,Chenopodiastrum,NA,NA,,Y,Food,,NA,Cereals and pseudocereals,,,NA,Assume distant
 Chenopodium berlandieri,Chenopodium berlandieri,Chenopodium berlandieri Moq.,Quinoa,1B,1,Y,N5,G5,,Y,22,0,22,0,0,0,Y,N,Chenopodium,NA,NA,lambsquarters; greens and seeds,Y,Food,,NA,Cereals and pseudocereals,,,NA,Secondary
-Linum medium,Linum medium var. texanum,"Linum medium var. texanum A.Haines, 2010",Flax,1C,1,N,N1,T5,,Y,0,0,0,0,0,0,Y,Y,Linum,var.,texanum,,Y,Food,Materials,NA,Oils,Materials,,NA,Assume distant
+Chenopodium berlandieri,Chenopodium berlandieri var. bushianum,Chenopodium berlandieri var. bushianum (Aellen) Cronquist,Quinoa,1B,1,Y,N1,T4,,Y,22,0,22,0,0,0,Y,Y,Chenopodium,var.,bushianum,lambsquarters; greens and seeds,Y,Food,,NA,Cereals and pseudocereals,,,NA,Secondary
 Chenopodium berlandieri,Chenopodium berlandieri var. macrocalycium,Chenopodium berlandieri var. macrocalycium (Aellen) Cronquist,Quinoa,1B,1,Y,N4,T4,,Y,22,0,22,0,0,0,Y,Y,Chenopodium,var.,macrocalycium,lambsquarters; greens and seeds,Y,Food,,NA,Cereals and pseudocereals,,,NA,Secondary
 Chenopodium berlandieri,Chenopodium berlandieri var. zschackei,Chenopodium berlandieri var. zschackei (Murr) Murr,Quinoa,1B,1,Y,N5,T5,,Y,22,0,22,0,0,0,Y,Y,Chenopodium,var.,zschackei,lambsquarters; greens and seeds,Y,Food,,NA,Cereals and pseudocereals,,,NA,Secondary
 Chenopodium desiccatum,Chenopodium desiccatum,Chenopodium desiccatum A.Nelson,Quinoa,1C,1,N,N4,G5,,Y,4,0,4,0,0,0,,Y,Chenopodium,NA,NA,,Y,Food,,NA,Cereals and pseudocereals,,,NA,Tertiary
@@ -336,7 +336,7 @@ Dichanthelium latifolium,Dichanthelium latifolium,"Dichanthelium latifolium Linn
 Dichanthelium leibergii,Dichanthelium leibergii,Dichanthelium leibergii (Vasey) Freckmann,Proso-millet,1C,1,N,N3,G4,,Y,2,0,2,0,0,0,,Y,Dichanthelium,NA,NA,,Y,Food,,NA,Cereals and pseudocereals,,,NA,Assume distant
 Dichanthelium linearifolium,Dichanthelium linearifolium,Dichanthelium linearifolium (Scribn.) Gould,Proso-millet,1C,1,N,NNR,G5,,Y,1,0,1,0,0,0,,Y,Dichanthelium,NA,NA,,Y,Food,,NA,Cereals and pseudocereals,,,NA,Assume distant
 Dichanthelium sphaerocarpon,Dichanthelium sphaerocarpon,Dichanthelium sphaerocarpon (Elliott) Gould,Proso-millet,1C,1,N,N3,T5,,Y,0,0,0,0,0,0,,Y,Dichanthelium,NA,NA,,Y,Food,,Na,Cereals and pseudocereals,,,NA,Assume distant
-Linum striatum,Linum striatum,Linum striatum Walter,Flax,1C,1,N,N1,G5,,Y,0,0,0,0,0,0,,Y,Linum,NA,NA,,Y,Food,Materials,NA,Oils,Materials,,NA,Assume distant
+Dichanthelium wilcoxianum,Dichanthelium wilcoxianum,Dichanthelium wilcoxianum (Vasey) Freckmann,Proso-millet,1C,1,N,N2,G5,,Y,0,0,0,0,0,0,,Y,Dichanthelium,NA,NA,,Y,Food,,NA,Cereals and pseudocereals,,,NA,Assume distant
 Dichanthelium xanthophysum,Dichanthelium xanthophysum,Dichanthelium xanthophysum (A.Gray) Freckmann,Proso-millet,1C,1,N,N4,G5,,Y,0,0,0,0,0,0,,Y,Dichanthelium,NA,NA,,Y,Food,,NA,Cereals and pseudocereals,,,NA,Assume distant
 Diervilla lonicera,Diervilla lonicera,Diervilla lonicera Mill.,Bush-honeysuckle,2,2,N,N5,G5,,Y,55,26,29,10,9,1,,Y,Diervilla,NA,NA,,Y,Forest Resources,,NA,Forest Resources,,,NA,NA
 Dioscorea villosa,Dioscorea villosa,Dioscorea villosa L.,Yam,1C,1,Y,N4,G4,,Y,1,0,1,0,0,0,,Y,Dioscorea,NA,NA,"wild yam, atlantci yam; roots",Y,Food,,NA,Vegetables,,,NA,Assume distant
@@ -362,7 +362,7 @@ Elymus lanceolatus,Elymus lanceolatus subsp. lanceolatus,Elymus lanceolatus subs
 Elymus lanceolatus,Elymus lanceolatus subsp. psammophilus,Elymus lanceolatus subsp. psammophilus (J.M.Gillett & Senn) √Å.L√∂ve,Wheat,1C,1,N,NNR,T3,,Y,71,0,71,NA,NA,NA,N,Y,Elymus,subsp.,psammophilus,,Y,Food,,NA,Cereals and pseudocereals,Forage and Feed,,NA,Tertiary
 Elymus macrourus,Elymus macrourus,Elymus macrourus (Turcz.) Tzvelev,Wheat,1C,1,N,N4,N4,,Y,6,0,6,2,0,2,,Y,Elymus,NA,NA,,Y,Food,,NA,Cereals and pseudocereals,Forage and Feed,,NA,Tertiary
 Elymus riparius,Elymus riparius,Elymus riparius Wiegand,Wheat,1C,1,N,N4,G5,,Y,3,0,3,0,0,0,,Y,Elymus,NA,NA,,Y,Food,,NA,Cereals and pseudocereals,Forage and Feed,,NA,Tertiary
-Lupinus rivularis,Lupinus rivularis,Lupinus rivularis Douglas ex Lindl.,Lupin,1C,1,Y,N1,G3,,Y,12,1,11,0,0,0,,Y,Lupinus,NA,NA,used directly as an ornamental,Y,Food,Ornamentals,NA,Pulses,Ornamentals,,NA,Assume distant
+Elymus scribneri,Elymus scribneri,Elymus scribneri (Vasey) M.E.Jones,Wheat,1C,1,N,N2,G5,,Y,2,0,2,0,0,0,,Y,Elymus,NA,NA,,Y,Food,,NA,Cereals and pseudocereals,Forage and Feed,,NA,Tertiary
 Elymus sibiricus,Elymus sibiricus,Elymus sibiricus L.,Wheat,1C,1,N,NNA,GNR,,Y,188,0,188,0,0,0,,Y,Elymus,NA,NA,,N,Food,,NA,Cereals and pseudocereals,Forage and Feed,,NA,Assume distant
 Elymus villosus,Elymus villosus,Elymus villosus Muhl. ex Willd.,Wheat,1C,1,N,N4,G5,,Y,9,2,7,2,2,0,,Y,Elymus,NA,NA,,Y,Food,,NA,Cereals and pseudocereals,Forage and Feed,,NA,Assume distant
 Elymus violaceus,Elymus violaceus,Elymus violaceus (Hornem.) J.Feilberg,Wheat,1C,1,N,N5,T5,,Y,20,0,20,2,0,2,,Y,Elymus,NA,NA,,Y,Food,,NA,Cereals and pseudocereals,Forage and Feed,,NA,Tertiary
@@ -473,7 +473,7 @@ Humulus lupulus,Humulus lupulus,Humulus lupulus L.,Hops,1A,1,Y,N5,G5,,Y,164,10,1
 Humulus lupulus,Humulus lupulus var. lupuloides,Humulus lupulus var. lupuloides E.Small,Hops,1A,1,Y,N5,T5,,Y,164,10,154,4,0,4,Y,Y,Humulus,var.,lupuloides,"hops; greens edible, flowers in beer brewing",Y,Food,,NA,Herbs and Spices,,,NA,Primary
 Ilex mucronata,Ilex mucronata,"Ilex mucronata (L.) M.Powell, Savol. & S.Andrews",Winterberry,2,2,N,N5,G5,,Y,18,2,16,13,2,11,,Y,Ilex,NA,NA,,Y,Ornamentals,Forest Resources,NA,Ornamentals,Forest Resources,,NA,NA
 Ilex verticillata,Ilex verticillata,Ilex verticillata (L.) A.Gray,Winterberry,2,2,N,N5,G5,,Y,221,163,58,41,32,9,,Y,Ilex,NA,NA,,Y,Ornamentals,Forest Resources,NA,Ornamentals,Forest Resources,,NA,NA
-Ribes oxyacanthoides,Ribes oxyacanthoides subsp. cognatum,Ribes oxyacanthoides subsp. cognatum (Greene) Q.P.Sinnott,"Currant, Gooseberry",1B,1,Y,N1,T4,,Y,9,1,8,0,0,0,Y,Y,Ribes,subsp.,cognatum,fruit,Y,Food,,NA,Fruits,,,NA,Secondary
+Juglans cinerea,Juglans cinerea,Juglans cinerea L.,Walnut,1C,1,Y,N2,G3,E - Endangered (E) / En voie de disparition (VD),Y,85,47,38,42,42,0,,Y,Juglans,NA,NA,butternut; nut,Y,Food,Materials,NA,Nuts,Materials,,NA,Tertiary
 Juglans nigra,Juglans nigra,Juglans nigra L.,Walnut,1A,1,Y,N4,G5,,Y,134,123,11,106,106,0,,Y,Juglans,NA,NA,black walnut; nut,Y,Food,Materials,NA,Nuts,Materials,Ornamentals,NA,Progenitor
 Juniperus communis,Juniperus communis,Juniperus communis L.,Juniper,NA,NA,Y,N5,G5,,N,110,60,50,11,6,5,N,N,Juniperus,NA,NA,"tea, leaves and shoots edible",Y,Medicinals,Food,NA,Medicinals,Vegetables,,NA,NA
 Juniperus communis,Juniperus communis var. charlottensis,Juniperus communis var. charlottensis R.P.Adams,Juniper,NA,NA,Y,N3,T3,,N,110,60,50,NA,NA,NA,N,Y,Juniperus,var.,charlottensis,,Y,Medicinals,Food,NA,Medicinals,Vegetables,,NA,NA
@@ -517,13 +517,13 @@ Linum lewisii,Linum lewisii var. lepagei,Linum lewisii var. lepagei (B.Boivin) C
 Linum lewisii,Linum lewisii var. lewisii,Linum lewisii var. lewisii,Flax,1C,1,N,N5,T5,,Y,68,5,63,3,0,3,Y,Y,Linum,var.,lewisii,,Y,Food,Materials,NA,Oils,Materials,,NA,Tertiary
 Linum medium,Linum medium,Linum medium (Planch.) Britton ex Britton & A.Br.,Flax,1C,1,N,N3,G5,,Y,0,0,0,0,0,0,Y,N,Linum,NA,NA,,Y,Food,Materials,NA,Oils,Materials,,NA,Assume distant
 Linum medium,Linum medium var. medium,Linum medium var. medium,Flax,1C,1,N,N3,T3,,Y,0,0,0,0,0,0,Y,Y,Linum,var.,medium,,Y,Food,Materials,NA,Oils,Materials,,NA,Assume distant
-Vaccinium stamineum,Vaccinium stamineum,Vaccinium stamineum L.,"Blueberry, Cranberry",1C,1,Y,N1,G5,T - Threatened (T) / MecÈe (M),Y,25,5,20,0,0,0,,Y,Vaccinium,NA,NA,"fruit, leaves and fruit as tea",Y,Food,,NA,Fruits,,,NA,Assume distant
+Linum medium,Linum medium var. texanum,"Linum medium var. texanum A.Haines, 2010",Flax,1C,1,N,N1,T5,,Y,0,0,0,0,0,0,Y,Y,Linum,var.,texanum,,Y,Food,Materials,NA,Oils,Materials,,NA,Assume distant
 Linum perenne,Linum perenne,Linum perenne L.,Flax,1C,1,Y,NNA,GNR,,Y,20,2,18,0,0,0,,Y,Linum,NA,NA,seeds,N,Food,Materials,NA,Oils,Materials,,NA,Assume distant
 Linum rigidum,Linum rigidum,Linum rigidum Pursh,Flax,1C,1,N,N5,G5,,Y,3,0,3,1,0,1,,Y,Linum,NA,NA,,Y,Food,Materials,NA,Oils,Materials,,NA,Assume distant
-Amaranthus californicus,Amaranthus californicus,Amaranthus californicus (Moq.) S.Watson,Amaranth,1C,1,Y,N2,G4,,Y,1,0,1,0,0,0,,Y,Amaranthus,NA,NA,greens and seeds used,Y,Food,Ornamentals,NA,Cereals and pseudocereals,Ornamentals,,NA,Assume distant
+Linum striatum,Linum striatum,Linum striatum Walter,Flax,1C,1,N,N1,G5,,Y,0,0,0,0,0,0,,Y,Linum,NA,NA,,Y,Food,Materials,NA,Oils,Materials,,NA,Assume distant
 Linum sulcatum,Linum sulcatum,Linum sulcatum Riddell,Flax,1C,1,N,N3,G5,,Y,3,0,3,0,0,0,,Y,Linum,NA,NA,,Y,Food,Materials,NA,Oils,Materials,,NA,Assume distant
 Linum usitatissimum,Linum usitatissimum,Linum usitatissimum L.,Flax,1A,1,N,NNA,GNR,,Y,6337,0,6337,47,0,47,,Y,Linum,NA,NA,,Y,Food,Materials,NA,Oils,Materials,,NA,Progenitor
-Dichanthelium wilcoxianum,Dichanthelium wilcoxianum,Dichanthelium wilcoxianum (Vasey) Freckmann,Proso-millet,1C,1,N,N2,G5,,Y,0,0,0,0,0,0,,Y,Dichanthelium,NA,NA,,Y,Food,,NA,Cereals and pseudocereals,,,NA,Assume distant
+Linum virginianum,Linum virginianum,Linum virginianum L.,Flax,1C,1,N,N2,G4,,Y,0,0,0,0,0,0,,Y,Linum,NA,NA,,Y,Food,Materials,NA,Oils,Materials,,NA,Assume distant
 Lomatium ambiguum,Lomatium ambiguum,Lomatium ambiguum (Nutt.) J.M.Coult. & Rose,Biscuitroot,NA,NA,Y,N5,G4,,N,5,0,5,0,0,0,,Y,Lomatium,NA,NA,roots,Y,Food,,NA,Vegetables,,,NA,NA
 Lomatium cous,Lomatium cous,Lomatium cous (S.Watson) J.M.Coult. & Rose,Biscuitroot,NA,NA,Y,N1,G5,,N,4,0,4,0,0,0,,Y,Lomatium,NA,NA,roots,Y,Food,,NA,Vegetables,,,NA,NA
 Lomatium dissectum,Lomatium dissectum,Lomatium dissectum (Nutt. ex Torr. & Gray) Mathias & Constance,Biscuitroot,NA,NA,Y,NNR,G4,,N,72,2,70,2,2,0,,Y,Lomatium,NA,NA,roots,Y,Food,,NA,Vegetables,,,NA,NA
@@ -546,19 +546,19 @@ Lupinus bicolor,Lupinus bicolor,Lupinus bicolor Lindl.,Lupin,1C,1,Y,N5,G5,,Y,24,
 Lupinus depressus,Lupinus depressus,Lupinus depressus Rydb.,Lupin,1C,1,Y,NNA,G4,,Y,0,0,0,0,0,0,,Y,Lupinus,NA,NA,used directly as an ornamental,Y,Food,Ornamentals,NA,Pulses,Ornamentals,,NA,Assume distant
 Lupinus kuschei,Lupinus kuschei,Lupinus kuschei Eastw.,Lupin,1C,1,Y,N4,G4,,Y,0,0,0,0,0,0,,Y,Lupinus,NA,NA,used directly as an ornamental,Y,Food,Ornamentals,NA,Pulses,Ornamentals,,NA,Assume distant
 Lupinus latifolius,Lupinus latifolius,Lupinus latifolius Lindl. ex J.Agardh,Lupin,1C,1,Y,N5,G5,,Y,8,0,8,0,0,0,,Y,Lupinus,NA,NA,used directly as an ornamental,Y,Food,Ornamentals,NA,Pulses,Ornamentals,,NA,Assume distant
-Elymus scribneri,Elymus scribneri,Elymus scribneri (Vasey) M.E.Jones,Wheat,1C,1,N,N2,G5,,Y,2,0,2,0,0,0,,Y,Elymus,NA,NA,,Y,Food,,NA,Cereals and pseudocereals,Forage and Feed,,NA,Tertiary
+Lupinus lepidus,Lupinus lepidus,Lupinus lepidus Douglas ex Lindl.,Lupin,1C,1,Y,N2,G5,,Y,2,0,2,0,0,0,,Y,Lupinus,NA,NA,used directly as an ornamental,Y,Food,Ornamentals,NA,Pulses,Ornamentals,,NA,Assume distant
 Lupinus leucophyllus,Lupinus leucophyllus,Lupinus leucophyllus Douglas ex Lindl.,Lupin,1C,1,Y,NNA,G5,,Y,58,0,58,0,0,0,,Y,Lupinus,NA,NA,used directly as an ornamental,Y,Food,Ornamentals,NA,Pulses,Ornamentals,,NA,Assume distant
 Lupinus littoralis,Lupinus littoralis,Lupinus littoralis Douglas ex Lindl.,Lupin,1C,1,Y,N5,G5,,Y,9,2,7,0,0,0,,Y,Lupinus,NA,NA,,Y,Food,,NA,Pulses,,,NA,Assume distant
 Lupinus microcarpus,Lupinus microcarpus,Lupinus microcarpus Sims,Lupin,1C,1,Y,NNR,GNR,,Y,10,3,7,0,0,0,,Y,Lupinus,NA,NA,used directly as an ornamental,Y,Food,Ornamentals,NA,Pulses,Ornamentals,,NA,Assume distant
 Lupinus nootkatensis,Lupinus nootkatensis,Lupinus nootkatensis Donn ex Sims,Lupin,1C,1,Y,N5,G5,,Y,22,1,21,0,0,0,Y,N,Lupinus,NA,NA,,Y,Food,,NA,Pulses,,,NA,Assume distant
 Lupinus nootkatensis,Lupinus nootkatensis var. nootkatensis,Lupinus nootkatensis var. nootkatensis,Lupin,1C,1,Y,N5,T5,,Y,22,1,21,0,0,0,Y,Y,Lupinus,var.,nootkatensis,,Y,Food,,NA,Pulses,,,NA,Assume distant
 Lupinus oreganus,Lupinus oreganus,Lupinus oreganus A.Heller,Lupin,1C,1,Y,NX,G4,,Y,0,0,0,0,0,0,,Y,Lupinus,NA,NA,used directly as an ornamental,Y,Food,Ornamentals,NA,Pulses,Ornamentals,,NA,Assume distant
-Juglans cinerea,Juglans cinerea,Juglans cinerea L.,Walnut,1C,1,Y,N2,G3,E - Endangered (E) / En voie de disparition (VD),Y,85,47,38,42,42,0,,Y,Juglans,NA,NA,butternut; nut,Y,Food,Materials,NA,Nuts,Materials,,NA,Tertiary
+Lupinus perennis,Lupinus perennis,Lupinus perennis L.,Lupin,1C,1,Y,N2,G5,,Y,11,0,11,0,0,0,,Y,Lupinus,NA,NA,used directly as an ornamental,Y,Food,Ornamentals,NA,Pulses,Ornamentals,,NA,Assume distant
 Lupinus polyphyllus,Lupinus polyphyllus,Lupinus polyphyllus Lindl.,Lupin,1A,1,Y,N5,G5,,Y,109,10,99,0,0,0,N,N,Lupinus,NA,NA,used directly as an ornamental,Y,Food,Ornamentals,NA,Pulses,Ornamentals,,NA,Progenitor
 Lupinus polyphyllus,Lupinus polyphyllus var. burkei,Lupinus polyphyllus var. burkei (S.Watson) C.L.Hitchc.,Lupin,1A,1,Y,N5,G5,,Y,109,10,99,NA,NA,NA,N,Y,Lupinus,var.,burkei,used directly as an ornamental,Y,Food,Ornamentals,NA,Pulses,Ornamentals,,NA,Progenitor
 Lupinus polyphyllus,Lupinus polyphyllus var. polyphyllus,Lupinus polyphyllus var. polyphyllus,Lupin,1A,1,Y,NNR,T4,,Y,109,10,99,NA,NA,NA,N,Y,Lupinus,var.,polyphyllus,used directly as an ornamental,Y,Food,Ornamentals,NA,Pulses,Ornamentals,,NA,Progenitor
 Lupinus pusillus,Lupinus pusillus,Lupinus pusillus Pursh,Lupin,1C,1,Y,N3,G5,,Y,6,0,6,0,0,0,,Y,Lupinus,NA,NA,used directly as an ornamental,Y,Food,Ornamentals,NA,Pulses,Ornamentals,,NA,Assume distant
-Linum virginianum,Linum virginianum,Linum virginianum L.,Flax,1C,1,N,N2,G4,,Y,0,0,0,0,0,0,,Y,Linum,NA,NA,,Y,Food,Materials,NA,Oils,Materials,,NA,Assume distant
+Lupinus rivularis,Lupinus rivularis,Lupinus rivularis Douglas ex Lindl.,Lupin,1C,1,Y,N1,G3,,Y,12,1,11,0,0,0,,Y,Lupinus,NA,NA,used directly as an ornamental,Y,Food,Ornamentals,NA,Pulses,Ornamentals,,NA,Assume distant
 Lupinus sericeus,Lupinus sericeus,Lupinus sericeus Pursh,Lupin,1C,1,Y,N5,G5,,Y,63,0,63,0,0,0,,Y,Lupinus,NA,NA,used directly as an ornamental,Y,Food,Ornamentals,NA,Pulses,Ornamentals,,NA,Assume distant
 Lupinus sulphureus,Lupinus sulphureus,Lupinus sulphureus Douglas,Lupin,1C,1,Y,N3,G5,,Y,12,0,12,0,0,0,,Y,Lupinus,NA,NA,used directly as an ornamental,Y,Food,Ornamentals,NA,Pulses,Ornamentals,,NA,Assume distant
 Lysichiton americanus,Lysichiton americanus,Lysichiton americanus Hult√©n & H.St.John,Skunk Cabbage,NA,NA,Y,N5,G5,,N,11,10,1,1,1,0,,Y,Lysichiton,NA,NA,,Y,Food,Ornamentals,NA,Vegetables,Medicinals,,NA,NA
@@ -752,10 +752,10 @@ Ribes lacustre,Ribes lacustre,Ribes lacustre (Pers.) Poir.,"Currant, Gooseberry"
 Ribes laxiflorum,Ribes laxiflorum,Ribes laxiflorum Pursh,"Currant, Gooseberry",1C,1,Y,N5,G5,,Y,7,0,7,0,0,0,,Y,Ribes,NA,NA,fruit,Y,Food,,NA,Fruits,,,NA,Assume distant
 Ribes lobbii,Ribes lobbii,Ribes lobbii A.Gray,"Currant, Gooseberry",1C,1,Y,N5,G4,,Y,10,3,7,3,3,0,Y,Y,Ribes,NA,NA,fruit,Y,Food,,NA,Fruits,,,NA,Assume distant
 Ribes oxyacanthoides,Ribes oxyacanthoides,Ribes oxyacanthoides L.,"Currant, Gooseberry",1A,1,Y,N5,G5,,Y,9,1,8,2,0,2,Y,N,Ribes,NA,NA,fruit,Y,Food,,NA,Fruits,,,NA,Progenitor
-Lupinus lepidus,Lupinus lepidus,Lupinus lepidus Douglas ex Lindl.,Lupin,1C,1,Y,N2,G5,,Y,2,0,2,0,0,0,,Y,Lupinus,NA,NA,used directly as an ornamental,Y,Food,Ornamentals,NA,Pulses,Ornamentals,,NA,Assume distant
+Ribes oxyacanthoides,Ribes oxyacanthoides subsp. cognatum,Ribes oxyacanthoides subsp. cognatum (Greene) Q.P.Sinnott,"Currant, Gooseberry",1B,1,Y,N1,T4,,Y,9,1,8,0,0,0,Y,Y,Ribes,subsp.,cognatum,fruit,Y,Food,,NA,Fruits,,,NA,Secondary
 Ribes oxyacanthoides,Ribes oxyacanthoides subsp. irriguum,Ribes oxyacanthoides subsp. irriguum (Douglas) Q.P.Sinnott,"Currant, Gooseberry",1B,1,Y,N3,T4,,Y,9,1,8,0,0,0,Y,Y,Ribes,subsp.,irriguum,fruit,Y,Food,,NA,Fruits,,,NA,Secondary
 Ribes oxyacanthoides,Ribes oxyacanthoides var. oxyacanthoides,Ribes oxyacanthoides subsp. oxyacanthoides,"Currant, Gooseberry",1A,1,Y,N5,T5,,Y,9,1,8,2,0,2,Y,Y,Ribes,var.,oxyacanthoides,fruit,Y,Food,,NA,Fruits,,,NA,Progenitor
-Lupinus perennis,Lupinus perennis,Lupinus perennis L.,Lupin,1C,1,Y,N2,G5,,Y,11,0,11,0,0,0,,Y,Lupinus,NA,NA,used directly as an ornamental,Y,Food,Ornamentals,NA,Pulses,Ornamentals,,NA,Assume distant
+Ribes oxyacanthoides,Ribes oxyacanthoides var. setosum,Ribes oxyacanthoides var. setosum (Lindl.) Dorn,"Currant, Gooseberry",1B,1,Y,N2,T4,,Y,9,1,8,0,0,0,Y,Y,Ribes,var.,setosum,fruit,Y,Food,,NA,Fruits,,,NA,Secondary
 Ribes sanguineum,Ribes sanguineum,Ribes sanguineum Pursh,"Currant, Gooseberry",1B,1,Y,N5,G5,,Y,73,43,30,2,2,0,Y,N,Ribes,NA,NA,fruit,Y,Food,,NA,Fruits,,,NA,Secondary
 Ribes sanguineum,Ribes sanguineum var. sanguineum,Ribes sanguineum var. sanguineum,"Currant, Gooseberry",1B,1,Y,N5,T5,,Y,73,43,30,2,2,0,Y,Y,Ribes,var.,sanguineum,fruit,Y,Food,,NA,Fruits,,,NA,Secondary
 Ribes triste,Ribes triste,Ribes triste Pall.,"Currant, Gooseberry",1C,1,Y,N5,G5,,Y,17,2,15,2,2,0,,Y,Ribes,NA,NA,fruit,Y,Food,,NA,Fruits,,,NA,Tertiary
@@ -841,8 +841,8 @@ Shepherdia argentea,Shepherdia argentea,Shepherdia argentea (Pursh) Nutt.,Buffal
 Shepherdia canadensis,Shepherdia canadensis,Shepherdia canadensis (L.) Nutt.,Buffaloberry,NA,NA,Y,N5,G5,,N,26,25,1,15,15,0,,Y,Shepherdia,NA,NA,fruit,Y,Food,Food,NA,Fruits,,,NA,NA
 Silphium integrifolium,Silphium integrifolium,Silphium integrifolium Michx.,Rosinweed,1A,1,Y,NNA,G5,,Y,5,1,4,0,0,0,Y,N,Silphium,NA,NA,potential as an oilseed crop (see Reinert 2019),N,Food,Medicinals,NA,Oils,Medicinals,,NA,Primary
 Silphium integrifolium,Silphium integrifolium var. laeve,Silphium integrifolium var. laeve Torr. & A.Gray,Rosinweed,1A,1,Y,NNA,T4,,Y,5,1,4,0,0,0,Y,Y,Silphium,var.,laeve,potential as an oilseed crop (see Reinert 2019),N,Food,Medicinals,NA,Oils,Medicinals,,NA,Primary
-Ribes oxyacanthoides,Ribes oxyacanthoides var. setosum,Ribes oxyacanthoides var. setosum (Lindl.) Dorn,"Currant, Gooseberry",1B,1,Y,N2,T4,,Y,9,1,8,0,0,0,Y,Y,Ribes,var.,setosum,fruit,Y,Food,,NA,Fruits,,,NA,Secondary
 Silphium perfoliatum,Silphium perfoliatum,Silphium perfoliatum L.,Rosinweed,1B,1,Y,N2,G5,,Y,33,8,25,0,0,0,Y,N,Silphium,NA,NA,potential as an oilseed crop (see Reinert 2019),Y,Food,Medicinals,NA,Oils,Medicinals,,NA,Secondary
+Silphium perfoliatum,Silphium perfoliatum var. perfoliatum,Silphium perfoliatum var. perfoliatum,Rosinweed,1B,1,Y,N2,T5,,Y,33,8,25,0,0,0,Y,Y,Silphium,var.,perfoliatum,potential as an oilseed crop (see Reinert 2019),Y,Food,Medicinals,NA,Oils,Medicinals,,NA,Secondary
 Sium suave,Sium suave,Sium suave Walter,Water-parsnip,NA,NA,Y,N5,G5,,N,4,1,3,0,0,0,,Y,Sium,NA,NA,,Y,Food,,NA,Vegetables,,,NA,NA
 Sorbus americana,Sorbus americana,Sorbus americana Marsh,Rowan,2,2,Y,N5,G5,,Y,27,15,12,21,13,8,,Y,Sorbus,NA,NA,fruit,Y,Forest Resources,Food,NA,Forest Resources,Fruits,,NA,NA
 Sorbus decora,Sorbus decora,Sorbus decora (Sarg.) C.K.Schneid.,Rowan,2,2,Y,N5,G5,,Y,31,21,10,15,6,9,,Y,Sorbus,NA,NA,fruit,Y,Forest Resources,Food,NA,Forest Resources,Fruits,,NA,NA
@@ -902,7 +902,7 @@ Vaccinium oxycoccos,Vaccinium oxycoccos,Vaccinium oxycoccos L.,"Blueberry, Cranb
 Vaccinium pallidum,Vaccinium pallidum,Vaccinium pallidum Aiton,"Blueberry, Cranberry",1B,1,Y,N4,G5,,Y,36,0,36,1,0,1,,Y,Vaccinium,NA,NA,"fruit, leaves and fruit as tea",Y,Food,,NA,Fruits,,,NA,Secondary
 Vaccinium parvifolium,Vaccinium parvifolium,Vaccinium parvifolium Sm.,"Blueberry, Cranberry",1B,1,Y,NNR,G5,,Y,51,10,41,0,0,0,,Y,Vaccinium,NA,NA,"fruit, leaves and fruit as tea",Y,Food,,NA,Fruits,,,NA,Secondary
 Vaccinium scoparium,Vaccinium scoparium,Vaccinium scoparium Leiberg,"Blueberry, Cranberry",1B,1,Y,N5,G5,,Y,20,0,20,1,0,1,,Y,Vaccinium,NA,NA,"fruit, leaves and fruit as tea",Y,Food,,NA,Fruits,,,NA,Secondary
-Silphium perfoliatum,Silphium perfoliatum var. perfoliatum,Silphium perfoliatum var. perfoliatum,Rosinweed,1B,1,Y,N2,T5,,Y,33,8,25,0,0,0,Y,Y,Silphium,var.,perfoliatum,potential as an oilseed crop (see Reinert 2019),Y,Food,Medicinals,NA,Oils,Medicinals,,NA,Secondary
+Vaccinium stamineum,Vaccinium stamineum,Vaccinium stamineum L.,"Blueberry, Cranberry",1C,1,Y,N1,G5,T - Threatened (T) / MecÈe (M),Y,25,5,20,0,0,0,,Y,Vaccinium,NA,NA,"fruit, leaves and fruit as tea",Y,Food,,NA,Fruits,,,NA,Assume distant
 Vaccinium uliginosum,Vaccinium uliginosum,Vaccinium uliginosum L.,"Blueberry, Cranberry",1B,1,Y,N5,G5,,Y,128,8,120,7,5,2,,Y,Vaccinium,NA,NA,"lingonberry; fruit, leaves and fruit as tea",Y,Food,,Food,Fruits,,,Fruits,Secondary
 Vaccinium vitis-idaea,Vaccinium vitis-idaea,Vaccinium vitis-idaea L.,"Blueberry, Cranberry",1A,1,Y,N5,G5,,Y,114,10,104,4,0,4,,Y,Vaccinium,NA,NA,"lingonberry; fruit, leaves and fruit as tea",Y,Food,,Food,Fruits,,,Fruits,Primary
 Viburnum acerifolium,Viburnum acerifolium,Viburnum acerifolium L.,Highbush cranberry,2,2,Y,N5,G5,,Y,57,8,49,4,4,0,,Y,Viburnum,NA,NA,fruit,Y,Ornamentals,,NA,Ornamentals,,,NA,NA

@@ -873,3 +873,377 @@ median(forage_and_feed$garden_accessions_sp)
 sum(forage_and_feed$genebank_accessions_sp)
 median(forage_and_feed$genebank_accessions_sp)
 
+
+
+#######################################################
+# Number of accessions only in PGRC (filter out NPGS) #
+#######################################################
+num_accessions <- garden_accessions2 %>%
+  filter(GARDEN_CODE != "NPGS") %>%
+  mutate_all(na_if,"") %>%
+  mutate(TAXON_INFRA = ifelse(is.na(TAXON_INFRA), 
+                              TAXON, 
+                              TAXON_INFRA)
+  ) %>%
+  full_join(inventory, by=c("TAXON_INFRA" = "TAXON")) %>% 
+  group_by(SPECIES) %>%
+  mutate(total_accessions_sp = sum(!is.na(GARDEN_CODE))) %>%
+  mutate(garden_accessions_sp = sum(!is.na(GARDEN_CODE) & 
+                                      INSTITUTION == "BG")) %>%
+  mutate(genebank_accessions_sp = sum(!is.na(GARDEN_CODE) & 
+                                        INSTITUTION == "G")) %>%
+  distinct(SPECIES, .keep_all = TRUE) %>%
+  select(-TAXON, -GARDEN_CODE, -INSTITUTION, -PROVENANCE, -COUNTRY,
+         -LOCALITY, -LATITUDE, -LONGITUDE, -PROVINCE, -QUANTITY,
+         -latitude, -longitude, -TAXON_INFRA, -RANK, -INFRASPECIFIC)
+
+# write.csv(num_accessions_no_NPGS, "Garden_PGRC_Data/summary_accessions_all_species.csv")
+
+##################################################################
+# Join with species distributions to get province and ecoregion, #
+# and add inventory data, e.g. TIER, G versus BG, etc.           #
+##################################################################
+
+
+
+# then add total 
+
+# THEN
+# remove points from outside of Canada 
+# code here
+canada <- st_read("./Geo_Data/canada.geojson", quiet = TRUE) # 1
+crs_string = "+proj=lcc +lat_1=49 +lat_2=77 +lon_0=-91.52 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs" # 2
+
+# create a buffer of ~>100km - capture all points on weird coastlines
+# will inevitably capture a few accessions from the border with the U.S.
+canada_buff = st_buffer(canada, dist = 1)
+
+plot <- ggplot(canada_buff) +
+  geom_sf(fill = "white", color = "gray60", size = 0.1) +
+  coord_sf(crs = crs_string)
+plot
+
+# project points to same as canada shapefile
+sp <- st_transform(sf_garden_accessions, proj4string=CRS(proj4string(canada)))
+# and then clip to the layer (the buffered layer)
+sp_subset <- sp[canada_buff, ]
+
+
+# Append Province to accession using lat and longitude
+# spatial join to add accession province
+points_polygon_wild <- st_join(sp_subset, canada_provinces_geojson, left = TRUE,
+                               join = st_nearest_feature, maxdist = 1000)
+
+# spatial join to add accession ecoregion
+points_polygon_wild_2 <- st_join(points_polygon_wild, canada_ecoregions_geojson, left = TRUE,
+                                 join = st_nearest_feature, maxdist = 1000)
+
+
+# break out new latitude and longitude columns and reformat
+points_polygon_wild_2$TAXON_INFRA[points_polygon_wild_2$TAXON_INFRA == ""] <- NA
+summary_all_garden_accessions_wild <- points_polygon_wild_2 %>%
+  filter(GARDEN_CODE != "NPGS")  %>%
+  # break coordinates into lat/long
+  mutate(longitude=gsub("\\,.*","", geometry)) %>%
+  mutate(latitude=gsub(".*,","",geometry)) %>%
+  # format to remove "c(" and  ")"
+  mutate(longitude = as.numeric(str_sub(longitude, 3)))  %>% 
+  mutate(latitude = as.numeric(str_remove(latitude, "[)]"))) %>% 
+  
+  # select columns that match garden accessions
+  dplyr::select(TAXON_INFRA, TAXON, 
+                #GENUS, SPECIES, RANK, INFRASPECIFIC, 
+                #PRIMARY_ASSOCIATED_CROP_COMMON_NAME, 
+                #SECONDARY_ASSOCIATED_CROP_COMMON_NAME,
+                #PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_1,
+                #PRIMARY_ASSOCIATED_CROP_TYPE_GENERAL_2,
+                #SECONDARY_ASSOCIATED_CROP_TYPE_GENERAL,
+                #PRIMARY_CROP_OR_WUS_USE_SPECIFIC_1,
+                #PRIMARY_CROP_OR_WUS_USE_SPECIFIC_2,
+                #PRIMARY_CROP_OR_WUS_USE_SPECIFIC_3,
+                #FINEST_TAXON_RESOLUTION, CWR, WUS, CATEGORY, TIER, 
+                PROVENANCE, COUNTRY, LOCALITY,
+                PROVINCE.x, PROVINCE.y, ECO_NAME,
+                latitude, longitude,
+                GARDEN_CODE, INSTITUTION) %>%
+  # IUCNRedList/conservation_status) %>%
+  # take province from cd_canada unless was already provided by garden (just want one column)
+  mutate(province = PROVINCE.y) %>%
+  dplyr::select(-PROVINCE.y, - PROVINCE.x) %>%
+  full_join(inventory[,c("TAXON", "SPECIES", "TIER", "CWR", "WUS",
+                         "INFRASPECIFIC_COLLECTIONS_ASSIGNED", "FINEST_TAXON_RESOLUTION",
+                         "ROUNDED_G_RANK", "ROUNDED_N_RANK", "COSEWIC_DESC")]) %>%
+  full_join(num_accessions[,c("SPECIES", "total_accessions_sp", 
+                              "garden_accessions_sp", "genebank_accessions_sp")])%>%
+  mutate(TAXON_INFRA = ifelse(is.na(TAXON_INFRA), 
+                              TAXON, 
+                              TAXON_INFRA))
+
+# now calculate INFRASPECIFIC accessions counts for WILD-CANADIAN accessions only
+# then rejoin those counts with summary_all_garden_accessions_wild
+# and with num_accessions
+summary_all_garden_accessions_wild_infra_counts <- summary_all_garden_accessions_wild %>%
+  filter(INFRASPECIFIC_COLLECTIONS_ASSIGNED == "Y") %>%
+  group_by(TAXON_INFRA) %>%
+  mutate(total_accessions_w_finest_taxon_res = sum(!is.na(GARDEN_CODE))) %>%
+  mutate(garden_accessions_w_finest_taxon_res = sum(!is.na(GARDEN_CODE) & 
+                                                      INSTITUTION == "BG")) %>%
+  mutate(genebank_accessions_w_finest_taxon_res = sum(!is.na(GARDEN_CODE) & 
+                                                        INSTITUTION == "G"))
+
+summary_all_garden_accessions_wild_counts <- summary_all_garden_accessions_wild %>%
+  filter(INFRASPECIFIC_COLLECTIONS_ASSIGNED != "Y") %>%
+  group_by(TAXON_INFRA) %>%
+  mutate(total_accessions_w_finest_taxon_res = sum(!is.na(GARDEN_CODE))) %>%
+  mutate(garden_accessions_w_finest_taxon_res = sum(!is.na(GARDEN_CODE) & 
+                                                      INSTITUTION == "BG")) %>%
+  mutate(genebank_accessions_w_finest_taxon_res = sum(!is.na(GARDEN_CODE) & 
+                                                        INSTITUTION == "G"))
+
+summary_all_garden_accessions_wild_counts <- rbind(
+  summary_all_garden_accessions_wild_infra_counts,
+  summary_all_garden_accessions_wild_counts
+)
+
+summary_all_garden_accessions_wild_counts_df <- as.data.frame(summary_all_garden_accessions_wild_counts)
+
+num_accessions_w_wild_counts <- summary_all_garden_accessions_wild_counts_df %>%
+  distinct(TAXON, .keep_all = TRUE) %>%
+  select(-GARDEN_CODE, -INSTITUTION, -PROVENANCE, -COUNTRY,
+         -LOCALITY, -ECO_NAME, -province,
+         -latitude, -longitude, -geometry) %>%
+  left_join(inventory)
+
+write.csv(num_accessions_w_wild_counts, "Garden_PGRC_Data/summary_accessions_all_species_no_NPGS.csv")
+
+# edited manually, but if need to do again,
+# if infraspecific taxa assigned == y AND taxon_infra == taxon, then delete row 
+
+
+## summary of accessions
+# how many for each category
+TIER1_W <- summary_all_garden_accessions_wild_counts %>%
+  filter(TIER == 1)
+TIER1_W_distinct <- TIER1 %>%
+  distinct(SPECIES)
+TIER2_W <- summary_all_garden_accessions_wild_counts %>%
+  filter(TIER == 2)
+TIER2_W_distinct <- TIER2_W %>%
+  distinct(SPECIES)
+WUS_W <- summary_all_garden_accessions_wild_counts %>%
+  filter(WUS == "Y")
+WUS_W_distinct <- WUS_W %>%
+  distinct(SPECIES)
+
+# Tier 1 in gardens
+TIER1_W_BG <- TIER1_W %>%
+  filter(INSTITUTION == "BG")
+
+# Tier 1 in genebanks
+TIER1_W_G <- TIER1_W %>%
+  filter(INSTITUTION == "G")
+
+# and broken down by those in gardens, those in genebanks (and within the two genebanks types)
+BG_accessions_W <- summary_all_garden_accessions_wild_counts %>%
+  filter(INSTITUTION == "BG") # %>%
+
+# accessions in individual gardens (>10,000 in garden 1)
+BG_W <- summary_all_garden_accessions_wild %>%
+  filter(INSTITUTION == "BG") %>%
+  group_by(GARDEN_CODE, TIER) %>%
+  count()
+
+BG_distinct_W <- summary_all_garden_accessions_wild %>%
+  filter(INSTITUTION == "BG",
+         TIER == 1) %>%
+  distinct(SPECIES)
+
+# TIER2 in each BG
+BG_TIER2_W <- summary_all_garden_accessions_wild %>%
+  filter(INSTITUTION == "BG",
+         TIER == 2) %>%
+  group_by(GARDEN_CODE) %>%
+  count()
+
+# WUS in each BG
+BG_WUS_W <- summary_all_garden_accessions_wild %>%
+  filter(INSTITUTION == "BG",
+         WUS == "Y") %>%
+  group_by(GARDEN_CODE) %>%
+  count()
+
+# count accessions in G
+G_W <- summary_all_garden_accessions_wild %>%
+  filter(INSTITUTION == "G") # %>%
+
+# G species Tier 1
+G_distinct_W <- G_W %>%
+  filter(TIER == 1) %>%
+  distinct(SPECIES)
+
+# count accessions in PGRC
+PGRC_accessions_W <- G_W %>%
+  filter(GARDEN_CODE == "PGRC")
+
+# PGRC species Tier 1
+PGRC_distinct_W <- G_W %>%
+  filter(TIER == 1,
+         GARDEN_CODE == "PGRC") %>%
+  distinct(SPECIES)
+
+# count accessions in NPGS
+NPGS_accessions_W <- G_W %>%
+  filter(GARDEN_CODE == "NPGS")
+
+# NPGS species Tier 1
+NPGS_distinct_W <- G_W %>%
+  filter(TIER == 1,
+         GARDEN_CODE == "NPGS") %>%
+  distinct(SPECIES)
+
+# TIER2 in genebanks
+G_WUS_W <- summary_all_garden_accessions_wild %>%
+  filter(INSTITUTION == "G",
+         TIER == 2)
+
+# WUS in genebanks
+G_WUS_W <- summary_all_garden_accessions_wild %>%
+  filter(INSTITUTION == "G",
+         WUS == "Y")
+
+# which species in one type of institution but not the other
+left_W <- anti_join(PGRC_distinct_W, NPGS_distinct_W) # in x but not in y
+left2_W <- anti_join(NPGS_distinct_W, PGRC_distinct_W)
+left3_W <- anti_join(G_distinct_W, BG_distinct_W)
+left4_W <- anti_join(BG_distinct_W, G_distinct_W)
+
+only_PGRC_or_gardens <- rbind(left4_W, left_W)
+only_PGRC_or_gardens <- only_PGRC_or_gardens %>% 
+  distinct()
+
+
+################################################################
+# NOW MAKE THE GAP TABLES                                      #
+################################################################
+
+# now join the garden data with the sp distributions by province
+# to expand each row where a taxon/ species occurs
+# for taxon level use these:
+#summary_all_garden_accessions_wild_for_gaps <- summary_all_garden_accessions_wild %>%
+#  rename("NOT_NEEDED" = "TAXON") %>%
+#  rename("TAXON" = "TAXON_INFRA")
+
+sp_distr_ecoregion_taxon <- sp_distr_ecoregion %>%
+  # remove duplicates at ecoregion within taxon
+  distinct(TAXON, ECO_NAME, .keep_all=TRUE)
+
+ecoregion_gap_table_taxon <- sp_distr_ecoregion_taxon[ , c("TAXON", "ECO_NAME")] %>%
+  merge(x = ., y = summary_all_garden_accessions_wild,
+        by = c("TAXON", "ECO_NAME"),
+        all = TRUE) %>%
+  dplyr::select(-province, -PROVENANCE, -COUNTRY, -LOCALITY, -TIER, -CWR, -WUS) %>%
+  full_join(inventory, by = "TAXON") 
+
+sp_distr_province_taxon <- sp_distr_province %>%
+  # remove duplicates at ecoregion within taxon
+  distinct(TAXON, PROVINCE, .keep_all=TRUE)
+
+summary_all_garden_accessions_wild <- summary_all_garden_accessions_wild %>%
+  rename("PROVINCE" = "province")
+
+province_gap_table_taxon <- sp_distr_province_taxon[ , c("TAXON", "PROVINCE")] %>%
+  merge(x = ., y = summary_all_garden_accessions_wild,
+        by = c("TAXON", "PROVINCE"),
+        all = TRUE) %>%
+  dplyr::select(-ECO_NAME, -PROVENANCE, -COUNTRY, -LOCALITY, -TIER, -CWR, -WUS) %>%
+  full_join(inventory, by = "TAXON") 
+
+
+# for species level use these:
+inventory_sp <- inventory %>%
+  dplyr::select(-TAXON, -RANK, -INFRASPECIFIC) %>%
+  distinct(SPECIES, .keep_all = TRUE)
+
+sp_distr_province_sp <- sp_distr_province %>%
+  # remove duplicates at province within species
+  distinct(SPECIES, PROVINCE, .keep_all=TRUE)
+
+province_gap_table_species <- sp_distr_province_sp[ , c("SPECIES", "PROVINCE")] %>%
+  rename("province" = "PROVINCE") %>%
+  merge(x = ., y = summary_all_garden_accessions_wild,
+        by = c("SPECIES", "province"),
+        all = TRUE) %>%
+  dplyr::select(-ECO_NAME, -COUNTRY, -TAXON, -TIER, -CWR, -WUS) %>%
+  full_join(inventory_sp, by = "SPECIES") %>%
+  rename(PROVINCE = province) 
+
+sp_distr_ecoregion_sp <- sp_distr_ecoregion %>%
+  # remove duplicates at province within species
+  distinct(SPECIES, ECO_NAME, .keep_all=TRUE)
+
+ecoregion_gap_table_species <- sp_distr_ecoregion_sp[ , c("SPECIES", "ECO_NAME")] %>%
+  merge(x = ., y = summary_all_garden_accessions_wild,
+        by = c("SPECIES", "ECO_NAME"),
+        all = TRUE) %>%
+  dplyr::select(-province, -COUNTRY, -TAXON, -TIER, -CWR, -WUS) %>%
+  full_join(inventory_sp, by = "SPECIES") 
+
+# Last, join with total and endemic CWR per ecoregion/province
+# and total and endemic WUS per ecoregion/province
+summary_accessions <- read.csv("./Garden_PGRC_Data/summary_accessions_all_species.csv") %>%
+  distinct(SPECIES, .keep_all = TRUE) %>%
+  select(SPECIES, total_accessions_w_finest_taxon_res, 
+         garden_accessions_w_finest_taxon_res, genebank_accessions_w_finest_taxon_res)
+
+summary_accessions_taxon <- read.csv("./Garden_PGRC_Data/summary_accessions_all_species.csv") %>%
+  distinct(TAXON, .keep_all = TRUE) %>%
+  select(TAXON, SPECIES, total_accessions_w_finest_taxon_res, 
+         garden_accessions_w_finest_taxon_res, genebank_accessions_w_finest_taxon_res)
+
+
+province_gap_table_species_out <- province_gap_table_species %>%
+  full_join(total_CWRs_group_by_province[, c(
+    "PROVINCE", "total_CWRs_in_province", "endemic_CWRs_in_province")]) %>%
+  full_join(total_WUS_group_by_province[, c(
+    "PROVINCE", "total_WUS_in_province", "endemic_WUS_in_province")]) %>%
+  select(-TAXON_INFRA) %>%
+  filter(!is.na(SPECIES),
+         !is.na(PROVINCE)) %>%
+  left_join(summary_accessions)
+
+
+ecoregion_gap_table_species_out <- ecoregion_gap_table_species %>%
+  full_join(total_CWRs_group_by_ecoregion[, c(
+    "ECO_NAME", "total_CWRs_in_ecoregion", "endemic_CWRs_in_ecoregion")]) %>%
+  full_join(total_WUS_group_by_ecoregion[, c(
+    "ECO_NAME", "total_WUS_in_ecoregion", "endemic_WUS_in_ecoregion")]) %>%
+  select(-TAXON_INFRA) %>%
+  filter(!is.na(SPECIES),
+         !is.na(ECO_NAME)) %>%
+  left_join(summary_accessions)
+
+
+ecoregion_gap_table_taxon_out <- ecoregion_gap_table_taxon %>%
+  full_join(total_CWRs_group_by_ecoregion[, c(
+    "ECO_NAME", "total_CWRs_in_ecoregion", "endemic_CWRs_in_ecoregion")]) %>%
+  full_join(total_WUS_group_by_ecoregion[, c(
+    "ECO_NAME", "total_WUS_in_ecoregion", "endemic_WUS_in_ecoregion")]) %>%
+  select(-TAXON_INFRA) %>%
+  filter(!is.na(ECO_NAME)) %>%
+  left_join(summary_accessions_taxon)
+
+province_gap_table_taxon_out <- province_gap_table_taxon %>%
+  full_join(total_CWRs_group_by_province[, c(
+    "PROVINCE", "total_CWRs_in_province", "endemic_CWRs_in_province")]) %>%
+  full_join(total_WUS_group_by_province[, c(
+    "PROVINCE", "total_WUS_in_province", "endemic_WUS_in_province")]) %>%
+  select(-TAXON_INFRA) %>%
+  filter(!is.na(PROVINCE)) %>%
+  left_join(summary_accessions_taxon)
+
+# write.csv(province_gap_table_species_out, "Garden_PGRC_Data/province_gap_table_species_jan26.csv")
+# write.csv(ecoregion_gap_table_species_out, "Garden_PGRC_Data/ecoregion_gap_table_species_jan26.csv")
+
+# write.csv(ecoregion_gap_table_taxon_out, "Garden_PGRC_Data/ecoregion_gap_table_taxon_PGRC_only.csv")
+# write.csv(province_gap_table_taxon_out, "Garden_PGRC_Data/province_gap_table_taxon_PGRC_only.csv")
+
